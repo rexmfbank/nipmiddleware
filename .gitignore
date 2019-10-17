@@ -1,0 +1,8 @@
+/.nb-gradle/
+/.gradle/
+/build/
+/out/
+PGS.iml
+/out/
+pgp1.keystore
+
