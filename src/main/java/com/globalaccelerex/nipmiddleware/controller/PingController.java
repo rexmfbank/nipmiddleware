@@ -35,6 +35,7 @@ public class PingController {
     @GetMapping("ping")
     public ResponseEntity<?> ping(@Valid @ModelAttribute PingRequest request) {
         IMarker marker = Marker.fromString();
+        Integer port = (request.getPort() == null) ?84 : request.getPort();
             String result = "";
             try {
 
@@ -42,7 +43,7 @@ public class PingController {
                     headers.setContentType(MediaType.APPLICATION_JSON);
                     HttpEntity<Object> entity = null ;
                     entity = new HttpEntity(headers);
-                result=  hTTPRestTemplate.getClient().exchange(HTTPHelpers.buildURI(nipConfig.getBaseUrl(),""),HttpMethod.POST,entity,String.class).getBody();
+                result=  hTTPRestTemplate.getClient().exchange(HTTPHelpers.buildURI(nipConfig.getBaseUrl()+port.toString(),""),HttpMethod.POST,entity,String.class).getBody();
             }catch (HttpClientErrorException http){
                 result = http.getResponseBodyAsString();
                 marker.setResponse(result);
