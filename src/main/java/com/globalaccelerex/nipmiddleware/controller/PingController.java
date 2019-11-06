@@ -35,12 +35,15 @@ public class PingController {
     @GetMapping("ping")
     public ResponseEntity<?> ping(@Valid @ModelAttribute PingRequest request) {
         IMarker marker = Marker.fromString();
+        marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                build().toUri().toASCIIString(), request.toString(), false);
         Integer port = (request.getPort() == null) ?84 : request.getPort();
             String result = "";
             try {
 
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_JSON);
+                    headers.set(IMarker.IDENTIFIER,marker.getID());
                     HttpEntity<Object> entity = null ;
                     entity = new HttpEntity(headers);
                 result=  hTTPRestTemplate.getClient().exchange(HTTPHelpers.buildURI(nipConfig.getBaseUrl()+port.toString(),"/"),HttpMethod.POST,entity,String.class).getBody();
@@ -50,9 +53,10 @@ public class PingController {
             }
             catch (Exception ex) {
                 marker.info(ex.getMessage(), ex);
-                marker.setResponse(result);
+                marker.setResponse(ex.getMessage());
             }
             finally {
+                marker.setMainResponse(result, false);
             marker.done();
         }
         return new ResponseEntity( HttpStatus.OK);
