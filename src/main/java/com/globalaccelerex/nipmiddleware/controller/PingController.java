@@ -43,7 +43,7 @@ public class PingController {
                     headers.setContentType(MediaType.APPLICATION_JSON);
                     HttpEntity<Object> entity = null ;
                     entity = new HttpEntity(headers);
-                result=  hTTPRestTemplate.getClient().exchange(HTTPHelpers.buildURI(nipConfig.getBaseUrl()+port.toString(),""),HttpMethod.POST,entity,String.class).getBody();
+                result=  hTTPRestTemplate.getClient().exchange(HTTPHelpers.buildURI(nipConfig.getBaseUrl()+port.toString(),"/"),HttpMethod.POST,entity,String.class).getBody();
             }catch (HttpClientErrorException http){
                 result = http.getResponseBodyAsString();
                 marker.setResponse(result);
