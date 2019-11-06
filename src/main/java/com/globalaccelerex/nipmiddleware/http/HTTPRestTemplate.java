@@ -38,6 +38,8 @@ public class HTTPRestTemplate {
     public RestTemplate getClient() {
         if (restTemplate == null) {
             this.restTemplate = new RestTemplate(getClientHttpRequestFactory());
+            restTemplate.getInterceptors().add(new RequestInterceptor());
+            restTemplate.setErrorHandler(new ClientErrorHandler());
         }
         return this.restTemplate;
     }
