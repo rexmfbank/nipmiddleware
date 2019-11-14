@@ -46,7 +46,7 @@ public class PingController {
                     headers.set(IMarker.IDENTIFIER,marker.getID());
                     HttpEntity<Object> entity = null ;
                     entity = new HttpEntity(headers);
-                result=  hTTPRestTemplate.getClient().exchange(HTTPHelpers.buildURI(nipConfig.getBaseUrl()+port.toString(),"/NIPWS/NIPInterface?wsdl"),HttpMethod.POST,entity,String.class).getBody();
+                result=  hTTPRestTemplate.getClient().exchange(HTTPHelpers.buildURI(nipConfig.getBaseUrl()+port.toString(),"/NIPWS/NIPInterface?wsdl"),HttpMethod.GET,entity,String.class).getBody();
             }catch (HttpClientErrorException http){
                 result = http.getResponseBodyAsString();
                 marker.setResponse(result);
