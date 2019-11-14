@@ -59,6 +59,6 @@ public class PingController {
                 marker.setMainResponse(result, false);
             marker.done();
         }
-        return new ResponseEntity( HttpStatus.OK);
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 }
