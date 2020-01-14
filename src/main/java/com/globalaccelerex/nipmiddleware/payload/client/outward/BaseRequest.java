@@ -1,0 +1,23 @@
+package com.globalaccelerex.nipmiddleware.payload.client.outward;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotEmpty;
+
+@Data
+//@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class BaseRequest {
+
+    @JsonIgnore
+    private IMarker marker;
+
+    @NotEmpty
+    private String requestId;
+
+}

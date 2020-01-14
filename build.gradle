@@ -1,16 +1,17 @@
 configurations {
     jaxb
 }
+
 buildscript {
     ext {
-		springBootVersion = '2.0.5.RELEASE'
+        springBootVersion = '2.0.5.RELEASE'
         lombokVersion = '1.16.16'
-	}
-	repositories {
+    }
+    repositories {
         mavenCentral()
     }
     dependencies {
-        classpath ("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")        
+        classpath ("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath('se.transmode.gradle:gradle-docker:1.2')
     }
 }
@@ -42,6 +43,9 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    //flatDir {
+    //  dirs 'libs'
+    //}
 }
 
 
@@ -52,8 +56,8 @@ task genJaxb {
     ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
     ext.classesDir = "${buildDir}/classes/jaxb"
 //ext.schema = "http://www.webservicex.com/stockquote.asmx?WSDL"
-ext.schema = " http://154.113.16.142:8088/AccountOpeningService/AccountOpeningUtilityService.asmx?wsdl"
-    //ext.schema = "schemas/bvn_booleanmatch.WSDL"
+    ext.schema = " http://154.113.16.142:8088/AccountOpeningService/AccountOpeningUtilityService.asmx?wsdl"
+    //ext.schema = "schemas/nip.wsdl"
 
     outputs.dir classesDir
 
@@ -65,6 +69,7 @@ ext.schema = " http://154.113.16.142:8088/AccountOpeningService/AccountOpeningUt
             mkdir(dir: classesDir)
 
             xjc(destdir: sourcesDir, schema: schema, package: "com.globalaccelerex.providusmiddleware.providers.providus.model.xjc") {
+                //xjc(destdir: sourcesDir, schema: schema, package: "com.globalaccelerex.nipmiddleware.wsdl") {
                 arg(value: "-wsdl")
                 produces(dir: sourcesDir, includes: "**/*.java")
             }
@@ -88,12 +93,6 @@ ext.schema = " http://154.113.16.142:8088/AccountOpeningService/AccountOpeningUt
 // end::wsdl[]
 
 
-
-
-
-
-
-
 bootJar {
     baseName = 'nipmiddleware'
 
@@ -102,26 +101,31 @@ bootJar {
 
 dependencies {
     compile ('org.springframework.boot:spring-boot-starter-web') {
-         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
     compile ('org.springframework.boot:spring-boot-starter-jetty')
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-devtools")
     compile("org.springframework.boot:spring-boot-autoconfigure")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
 
+    //spring openfeign
+    //compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.1.2.RELEASE'
 
     //spring aws cloud
     compile group: 'org.springframework.cloud', name: 'spring-cloud-aws-autoconfigure', version: '1.2.2.RELEASE'
     compile group: 'org.springframework.cloud', name: 'spring-cloud-aws-context', version: '1.2.2.RELEASE'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-aws-messaging', version: '1.2.2.RELEASE'          
-
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-aws-messaging', version: '1.2.2.RELEASE'
 
     // spring ws
     compile group: 'org.springframework.ws', name: 'spring-ws-core', version: '2.4.1.RELEASE'
     compile(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
 
-    
+    compile("mysql:mysql-connector-java")
+    compile("org.flywaydb:flyway-core")
+    compile("wsdl4j:wsdl4j:1.6.1")
+
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
     compile group: 'org.apache.commons', name: 'commons-io', version: '1.3.2'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.4'
@@ -129,23 +133,26 @@ dependencies {
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")  
-    compile group: 'com.google.guava', name: 'guava', version: '22.0'      
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    compile group: 'com.google.guava', name: 'guava', version: '22.0'
     compile group: 'org.jsondoc', name: 'jsondoc-core', version: '1.2.11'
-    compile group: 'org.jsondoc', name: 'jsondoc-ui-webjar', version: '1.2.11' 
-    compile group: 'com.google.inject', name: 'guice', version: '3.0' 
-    compile group: 'javax.jdo', name: 'jdo-api', version: '3.0.1' 
-    compile group: 'org.datanucleus', name: 'datanucleus-core', version: '4.1.7' 
-    compile group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0' 
-    compile("org.apache.httpcomponents:httpclient") 
-    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.0'
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: '1.11.414'   
-    
-    
-    testCompile("junit:junit")
-  
-}
+    compile group: 'org.jsondoc', name: 'jsondoc-ui-webjar', version: '1.2.11'
+    compile group: 'com.google.inject', name: 'guice', version: '3.0'
+    compile group: 'javax.jdo', name: 'jdo-api', version: '3.0.1'
+    compile group: 'org.datanucleus', name: 'datanucleus-core', version: '4.1.7'
+    compile group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0'
+    compile("org.apache.httpcomponents:httpclient")
+    compile ("io.springfox:springfox-swagger2:2.9.2")
+    compile ("io.springfox:springfox-swagger-ui:2.9.2")
+    //compile ("org.springframework.cloud:spring-cloud-starter-openfeign:2.1.2.RELEASE")
 
+    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.0'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: '1.11.414'
+
+    compile fileTree(dir :'lib' ,include :'*.jar')
+
+    testCompile("junit:junit")
+}
 
 task getHomeDir() {
     println gradle.gradleHomeDir
