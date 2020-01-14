@@ -10,5 +10,5 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class TsqRequest extends BaseRequest {
 
-    private String sessionId;
+    private String paymentReference;
 }

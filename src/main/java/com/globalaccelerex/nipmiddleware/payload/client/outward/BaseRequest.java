@@ -18,6 +18,6 @@ public class BaseRequest {
     private IMarker marker;
 
     @NotEmpty
-    private String requestId;
+    private String clientId;
 
 }

@@ -15,9 +15,9 @@ import java.util.Date;
 public class BaseResponse {
 
     @NotEmpty
-    private String originalRequestId;
+    private String clientId;
 
-    @NotEmpty
+    //@NotEmpty
     private String sessionId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")

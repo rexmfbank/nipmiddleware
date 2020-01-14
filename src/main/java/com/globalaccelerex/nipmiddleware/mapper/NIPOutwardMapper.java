@@ -60,7 +60,6 @@ public class NIPOutwardMapper {
                 .accountNo(ftSingleCreditRequest.getBeneficiaryAccountNo())
                 .destinationInstitutionCode(ftSingleCreditRequest.getDestinationInstitutionCode())
                 .build();
-        neSingleRequest.setRequestId(RandomStringUtils.randomNumeric(6));
         return neSingleRequest;
     };
 
