@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-//@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseRequest {
