@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.controller;
 
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.util.MockResponseUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,12 @@ public class BankController {
     public ResponseEntity<?> doFIList(@Valid @RequestBody FinancialInstitutionListRequestVO financialInstitutionListRequest){
         final val financialInstitutionListResponseVO = mockResponseUtil.buildFIListResponse(financialInstitutionListRequest);
         return new ResponseEntity(financialInstitutionListResponseVO, HttpStatus.OK);
+    }
+
+    @PostMapping(FT_DIRECT_DEBIT_API)
+    public ResponseEntity<?> doFT_DirectDebit(@Valid @RequestBody FTDirectDebitRequestVO ftDirectDebitRequestVO){
+        final val ftDirectDebitResponseVO = mockResponseUtil.buildFTDirectDebitResponseVO(ftDirectDebitRequestVO);
+        return new ResponseEntity(ftDirectDebitResponseVO, HttpStatus.OK);
     }
 
 }

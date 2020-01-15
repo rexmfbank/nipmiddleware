@@ -3,6 +3,8 @@ package com.globalaccelerex.nipmiddleware.service;
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
@@ -33,4 +35,10 @@ public class NIPInwardService {
     public FinancialInstitutionListResponseVO handleFIList(FinancialInstitutionListRequestVO financialInstitutionListRequest){
         return bankRestService.doFIList(financialInstitutionListRequest);
     }
+
+    public FTDirectDebitResponseVO handleFT_DirectDebit(FTDirectDebitRequestVO ftDirectDebitRequestVO){
+        return bankRestService.doFTDirectDebit(ftDirectDebitRequestVO);
+    }
+
+
 }

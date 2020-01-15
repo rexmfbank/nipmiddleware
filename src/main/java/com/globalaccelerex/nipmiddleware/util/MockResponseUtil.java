@@ -4,6 +4,8 @@ import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,30 @@ public class MockResponseUtil {
                 .destinationInstitutionCode(nipConfig.getSenderBankCode())
                 .numberOfRecords(String.valueOf(financialInstitutionListRequest.getRecordList().size()))
                 .responseCode(NIP_00.getCode())
+                .build();
+    }
+
+    public FTDirectDebitResponseVO buildFTDirectDebitResponseVO(FTDirectDebitRequestVO ftDirectDebitRequestVO){
+        return FTDirectDebitResponseVO.builder()
+                .amount(ftDirectDebitRequestVO.getAmount())
+                .beneficiaryAccountName(ftDirectDebitRequestVO.getBeneficiaryAccountName())
+                .beneficiaryBVN(ftDirectDebitRequestVO.getBeneficiaryBVN())
+                .beneficiaryKYCLevel(ftDirectDebitRequestVO.getBeneficiaryKYCLevel())
+                .beneficiaryAccountNo(ftDirectDebitRequestVO.getBeneficiaryAccountNo())
+                .channelCode(ftDirectDebitRequestVO.getChannelCode())
+                .debitAccountName(ftDirectDebitRequestVO.getDebitAccountName())
+                .debitAccountNo(ftDirectDebitRequestVO.getDebitAccountNo())
+                .debitBVN(ftDirectDebitRequestVO.getDebitBVN())
+                .debitKYCLevel(ftDirectDebitRequestVO.getDebitKYCLevel())
+                .destinationInstitutionCode(ftDirectDebitRequestVO.getDestinationInstitutionCode())
+                .mandateReferenceNo(ftDirectDebitRequestVO.getMandateReferenceNo())
+                .nameEnquiryRef(ftDirectDebitRequestVO.getNameEnquiryRef())
+                .narration(ftDirectDebitRequestVO.getNarration())
+                .paymentReference(ftDirectDebitRequestVO.getPaymentReference())
+                .responseCode(NIP_00.getCode())
+                .sessionId(sessionIdUtil.generateSessionId())
+                .transactionFee(ftDirectDebitRequestVO.getTransactionFee())
+                .transactionLocation(ftDirectDebitRequestVO.getTransactionLocation())
                 .build();
     }
 

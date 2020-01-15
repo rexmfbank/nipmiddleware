@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.endpoint;
 
 
+import com.globalaccelerex.nipmiddleware.facade.FTInwardFacade;
 import com.globalaccelerex.nipmiddleware.facade.NIPInwardFacade;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
@@ -23,9 +24,12 @@ public class NIPInwardEndpoint {
 
     private final NIPInwardFacade nipInwardFacade;
 
+    private final FTInwardFacade ftInwardFacade;
+
     @Autowired
-    public NIPInwardEndpoint(NIPInwardFacade nipInwardFacade){
+    public NIPInwardEndpoint(NIPInwardFacade nipInwardFacade, FTInwardFacade ftInwardFacade){
         this.nipInwardFacade = nipInwardFacade;
+        this.ftInwardFacade = ftInwardFacade;
     }
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = NAME_ENQUIRY_REQUEST)
@@ -58,5 +62,23 @@ public class NIPInwardEndpoint {
         }finally {
             iMarker.done();
         }
+    }
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = FT_DIRECT_DEBIT_REQUEST)
+    public @ResponsePayload JAXBElement<FundtransfersingleitemDdResponse> handleFT_DD(@RequestPayload JAXBElement<FundtransfersingleitemDd> fundtransfersingleitemDd){
+        log.info("<<< FT Single Item Dd >>>");
+        final val iMarker = Marker.fromString();
+
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), fundtransfersingleitemDd.getValue().toString(), false);
+            final val objectFactory = new ObjectFactory();
+            final val fundtransfersingleitemDdResponse = ftInwardFacade.handleFT_DD(fundtransfersingleitemDd.getValue(), iMarker);
+            iMarker.setMainResponse(fundtransfersingleitemDdResponse.toString() , false);
+            return objectFactory.createFundtransfersingleitemDdResponse(fundtransfersingleitemDdResponse);
+        }finally {
+            iMarker.done();
+        }
+
     }
 }
