@@ -1,7 +1,9 @@
 package com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -10,6 +12,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @XmlRootElement(name = "FTAdviceDebitResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FTAdviceDirectDebitResponseVO {
