@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NoArgsConstructor
 @XmlRootElement(name = "FTAdviceDebitResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
+
 public class FTAdviceDirectDebitResponseVO {
 
     @XmlElement(name = "SessionID")
