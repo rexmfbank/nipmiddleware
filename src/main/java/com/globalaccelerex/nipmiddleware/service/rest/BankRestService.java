@@ -4,6 +4,8 @@ import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.http.HTTPRestTemplate;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectCreditRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectCreditResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
@@ -41,5 +43,10 @@ public class BankRestService {
     public FTDirectDebitResponseVO doFTDirectDebit(FTDirectDebitRequestVO ftDirectDebitRequestVO){
         final val ftDirectDebitUrl = nipConfig.getBankUrl() + CBA_API + FT_DIRECT_DEBIT_API;
         return httpRestTemplate.getClient().postForObject(ftDirectDebitUrl, ftDirectDebitRequestVO, FTDirectDebitResponseVO.class);
+    }
+
+    public FTDirectCreditResponseVO doFTDirectCredit(FTDirectCreditRequestVO ftDirectCreditRequestVO){
+        final val ftDirectCreditUrl = nipConfig.getBankUrl() + CBA_API + FT_DIRECT_CREDIT_API;
+        return httpRestTemplate.getClient().postForObject(ftDirectCreditUrl, ftDirectCreditRequestVO, FTDirectCreditResponseVO.class);
     }
 }

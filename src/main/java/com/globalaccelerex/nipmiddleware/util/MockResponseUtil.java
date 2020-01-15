@@ -4,6 +4,8 @@ import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectCreditRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectCreditResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
@@ -85,6 +87,28 @@ public class MockResponseUtil {
                 .sessionId(sessionIdUtil.generateSessionId())
                 .transactionFee(ftDirectDebitRequestVO.getTransactionFee())
                 .transactionLocation(ftDirectDebitRequestVO.getTransactionLocation())
+                .build();
+    }
+
+    public FTDirectCreditResponseVO buildFtDirectCreditResponseVO(FTDirectCreditRequestVO ftDirectCreditRequestVO){
+        return FTDirectCreditResponseVO.builder()
+                .amount(ftDirectCreditRequestVO.getAmount())
+                .beneficiaryAccountName(ftDirectCreditRequestVO.getBeneficiaryAccountName())
+                .beneficiaryAccountNo(ftDirectCreditRequestVO.getBeneficiaryAccountNo())
+                .beneficiaryBVN(ftDirectCreditRequestVO.getBeneficiaryBVN())
+                .beneficiaryKYCLevel(ftDirectCreditRequestVO.getBeneficiaryKYCLevel())
+                .channelCode(ftDirectCreditRequestVO.getChannelCode())
+                .destinationInstitutionCode(ftDirectCreditRequestVO.getDestinationInstitutionCode())
+                .nameEnquiryRef(ftDirectCreditRequestVO.getNameEnquiryRef())
+                .narration(ftDirectCreditRequestVO.getNarration())
+                .originatorAccountName(ftDirectCreditRequestVO.getOriginatorAccountName())
+                .originatorAccountNo(ftDirectCreditRequestVO.getOriginatorAccountNo())
+                .originatorBVN(ftDirectCreditRequestVO.getOriginatorBVN())
+                .originatorKYCLevel(ftDirectCreditRequestVO.getOriginatorKYCLevel())
+                .paymentReference(ftDirectCreditRequestVO.getPaymentReference())
+                .responseCode(NIP_00.getCode())
+                .sessionId(sessionIdUtil.generateSessionId())
+                .transactionLocation(ftDirectCreditRequestVO.getTransactionLocation())
                 .build();
     }
 

@@ -81,4 +81,23 @@ public class NIPInwardEndpoint {
         }
 
     }
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = FT_DIRECT_CREDIT_REQUEST)
+    public @ResponsePayload JAXBElement<FundtransfersingleitemDcResponse> handleFT_DC(@RequestPayload JAXBElement<FundtransfersingleitemDc> fundtransfersingleitemDc){
+        log.info("<<< FT Single Item Dc >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), fundtransfersingleitemDc.getValue().toString(), false);
+            final val objectFactory = new ObjectFactory();
+
+
+            final val fundtransfersingleitemDcResponse = ftInwardFacade.handleFT_DC(fundtransfersingleitemDc.getValue(), iMarker);
+            iMarker.setMainResponse(fundtransfersingleitemDcResponse.toString() , false);
+            return objectFactory.createFundtransfersingleitemDcResponse(fundtransfersingleitemDcResponse);
+        }finally {
+            iMarker.done();
+        }
+
+    }
 }

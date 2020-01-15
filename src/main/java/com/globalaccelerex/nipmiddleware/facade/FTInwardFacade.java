@@ -29,7 +29,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
         final val encryptedFTDirectDebitString = fundtransfersingleitemDd.getRequest();
         final val clearFTDirectDebitString = nipConfig.isIgnoreEncryption() ? encryptedFTDirectDebitString: decryptString(encryptedFTDirectDebitString);
 
-        marker.setRequest(" FI List Clear String ",clearFTDirectDebitString);
+        marker.setRequest(" FT_Dd Clear String ",clearFTDirectDebitString);
 
         final val ftDirectDebitRequestVO = xmlUtil.unmarshal(clearFTDirectDebitString, FTDirectDebitRequestVO.class);
 
@@ -48,6 +48,28 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransfersingleitemDdResponse;
     }
 
+    public FundtransfersingleitemDcResponse handleFT_DC(FundtransfersingleitemDc fundtransfersingleitemDc, IMarker marker){
+        final val encryptedFTSingleItemDCString = fundtransfersingleitemDc.getRequest();
+        final val clearFTSingleItemDCString = nipConfig.isIgnoreEncryption() ? encryptedFTSingleItemDCString : decryptString(encryptedFTSingleItemDCString);
+
+        marker.setRequest(" FT_Dc Clear String ",clearFTSingleItemDCString);
+
+        final val ftDirectCreditRequestVO = xmlUtil.unmarshal(clearFTSingleItemDCString, FTDirectCreditRequestVO.class);
+
+        // some backend calls
+
+        final val ftDirectCreditResponseVO = nipInwardService.handleFT_DirectCredit(ftDirectCreditRequestVO);
+        marker.setResponse("Response from FT_Dc CBA " + ftDirectCreditResponseVO.toString());
+
+
+        final val ftDirectCreditResponseVOXmlString = xmlUtil.marshal(FTDirectCreditResponseVO.class, ftDirectCreditResponseVO);
+
+        final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? ftDirectCreditResponseVOXmlString : encryptString(ftDirectCreditResponseVOXmlString);
+
+        final val fundtransfersingleitemDcResponse = new FundtransfersingleitemDcResponse();
+        fundtransfersingleitemDcResponse.setReturn(encryptedXmlString);
+        return fundtransfersingleitemDcResponse;
+    }
 
 
 
