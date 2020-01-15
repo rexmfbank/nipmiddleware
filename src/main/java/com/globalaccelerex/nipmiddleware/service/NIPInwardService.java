@@ -1,6 +1,8 @@
 package com.globalaccelerex.nipmiddleware.service;
 
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
@@ -26,5 +28,9 @@ public class NIPInwardService {
 
     public NESingleResponseVO handleNameEnquiry(NESingleRequestVO neSingleRequestVO){
         return bankRestService.doNameEnquiry(neSingleRequestVO);
+    }
+
+    public FinancialInstitutionListResponseVO handleFIList(FinancialInstitutionListRequestVO financialInstitutionListRequest){
+        return bankRestService.doFIList(financialInstitutionListRequest);
     }
 }

@@ -3,8 +3,12 @@ package com.globalaccelerex.nipmiddleware.facade;
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.ws.Financialinstitutionlist;
+import com.globalaccelerex.nipmiddleware.payload.nip.ws.FinancialinstitutionlistResponse;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.Nameenquirysingleitem;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.NameenquirysingleitemResponse;
 import com.globalaccelerex.nipmiddleware.service.NIPInwardService;
@@ -30,7 +34,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
     public NameenquirysingleitemResponse handleNameEnquiry(Nameenquirysingleitem nameenquirysingleitem, IMarker marker){
         final val encryptedNEString = nameenquirysingleitem.getRequest();
         final val clearNEString = nipConfig.isIgnoreEncryption() ? encryptedNEString : decryptString(encryptedNEString);
-        log.info("\n encryptedNEString ::::: {} \n clearNEString ::::: {}" ,encryptedNEString, clearNEString);
+        //log.info("\n encryptedNEString ::::: {} \n clearNEString ::::: {}" ,encryptedNEString, clearNEString);
 
         marker.setRequest(" NameEnquiry Clear String ",clearNEString);
 
@@ -48,6 +52,27 @@ public class NIPInwardFacade extends AbstractInwardFacade{
         final val nameenquirysingleitemResponse = new NameenquirysingleitemResponse();
         nameenquirysingleitemResponse.setReturn(encryptedXmlString);
         return nameenquirysingleitemResponse;
+    }
+
+    public FinancialinstitutionlistResponse handleFI (Financialinstitutionlist financialinstitutionlist, IMarker marker){
+        final val encryptedFIListString = financialinstitutionlist.getRequest();
+        final val clearFIListString = nipConfig.isIgnoreEncryption() ? encryptedFIListString : decryptString(encryptedFIListString);
+
+        marker.setRequest(" FI List Clear String ",clearFIListString);
+
+        final val financialInstitutionListRequest = xmlUtil.unmarshal(clearFIListString, FinancialInstitutionListRequestVO.class);
+
+        val financialInstitutionListResponse = nipInwardService.handleFIList(financialInstitutionListRequest);
+
+        marker.setResponse("Response from FIList CBA " + financialInstitutionListResponse.toString());
+
+        val financialInstitutionListResponseXmlString = xmlUtil.marshal(FinancialInstitutionListResponseVO.class, financialInstitutionListResponse);
+
+        final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? financialInstitutionListResponseXmlString :  encryptString(financialInstitutionListResponseXmlString);
+
+        final val financialinstitutionlistResponse = new FinancialinstitutionlistResponse();
+        financialinstitutionlistResponse.setReturn(encryptedXmlString);
+        return financialinstitutionlistResponse;
     }
 
 
