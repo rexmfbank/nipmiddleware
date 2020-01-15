@@ -8,6 +8,7 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirec
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectCreditResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.outward.tsq.TsqSingleItemResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
+import static com.globalaccelerex.nipmiddleware.enums.ChannelCodesEnum.CC_1;
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00;
 
 @Service
@@ -112,4 +114,12 @@ public class MockResponseUtil {
                 .build();
     }
 
+    public TsqSingleItemResponseVO buildTsqSingleItemResponseVO(String sessionId , String sourceInstitutionCode){
+        final val tsqSingleItemResponseVO = new TsqSingleItemResponseVO();
+        tsqSingleItemResponseVO.setChannelCode(String.valueOf(CC_1.getCode()));
+        tsqSingleItemResponseVO.setResponseCode(NIP_00.getCode());
+        tsqSingleItemResponseVO.setSessionId(sessionId);
+        tsqSingleItemResponseVO.setSourceInstitutionCode(sourceInstitutionCode);
+        return tsqSingleItemResponseVO;
+    }
 }

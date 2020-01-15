@@ -7,6 +7,8 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
@@ -74,26 +76,27 @@ public class NIPInwardFacade extends AbstractInwardFacade{
         return financialinstitutionlistResponse;
     }
 
-    public FundtransfersingleitemDdResponse handleFT_DD(FundtransfersingleitemDd fundtransfersingleitemDd, IMarker marker){
-        final val encryptedFTDirectDebitString = fundtransfersingleitemDd.getRequest();
-        final val clearFTDirectDebitString = nipConfig.isIgnoreEncryption() ? encryptedFTDirectDebitString: decryptString(encryptedFTDirectDebitString);
+    public TxnstatusquerysingleitemResponse handleTSQ(Txnstatusquerysingleitem txnstatusquerysingleitem, IMarker marker){
+        final val encryptedTsqString = txnstatusquerysingleitem.getRequest();
+        final val clearTsqString = nipConfig.isIgnoreEncryption() ? encryptedTsqString :  decryptString(encryptedTsqString);
 
-        marker.setRequest(" FT Direct Debit Clear String ",clearFTDirectDebitString);
-        final val ftDirectDebitRequestVO = xmlUtil.unmarshal(clearFTDirectDebitString, FTDirectDebitRequestVO.class);
+        marker.setRequest(" TSQ Clear String ",clearTsqString);
 
+        final val tsQuerySingleRequestVO = xmlUtil.unmarshal(clearTsqString, TSQuerySingleRequestVO.class);
         // some backend calls
 
-        final val ftDirectDebitResponseVO = nipInwardService.handleFT_DirectDebit(ftDirectDebitRequestVO);
+        final val tsQuerySingleResponseVO = nipInwardService.handleTSQ(tsQuerySingleRequestVO);
 
-        marker.setResponse("Response from FT Direct Debit CBA " + ftDirectDebitResponseVO.toString());
+        marker.setResponse("Response from TSQ CBA " + tsQuerySingleResponseVO.toString());
 
-        final val ftDirectDebitResponseVOXmlString = xmlUtil.marshal(FTDirectDebitResponseVO.class, ftDirectDebitResponseVO);
+        final val tsQuerySingleResponseVOXmlString = xmlUtil.marshal(TSQuerySingleResponseVO.class, tsQuerySingleResponseVO);
 
-        final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? ftDirectDebitResponseVOXmlString : encryptString(ftDirectDebitResponseVOXmlString);
+        final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? tsQuerySingleResponseVOXmlString :  encryptString(tsQuerySingleResponseVOXmlString);
 
-        final val fundtransfersingleitemDdResponse = new FundtransfersingleitemDdResponse();
-        fundtransfersingleitemDdResponse.setReturn(encryptedXmlString);
-        return fundtransfersingleitemDdResponse;
+        final val txnstatusquerysingleitemResponse = new TxnstatusquerysingleitemResponse();
+        txnstatusquerysingleitemResponse.setReturn(encryptedXmlString);
+        return txnstatusquerysingleitemResponse;
+
     }
 
 }

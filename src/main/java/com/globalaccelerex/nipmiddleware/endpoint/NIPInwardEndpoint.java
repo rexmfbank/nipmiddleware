@@ -90,14 +90,29 @@ public class NIPInwardEndpoint {
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), fundtransfersingleitemDc.getValue().toString(), false);
             final val objectFactory = new ObjectFactory();
-
-
             final val fundtransfersingleitemDcResponse = ftInwardFacade.handleFT_DC(fundtransfersingleitemDc.getValue(), iMarker);
             iMarker.setMainResponse(fundtransfersingleitemDcResponse.toString() , false);
             return objectFactory.createFundtransfersingleitemDcResponse(fundtransfersingleitemDcResponse);
         }finally {
             iMarker.done();
         }
+    }
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = TSQ_REQUEST)
+    public @ResponsePayload JAXBElement<TxnstatusquerysingleitemResponse> handleTSQ(@RequestPayload JAXBElement<Txnstatusquerysingleitem> txnStatusQuerySingleItem){
+        log.info("<<< TSQ >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), txnStatusQuerySingleItem.getValue().toString(), false);
+            final val objectFactory = new ObjectFactory();
+            final val txnStatusQuerySingleItemResponse = nipInwardFacade.handleTSQ(txnStatusQuerySingleItem.getValue(), iMarker);
+            iMarker.setMainResponse(txnStatusQuerySingleItemResponse.toString() , false);
+            return objectFactory.createTxnstatusquerysingleitemResponse(txnStatusQuerySingleItemResponse);
+        }finally {
+            iMarker.done();
+        }
 
     }
+
 }
