@@ -4,8 +4,12 @@ import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.Accountblock;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.AccountblockResponse;
+import com.globalaccelerex.nipmiddleware.payload.nip.ws.Accountunblock;
+import com.globalaccelerex.nipmiddleware.payload.nip.ws.AccountunblockResponse;
 import com.globalaccelerex.nipmiddleware.service.NIPInwardService;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
 import com.globalaccelerex.nipmiddleware.util.XmlUtil;
@@ -30,8 +34,6 @@ public class LienInwardFacade extends AbstractInwardFacade{
         final val encryptedAccountBlockString = accountblock.getRequest();
         final val clearAccountBlockString = nipConfig.isIgnoreEncryption() ? encryptedAccountBlockString : decryptString(encryptedAccountBlockString);
 
-        //log.info("\n encryptedAccountBlockString ::::: {} \n clearAccountBlockString ::::: {}" ,encryptedAccountBlockString, clearAccountBlockString);
-
         marker.setRequest(" Account Block Clear String ",clearAccountBlockString);
 
         final val accountBlockRequestVO = xmlUtil.unmarshal(clearAccountBlockString, AccountBlockRequestVO.class);
@@ -51,4 +53,25 @@ public class LienInwardFacade extends AbstractInwardFacade{
         return accountBlockResponse;
     }
 
+    public AccountunblockResponse handleAccountUnblock(Accountunblock accountunblock, IMarker marker){
+        final val encryptedAccountUnblockString = accountunblock.getRequest();
+        final val clearAccountUnblockString = nipConfig.isIgnoreEncryption() ? encryptedAccountUnblockString : decryptString(encryptedAccountUnblockString);
+
+        marker.setRequest(" Account Unblock Clear String ",clearAccountUnblockString);
+
+        final val accountUnblockRequestVO = xmlUtil.unmarshal(clearAccountUnblockString, AccountUnblockRequestVO.class);
+
+        // some backend calls
+        final val accountUnblockResponseVO = nipInwardService.handleAccountUnblock(accountUnblockRequestVO);
+
+        marker.setResponse("Response from Account Unblock CBA " + accountUnblockResponseVO.toString());
+
+        final val accountUnblockResponseVOXmlString = xmlUtil.marshal(AccountUnblockResponseVO.class, accountUnblockResponseVO);
+
+        final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? accountUnblockResponseVOXmlString : encryptString(accountUnblockResponseVOXmlString);
+
+        final val accountUnblockResponse = new AccountunblockResponse();
+        accountUnblockResponse.setReturn(encryptedXmlString);
+        return accountUnblockResponse;
+    }
 }

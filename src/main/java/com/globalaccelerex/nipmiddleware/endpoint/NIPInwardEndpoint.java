@@ -169,21 +169,36 @@ public class NIPInwardEndpoint {
     }
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =ACCOUNT_BLOCK_REQUEST)
-    public @ResponsePayload JAXBElement<AccountblockResponse> handleAccountBlock(@RequestPayload JAXBElement<Accountblock> accountblock){
+    public @ResponsePayload JAXBElement<AccountblockResponse> handleAccountBlock(@RequestPayload JAXBElement<Accountblock> accountblock) {
         log.info("<<< Account Block >>>");
         final val iMarker = Marker.fromString();
-        try{
+        try {
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), accountblock.getValue().getRequest(), false);
             final val objectFactory = new ObjectFactory();
             final val accountBlockResponse = lienInwardFacade.handleAccountBlock(accountblock.getValue(), iMarker);
-            iMarker.setMainResponse(accountBlockResponse.getReturn() , false);
+            iMarker.setMainResponse(accountBlockResponse.getReturn(), false);
             return objectFactory.createAccountblockResponse(accountBlockResponse);
+        } finally {
+            iMarker.done();
+        }
+    }
+
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =ACCOUNT_UNBLOCK_REQUEST)
+    public @ResponsePayload JAXBElement<AccountunblockResponse> handleAccountUnblock(@RequestPayload JAXBElement<Accountunblock> accountUnblock){
+        log.info("<<< Account Unblock >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), accountUnblock.getValue().getRequest(), false);
+            final val objectFactory = new ObjectFactory();
+            final val accountunblockResponse = lienInwardFacade.handleAccountUnblock(accountUnblock.getValue(), iMarker);
+            iMarker.setMainResponse(accountunblockResponse.getReturn() , false);
+            return objectFactory.createAccountunblockResponse(accountunblockResponse);
         }finally {
             iMarker.done();
         }
-
-
     }
 
 }

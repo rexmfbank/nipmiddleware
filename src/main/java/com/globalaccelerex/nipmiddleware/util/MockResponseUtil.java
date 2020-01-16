@@ -4,6 +4,8 @@ import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
@@ -221,5 +223,19 @@ public class MockResponseUtil {
             .targetAccountName(accountBlockRequestVO.getTargetAccountName())
             .targetAccountNo(accountBlockRequestVO.getTargetAccountNo())
             .targetBVN(accountBlockRequestVO.getTargetBVN())
+            .build();
+
+    public Function<AccountUnblockRequestVO , AccountUnblockResponseVO> mapAccountUnblockResponseVO =
+            accountUnblockRequestVO -> AccountUnblockResponseVO.builder()
+            .channelCode(accountUnblockRequestVO.getChannelCode())
+            .destinationInstitutionCode(accountUnblockRequestVO.getDestinationInstitutionCode())
+            .narration(accountUnblockRequestVO.getNarration())
+            .responseCode(NIP_00.getCode())
+            .referenceCode(accountUnblockRequestVO.getReferenceCode())
+            .reasonCode(accountUnblockRequestVO.getReasonCode())
+            .sessionId(accountUnblockRequestVO.getSessionId())
+            .targetAccountName(accountUnblockRequestVO.getTargetAccountName())
+            .targetAccountNo(accountUnblockRequestVO.getTargetAccountNo())
+            .targetBVN(accountUnblockRequestVO.getTargetBVN())
             .build();
 }
