@@ -5,10 +5,8 @@ import com.globalaccelerex.nipmiddleware.http.HTTPRestTemplate;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
 import com.globalaccelerex.nipmiddleware.model.PingRequest;
-import com.globalaccelerex.nipmiddleware.model.Response;
-import com.globalaccelerex.nipmiddleware.service.NipConfig;
+import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +17,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.Base64;
 
 @Slf4j
 @RestController
@@ -32,33 +29,33 @@ public class PingController {
     @Autowired
     private NipConfig nipConfig;
 
-    @GetMapping("ping")
-    public ResponseEntity<?> ping(@Valid @ModelAttribute PingRequest request) {
-        IMarker marker = Marker.fromString();
-        marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                build().toUri().toASCIIString(), request.toString(), false);
-        Integer port = (request.getPort() == null) ?84 : request.getPort();
-            String result = "";
-            try {
-
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.setContentType(MediaType.APPLICATION_JSON);
-                    headers.set(IMarker.IDENTIFIER,marker.getID());
-                    HttpEntity<Object> entity = null ;
-                    entity = new HttpEntity(headers);
-                result=  hTTPRestTemplate.getClient().exchange(HTTPHelpers.buildURI(nipConfig.getBaseUrl()+port.toString(),"/NIPWS/NIPInterface?wsdl"),HttpMethod.GET,entity,String.class).getBody();
-            }catch (HttpClientErrorException http){
-                result = http.getResponseBodyAsString();
-                marker.setResponse(result);
-            }
-            catch (Exception ex) {
-                marker.info(ex.getMessage(), ex);
-                marker.setResponse(ex.getMessage());
-            }
-            finally {
-                marker.setMainResponse(result, false);
-            marker.done();
-        }
-        return new ResponseEntity(result, HttpStatus.OK);
-    }
+//    @GetMapping("ping")
+//    public ResponseEntity<?> ping(@Valid @ModelAttribute PingRequest request) {
+//        IMarker marker = Marker.fromString();
+//        marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+//                build().toUri().toASCIIString(), request.toString(), false);
+//        Integer port = (request.getPort() == null) ?84 : request.getPort();
+//            String result = "";
+//            try {
+//
+//                    HttpHeaders headers = new HttpHeaders();
+//                    headers.setContentType(MediaType.APPLICATION_JSON);
+//                    headers.set(IMarker.IDENTIFIER,marker.getID());
+//                    HttpEntity<Object> entity = null ;
+//                    entity = new HttpEntity(headers);
+//                result=  hTTPRestTemplate.getClient().exchange(HTTPHelpers.buildURI(nipConfig.getBaseUrl()+port.toString(),"/NIPWS/NIPInterface?wsdl"),HttpMethod.GET,entity,String.class).getBody();
+//            }catch (HttpClientErrorException http){
+//                result = http.getResponseBodyAsString();
+//                marker.setResponse(result);
+//            }
+//            catch (Exception ex) {
+//                marker.info(ex.getMessage(), ex);
+//                marker.setResponse(ex.getMessage());
+//            }
+//            finally {
+//                marker.setMainResponse(result, false);
+//            marker.done();
+//        }
+//        return new ResponseEntity(result, HttpStatus.OK);
+//    }
 }

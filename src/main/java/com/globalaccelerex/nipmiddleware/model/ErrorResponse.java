@@ -7,42 +7,21 @@ package com.globalaccelerex.nipmiddleware.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ErrorResponse {
 
     private String responseMessage;
+
     private String responseCode;
 
-    public ErrorResponse() {
+    private boolean retry;
 
-    }
-
-    public ErrorResponse(final Response response) {
-        setResponseMessage(response.getResponseMessage());
-        setResponseCode(response.getResponseCode());
-    }
-
-    public ErrorResponse(final Response response, final String errorMessage) {
-        setResponseMessage(errorMessage);
-        setResponseCode(response.getResponseCode());
-    }
-
-    public ErrorResponse(final String responseCode, final String responseMessage) {
-        setResponseMessage(responseMessage);
-        setResponseCode(responseCode);
-    }
-
-    public ErrorResponse(String errorMessage) {
-        setResponseMessage(errorMessage);
-        setResponseCode(Response.SYSTEM_ERROR.getResponseCode());
-    }
-
-    public ErrorResponse(Exception e) {
-        setResponseMessage(e.getMessage());
-        setResponseCode(Response.SYSTEM_ERROR.getResponseCode());
-    }
 }
