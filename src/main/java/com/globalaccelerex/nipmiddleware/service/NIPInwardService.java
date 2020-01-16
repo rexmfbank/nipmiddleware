@@ -1,6 +1,8 @@
 package com.globalaccelerex.nipmiddleware.service;
 
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
@@ -61,5 +63,9 @@ public class NIPInwardService {
 
     public MandateAdviceResponseVO handleMandateAdvice(MandateAdviceRequestVO mandateAdviceRequestVO){
         return bankRestService.doMandateAdvice(mandateAdviceRequestVO);
+    }
+
+    public AccountBlockResponseVO handleAccountBlock(AccountBlockRequestVO accountBlockRequestVO){
+        return bankRestService.doAccountBlock(accountBlockRequestVO);
     }
 }

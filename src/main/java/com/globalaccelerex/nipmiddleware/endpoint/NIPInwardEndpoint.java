@@ -2,6 +2,7 @@ package com.globalaccelerex.nipmiddleware.endpoint;
 
 
 import com.globalaccelerex.nipmiddleware.facade.FTInwardFacade;
+import com.globalaccelerex.nipmiddleware.facade.LienInwardFacade;
 import com.globalaccelerex.nipmiddleware.facade.NIPInwardFacade;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
@@ -26,10 +27,13 @@ public class NIPInwardEndpoint {
 
     private final FTInwardFacade ftInwardFacade;
 
+    private final LienInwardFacade lienInwardFacade;
+
     @Autowired
-    public NIPInwardEndpoint(NIPInwardFacade nipInwardFacade, FTInwardFacade ftInwardFacade){
+    public NIPInwardEndpoint(NIPInwardFacade nipInwardFacade, FTInwardFacade ftInwardFacade, LienInwardFacade lienInwardFacade){
         this.nipInwardFacade = nipInwardFacade;
         this.ftInwardFacade = ftInwardFacade;
+        this.lienInwardFacade = lienInwardFacade;
     }
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = NAME_ENQUIRY_REQUEST)
@@ -159,6 +163,22 @@ public class NIPInwardEndpoint {
             final val mandateAdviceResponse = nipInwardFacade.handleMandateAdvice(mandateAdvice.getValue(), iMarker);
             iMarker.setMainResponse(mandateAdviceResponse.getReturn() , false);
             return objectFactory.createMandateadviceResponse(mandateAdviceResponse);
+        }finally {
+            iMarker.done();
+        }
+    }
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =ACCOUNT_BLOCK_REQUEST)
+    public @ResponsePayload JAXBElement<AccountblockResponse> handleAccountBlock(@RequestPayload JAXBElement<Accountblock> accountblock){
+        log.info("<<< Account Block >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), accountblock.getValue().getRequest(), false);
+            final val objectFactory = new ObjectFactory();
+            final val accountBlockResponse = lienInwardFacade.handleAccountBlock(accountblock.getValue(), iMarker);
+            iMarker.setMainResponse(accountBlockResponse.getReturn() , false);
+            return objectFactory.createAccountblockResponse(accountBlockResponse);
         }finally {
             iMarker.done();
         }

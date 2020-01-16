@@ -2,6 +2,8 @@ package com.globalaccelerex.nipmiddleware.service.rest;
 
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.http.HTTPRestTemplate;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
@@ -70,5 +72,10 @@ public class BankRestService {
     public MandateAdviceResponseVO doMandateAdvice(MandateAdviceRequestVO mandateAdviceRequestVO){
         final val mandateAdviceUrl = nipConfig.getBankUrl() + CBA_API + MANDATE_ADVICE_API;
         return httpRestTemplate.getClient().postForObject(mandateAdviceUrl, mandateAdviceRequestVO, MandateAdviceResponseVO.class);
+    }
+
+    public AccountBlockResponseVO doAccountBlock(AccountBlockRequestVO accountBlockRequestVO){
+        final val accountBlockUrl = nipConfig.getBankUrl() + CBA_API + ACCOUNT_BLOCK_API;
+        return httpRestTemplate.getClient().postForObject(accountBlockUrl, accountBlockRequestVO, AccountBlockResponseVO.class);
     }
 }
