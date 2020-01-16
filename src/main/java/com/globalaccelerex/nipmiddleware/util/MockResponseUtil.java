@@ -5,6 +5,8 @@ import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.tsq.TsqSingleItemResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
 import lombok.val;
@@ -186,4 +188,23 @@ public class MockResponseUtil {
                     .transactionFee(ftAdviceDirectDebitRequestVO.getTransactionFee())
                     .transactionLocation(ftAdviceDirectDebitRequestVO.getTransactionLocation())
                     .build();
+
+    public Function<MandateAdviceRequestVO, MandateAdviceResponseVO> mapMandateAdviceResponseVO =
+            mandateAdviceRequestVO -> MandateAdviceResponseVO.builder()
+                    .amount(mandateAdviceRequestVO.getAmount())
+                    .beneficiaryAccountName(mandateAdviceRequestVO.getBeneficiaryAccountName())
+                    .beneficiaryAccountNo(mandateAdviceRequestVO.getBeneficiaryAccountNo())
+                    .beneficiaryBVN(mandateAdviceRequestVO.getBeneficiaryBVN())
+                    .beneficiaryKYCLevel(mandateAdviceRequestVO.getBeneficiaryKYCLevel())
+                    .channelCode(mandateAdviceRequestVO.getChannelCode())
+                    .debitAccountName(mandateAdviceRequestVO.getDebitAccountName())
+                    .debitAccountNo(mandateAdviceRequestVO.getDebitAccountNo())
+                    .debitBVN(mandateAdviceRequestVO.getDebitBVN())
+                    .debitKYCLevel(mandateAdviceRequestVO.getDebitKYCLevel())
+                    .destinationCode(mandateAdviceRequestVO.getDestinationCode())
+                    .mandateReferenceNo(mandateAdviceRequestVO.getMandateReferenceNo())
+                    .responseCode(NIP_00.getCode())
+                    .sessionId(mandateAdviceRequestVO.getSessionId())
+                    .build();
+
 }

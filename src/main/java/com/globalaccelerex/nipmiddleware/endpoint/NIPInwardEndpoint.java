@@ -146,6 +146,23 @@ public class NIPInwardEndpoint {
         }finally {
             iMarker.done();
         }
+    }
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =MANDATE_ADVICE_REQUEST)
+    public @ResponsePayload JAXBElement<MandateadviceResponse> handleMandateAdvice(@RequestPayload JAXBElement<Mandateadvice> mandateAdvice){
+        log.info("<<< Mandate Advice >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), mandateAdvice.getValue().getRequest(), false);
+            final val objectFactory = new ObjectFactory();
+            final val mandateAdviceResponse = nipInwardFacade.handleMandateAdvice(mandateAdvice.getValue(), iMarker);
+            iMarker.setMainResponse(mandateAdviceResponse.getReturn() , false);
+            return objectFactory.createMandateadviceResponse(mandateAdviceResponse);
+        }finally {
+            iMarker.done();
+        }
+
 
     }
 

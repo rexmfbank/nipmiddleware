@@ -7,6 +7,8 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
@@ -99,4 +101,26 @@ public class NIPInwardFacade extends AbstractInwardFacade{
 
     }
 
+    public MandateadviceResponse handleMandateAdvice(Mandateadvice mandateadvice, IMarker marker){
+        final val encryptedMandateAdviceString = mandateadvice.getRequest();
+        final val clearMandateAdviceString = nipConfig.isIgnoreEncryption() ? encryptedMandateAdviceString : decryptString(encryptedMandateAdviceString);
+
+        marker.setRequest(" Mandate Advice Clear String ",clearMandateAdviceString);
+
+        final val mandateAdviceRequestVO = xmlUtil.unmarshal(clearMandateAdviceString, MandateAdviceRequestVO.class);
+
+        // some backend calls
+
+        final val mandateAdviceResponseVO = nipInwardService.handleMandateAdvice(mandateAdviceRequestVO);
+
+        marker.setResponse("Response from Mandate Advice CBA " + mandateAdviceResponseVO.toString());
+
+        final val mandateAdviceResponseVOXmlString = xmlUtil.marshal(MandateAdviceResponseVO.class, mandateAdviceResponseVO);
+
+        final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? mandateAdviceResponseVOXmlString : encryptString(mandateAdviceResponseVOXmlString);
+
+        final val mandateAdviceResponse = new MandateadviceResponse();
+        mandateAdviceResponse.setReturn(encryptedXmlString);
+        return mandateAdviceResponse;
+    }
 }

@@ -5,6 +5,7 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTAdvic
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTAdviceDirectDebitRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectCreditRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
 import com.globalaccelerex.nipmiddleware.util.MockResponseUtil;
@@ -70,5 +71,11 @@ public class BankController {
     public ResponseEntity<?> doFT_Active_DirectCredit(@Valid @RequestBody FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO){
         final val ftDirectCreditResponseVO = mockResponseUtil.mapFTAdviceDirectCreditResponseVO.apply(ftAdviceDirectCreditRequestVO);
         return new ResponseEntity(ftDirectCreditResponseVO, HttpStatus.OK);
+    }
+
+    @PostMapping(MANDATE_ADVICE_API)
+    public ResponseEntity<?> doMandateAdvice(@Valid @RequestBody MandateAdviceRequestVO mandateAdviceRequestVO){
+        final val mandateAdviceResponseVO = mockResponseUtil.mapMandateAdviceResponseVO.apply(mandateAdviceRequestVO);
+        return new ResponseEntity(mandateAdviceResponseVO, HttpStatus.OK);
     }
 }

@@ -5,6 +5,8 @@ import com.globalaccelerex.nipmiddleware.http.HTTPRestTemplate;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
@@ -63,5 +65,10 @@ public class BankRestService {
     public FTAdviceDirectDebitResponseVO doFTAdviceDirectDebit(FTAdviceDirectDebitRequestVO ftAdviceDirectDebitRequestVO){
         final val ftAdviceDirectDebitUrl = nipConfig.getBankUrl() + CBA_API + FT_ADVICE_DIRECT_DEBIT_API;
         return httpRestTemplate.getClient().postForObject(ftAdviceDirectDebitUrl, ftAdviceDirectDebitRequestVO, FTAdviceDirectDebitResponseVO.class);
+    }
+
+    public MandateAdviceResponseVO doMandateAdvice(MandateAdviceRequestVO mandateAdviceRequestVO){
+        final val mandateAdviceUrl = nipConfig.getBankUrl() + CBA_API + MANDATE_ADVICE_API;
+        return httpRestTemplate.getClient().postForObject(mandateAdviceUrl, mandateAdviceRequestVO, MandateAdviceResponseVO.class);
     }
 }
