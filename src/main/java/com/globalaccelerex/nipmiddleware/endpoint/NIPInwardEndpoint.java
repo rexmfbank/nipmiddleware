@@ -217,4 +217,19 @@ public class NIPInwardEndpoint {
         }
     }
 
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = AMOUNT_UNBLOCK_REQUEST)
+    public @ResponsePayload JAXBElement<AmountunblockResponse> handleAmountUnblock(@RequestPayload JAXBElement<Amountunblock> amountunblock){
+        log.info("<<< AmountUnBlock >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), amountunblock.getValue().getRequest(), false);
+            final val objectFactory = new ObjectFactory();
+            final val amountUnblockResponse = lienInwardFacade.handleAmountUnblock(amountunblock.getValue(), iMarker);
+            iMarker.setMainResponse(amountUnblockResponse.getReturn() , false);
+            return objectFactory.createAmountunblockResponse(amountUnblockResponse);
+        }finally {
+            iMarker.done();
+        }
+    }
 }

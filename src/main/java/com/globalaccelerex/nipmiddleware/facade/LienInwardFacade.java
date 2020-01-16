@@ -8,6 +8,8 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.Accou
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
 import com.globalaccelerex.nipmiddleware.service.NIPInwardService;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
@@ -93,6 +95,29 @@ public class LienInwardFacade extends AbstractInwardFacade{
         final val amountBlockResponse = new AmountblockResponse();
         amountBlockResponse.setReturn(encryptedXmlString);
         return amountBlockResponse;
+    }
+
+    public AmountunblockResponse handleAmountUnblock(Amountunblock amountunblock, IMarker marker){
+        final val encryptedAmountUnblockString = amountunblock.getRequest();
+        final val clearAmountUnblockString = nipConfig.isIgnoreEncryption() ? encryptedAmountUnblockString : decryptString(encryptedAmountUnblockString);
+
+        marker.setRequest(" Amount UnBlock Clear String ",clearAmountUnblockString);
+
+        final val amountUnblockRequestVO = xmlUtil.unmarshal(clearAmountUnblockString, AmountUnblockRequestVO.class);
+
+        // some backend calls
+
+        final val amountUnblockResponseVO = nipInwardService.handleAmountUnblock(amountUnblockRequestVO);
+
+        marker.setResponse("Response from Amount Unblock CBA " + amountUnblockResponseVO.toString());
+
+        final val amountUnblockResponseVOXmlString = xmlUtil.marshal(AmountUnblockResponseVO.class, amountUnblockResponseVO);
+
+        final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? amountUnblockResponseVOXmlString : encryptString(amountUnblockResponseVOXmlString);
+
+        final val amountunblockResponse = new AmountunblockResponse();
+        amountunblockResponse.setReturn(encryptedXmlString);
+        return amountunblockResponse;
     }
 
 }

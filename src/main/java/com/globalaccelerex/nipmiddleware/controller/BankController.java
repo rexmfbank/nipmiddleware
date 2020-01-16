@@ -3,6 +3,7 @@ package com.globalaccelerex.nipmiddleware.controller;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTAdviceDirectCreditRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTAdviceDirectDebitRequestVO;
@@ -97,6 +98,12 @@ public class BankController {
     @PostMapping(AMOUNT_BLOCK_API)
     public ResponseEntity<?> doAmountBlock(@Valid @RequestBody AmountBlockRequestVO amountBlockRequestVO){
         final val accountUnblockResponseVO = mockResponseUtil.mapAmountBlockResponseVO.apply(amountBlockRequestVO);
+        return new ResponseEntity(accountUnblockResponseVO, HttpStatus.OK);
+    }
+
+    @PostMapping(AMOUNT_UNBLOCK_API)
+    public ResponseEntity<?> doAmountUnblock(@Valid @RequestBody AmountUnblockRequestVO amountUnblockRequestVO){
+        final val accountUnblockResponseVO = mockResponseUtil.mapAmountUnblockResponseVO.apply(amountUnblockRequestVO);
         return new ResponseEntity(accountUnblockResponseVO, HttpStatus.OK);
     }
 

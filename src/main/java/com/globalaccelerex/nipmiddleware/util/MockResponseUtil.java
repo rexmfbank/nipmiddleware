@@ -8,6 +8,8 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.Accou
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
@@ -255,4 +257,19 @@ public class MockResponseUtil {
             .targetAccountNo(amountBlockRequestVO.getTargetAccountNo())
             .targetBVN(amountBlockRequestVO.getTargetBVN())
             .build();
+
+    public Function<AmountUnblockRequestVO, AmountUnblockResponseVO> mapAmountUnblockResponseVO =
+            amountUnblockRequestVO -> AmountUnblockResponseVO.builder()
+                    .amount(amountUnblockRequestVO.getAmount())
+                    .channelCode(amountUnblockRequestVO.getChannelCode())
+                    .destinationInstitutionCode(amountUnblockRequestVO.getDestinationInstitutionCode())
+                    .narration(amountUnblockRequestVO.getNarration())
+                    .reasonCode(amountUnblockRequestVO.getReasonCode())
+                    .referenceCode(amountUnblockRequestVO.getReferenceCode())
+                    .responseCode(NIP_00.getCode())
+                    .sessionId(amountUnblockRequestVO.getSessionId())
+                    .targetAccountName(amountUnblockRequestVO.getTargetAccountName())
+                    .targetAccountNo(amountUnblockRequestVO.getTargetAccountNo())
+                    .targetBVN(amountUnblockRequestVO.getTargetBVN())
+                    .build();
 }
