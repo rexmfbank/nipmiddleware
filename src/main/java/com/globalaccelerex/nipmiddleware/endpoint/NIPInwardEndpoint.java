@@ -243,7 +243,25 @@ public class NIPInwardEndpoint {
                     build().toUri().toASCIIString(), balanceEnquiry.getValue().getRequest(), false);
         final val objectFactory = new ObjectFactory();
             final val balanceEnquiryResponse = nipInwardFacade.handleBalanceEnquiry(balanceEnquiry.getValue(), iMarker);
+            iMarker.setMainResponse(balanceEnquiryResponse.getReturn() , false);
             return objectFactory.createBalanceenquiryResponse(balanceEnquiryResponse);
+        }finally {
+            iMarker.done();
+        }
+    }
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =FT_CREDIT_ACKNOWLEDGEMENT_REQUEST)
+    public @ResponsePayload JAXBElement<FtackcreditrequestResponse> handleFTAckCredit(@RequestPayload JAXBElement<Ftackcreditrequest> ftackcreditrequest){
+        log.info("<<< Ft Acknowledgement Credit >>>");
+        final val iMarker = Marker.fromString();
+
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), ftackcreditrequest.getValue().getRequest(), false);
+            final val objectFactory = new ObjectFactory();
+            final val ftAckCreditRequestResponse = ftInwardFacade.handleFTAckCredit(ftackcreditrequest.getValue(), iMarker);
+            iMarker.setMainResponse(ftAckCreditRequestResponse.getReturn() , false);
+            return objectFactory.createFtackcreditrequestResponse(ftAckCreditRequestResponse);
         }finally {
             iMarker.done();
         }
