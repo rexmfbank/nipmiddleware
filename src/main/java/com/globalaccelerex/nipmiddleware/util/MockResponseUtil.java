@@ -10,6 +10,8 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBl
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
@@ -272,4 +274,19 @@ public class MockResponseUtil {
                     .targetAccountNo(amountUnblockRequestVO.getTargetAccountNo())
                     .targetBVN(amountUnblockRequestVO.getTargetBVN())
                     .build();
+
+    public BalanceEnquiryResponseVO buildBalanceEnquiryResponseVO(BalanceEnquiryRequestVO balanceEnquiryRequestVO){
+        return BalanceEnquiryResponseVO.builder()
+                .authorizationCode(balanceEnquiryRequestVO.getAuthorizationCode())
+                .availableBalance("2,340,000")
+                .channelCode(balanceEnquiryRequestVO.getChannelCode())
+                .destinationInstitutionCode(balanceEnquiryRequestVO.getDestinationInstitutionCode())
+                .responseCode(NIP_00.getCode())
+                .sessionID(balanceEnquiryRequestVO.getSessionID())
+                .targetAccountName(balanceEnquiryRequestVO.getTargetAccountName())
+                .targetAccountNo(balanceEnquiryRequestVO.getTargetAccountNo())
+                .targetBankVerificationNo(balanceEnquiryRequestVO.getTargetBankVerificationNo())
+                .build();
+
+    }
 }

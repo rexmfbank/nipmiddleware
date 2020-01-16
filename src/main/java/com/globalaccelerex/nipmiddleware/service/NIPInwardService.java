@@ -9,6 +9,8 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBl
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
@@ -85,5 +87,9 @@ public class NIPInwardService {
 
     public AmountUnblockResponseVO handleAmountUnblock(AmountUnblockRequestVO amountUnblockRequestVO){
         return bankRestService.doAmountUnblock(amountUnblockRequestVO);
+    }
+
+    public BalanceEnquiryResponseVO handleBalanceEnquiry(BalanceEnquiryRequestVO balanceEnquiryRequestVO){
+        return bankRestService.doBalanceEnquiry(balanceEnquiryRequestVO);
     }
 }

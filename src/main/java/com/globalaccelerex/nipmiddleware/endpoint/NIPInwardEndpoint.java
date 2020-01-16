@@ -232,4 +232,20 @@ public class NIPInwardEndpoint {
             iMarker.done();
         }
     }
+
+    @ResponsePayload
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = BALANCE_ENQUIRY_REQUEST)
+    public  JAXBElement<BalanceenquiryResponse> handleBalanceEnquiry(@RequestPayload JAXBElement<Balanceenquiry> balanceEnquiry){
+        log.info("<<< Balance Enquiry >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), balanceEnquiry.getValue().getRequest(), false);
+        final val objectFactory = new ObjectFactory();
+            final val balanceEnquiryResponse = nipInwardFacade.handleBalanceEnquiry(balanceEnquiry.getValue(), iMarker);
+            return objectFactory.createBalanceenquiryResponse(balanceEnquiryResponse);
+        }finally {
+            iMarker.done();
+        }
+    }
 }
