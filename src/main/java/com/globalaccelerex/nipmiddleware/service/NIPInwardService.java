@@ -5,6 +5,8 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.Account
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
@@ -73,5 +75,9 @@ public class NIPInwardService {
 
     public AccountUnblockResponseVO handleAccountUnblock(AccountUnblockRequestVO accountUnblockRequestVO){
         return bankRestService.doAccountUnblock(accountUnblockRequestVO);
+    }
+
+    public AmountBlockResponseVO handleAmountBlock(AmountBlockRequestVO amountBlockRequestVO){
+        return bankRestService.doAmountBlock(amountBlockRequestVO);
     }
 }

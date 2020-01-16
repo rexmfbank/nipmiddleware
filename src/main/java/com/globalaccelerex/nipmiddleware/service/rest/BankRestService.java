@@ -6,6 +6,8 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.Account
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
@@ -84,5 +86,10 @@ public class BankRestService {
     public AccountUnblockResponseVO doAccountUnblock(AccountUnblockRequestVO accountUnblockRequestVO){
         final val accountUnblockUrl = nipConfig.getBankUrl() + CBA_API + ACCOUNT_UNBLOCK_API;
         return httpRestTemplate.getClient().postForObject(accountUnblockUrl, accountUnblockRequestVO, AccountUnblockResponseVO.class);
+    }
+
+    public AmountBlockResponseVO doAmountBlock(AmountBlockRequestVO amountBlockRequestVO){
+        final val amountBlockUrl = nipConfig.getBankUrl() + CBA_API + AMOUNT_BLOCK_API;
+        return httpRestTemplate.getClient().postForObject(amountBlockUrl, amountBlockRequestVO, AmountBlockResponseVO.class);
     }
 }
