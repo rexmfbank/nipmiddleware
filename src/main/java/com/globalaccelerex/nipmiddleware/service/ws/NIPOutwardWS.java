@@ -25,8 +25,6 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
     public NameenquirysingleitemResponse nameEnquiry(IMarker marker, Nameenquirysingleitem nameEnquirySingleItem) {
 
         val webServiceURL = appConfig.getBaseUrl();
-        //marker.info("webservice URL "+webServiceURL);
-        //val soapActionURL = appConfig.getSoapActionUrl() + "nameenquirysingleitemRequest";
         val soapActionURL = appConfig.getSoapActionUrl() + NAME_ENQUIRY_OUTWARD;
         NameenquirysingleitemResponse nameenquirysingleitemResponse = new NameenquirysingleitemResponse();
         marker.info(" ====== Doing NameEnquiry ====== ");
@@ -35,7 +33,6 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
                     .marshalSendAndReceive(webServiceURL, nameEnquirySingleItem,
                             message -> ((SoapMessage) message).setSoapAction(soapActionURL));
             nameenquirysingleitemResponse = response.getValue();
-            marker.info("Response String :::: " + nameenquirysingleitemResponse.getReturn());
         } catch (Exception ex) {
             marker.info(ex);
             throw new NIPMiddleWareAPIException("Error",ex.getMessage(),false);
@@ -47,7 +44,6 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
     public FundtransfersingleitemDcResponse fundsTransfer(IMarker marker, FundtransfersingleitemDc fundtransfersingleitemDc) {
 
         val webServiceURL = appConfig.getBaseUrl();
-        //val soapActionURL =appConfig.getSoapActionUrl() + "fundtransfersingleitem_dcRequest";
         val soapActionURL =appConfig.getSoapActionUrl() + FUNDS_TRANSFER_OUTWARD;
         FundtransfersingleitemDcResponse fundTransferSingleItemDcResponse = new FundtransfersingleitemDcResponse();
         marker.info(" ====== Doing FundsTransfer ====== ");
