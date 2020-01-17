@@ -81,14 +81,11 @@ public class NIPOutwardMapper {
                 .channelCode(String.valueOf(CC_1.getCode()))
                 .destinationInstitutionCode(ftSingleCreditRequest.getDestinationInstitutionCode())
                 .narration(StringUtils.substring(ftSingleCreditRequest.getNarration() ,0 ,100))
-                //.narration(ftSingleCreditRequest.getNarration())
-                //.narration("This is FROM NIBSS | Plc !@#$%^&*(GROUP)_-+={[LIMITED]}|Outward, to this account/><”")
                 .originatorAccountName(ftSingleCreditRequest.getOriginatorAccountName())
                 .originatorAccountNo(ftSingleCreditRequest.getOriginatorAccountNo())
                 .originatorBVN(ftSingleCreditRequest.getOriginatorBVN())
                 .originatorKYCLevel(ftSingleCreditRequest.getOriginatorKYCLevel())
                 .paymentReference("")
-                //.sessionId(sessionIdUtil.generateSessionId())
                 .transactionLocation("")
                 .build();
     };

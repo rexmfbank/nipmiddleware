@@ -40,5 +40,7 @@ public class NipConfig {
     @NotNull
     private String bankUrl;
 
+    private int tsqWaitTime;
+
 }
 
