@@ -165,9 +165,9 @@ public class NIPOutwardFacade {
 
             //simulate a waiting period of 60secs
             /* */
-            log.info("----------- Stimulating 1 minute wait ---------------");
+            log.info("----------- Stimulating {} miliseconds wait ---------------",nipConfig.getTsqWaitTime());
             Thread.sleep(nipConfig.getTsqWaitTime());
-            log.info("----------- Completed 1 minute wait ---------------");
+            log.info("----------- Completed {} miliseconds wait ---------------",nipConfig.getTsqWaitTime());
 
             final val tsqSingleItemRequestVO = nipOutwardMapper.buildTsqSingleItemRequestVO(ftSingleCreditResponseVO.getSessionId());
 

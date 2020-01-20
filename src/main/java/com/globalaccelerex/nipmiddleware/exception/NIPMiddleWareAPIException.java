@@ -1,6 +1,5 @@
 package com.globalaccelerex.nipmiddleware.exception;
 
-import com.globalaccelerex.nipmiddleware.model.ErrorResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

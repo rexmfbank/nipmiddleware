@@ -105,8 +105,17 @@ public enum NIPResponseCodeEnum {
 
     NIP_107("107","Application Error : Transaction could not be completed", PENDING),
 
-    NIP_108("108","Application Error :  Payment Reference Not Unique", FAILED);
+    NIP_108("108","Application Error :  Payment Reference Not Unique", FAILED),
 
+    NIP_109("109","Authorization  Error :  Unauthorised access to resource", FAILED),
+
+    NIP_110("110","Authentication Error :  Invalid signature sent", FAILED),
+
+    NIP_111("111","Authentication Error :  Access token not sent in request", FAILED),
+
+    NIP_112("112","Authentication Error :  Invalid signature sent", FAILED),
+
+    NIP_113("113","Authentication Error :  Invalid signature sent", FAILED);
 
     @Getter
     private final String code;
