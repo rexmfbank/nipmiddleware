@@ -70,22 +70,21 @@ public class NIPOutwardFacade {
         iMarker.setRequest(" Clear NESingleRequestXmlString  ", neSingleRequestXmlString);
 
         final val encryptedXmlString = encryptString(neSingleRequestXmlString);
-        iMarker.setRequest(" Encrypted NESingleRequestXmlString   ", neSingleRequestXmlString);
+
         val neSingleItem = new Nameenquirysingleitem();
         neSingleItem.setRequest(encryptedXmlString);
         iMarker.info(" Sending Request to NIPOutwardWS ");
         val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
         iMarker.info(" Received  Response from NIPOutwardWS ");
-        iMarker.setResponse("Encrypted Name Enquiry response  from NIBSS " +nameEnquirySingleItemResponse.getReturn());
+
         if(StringUtils.isEmpty(nameEnquirySingleItemResponse.getReturn())){
+            iMarker.setResponse(" Name Enquiry response  from NIBSS " +nameEnquirySingleItemResponse.getReturn());
             throw new NIPMiddleWareAPIException("Error"," Response String from NIBSS not present ",false);
         }
         final val neSingleResponseXmlString = decryptString(nameEnquirySingleItemResponse.getReturn());
         iMarker.setResponse("Clear Name Enquiry response  from NIBSS " +neSingleResponseXmlString);
 
         final val neSingleResponseVO = xmlUtil.unmarshal(neSingleResponseXmlString, NESingleResponseVO.class);
-
-
 
         final val neSingleResponse = nipOutwardMapper.mapNESingleResponseVO.apply(neSingleResponseVO);
         neSingleResponse.setSessionId(sessionId);
@@ -138,20 +137,18 @@ public class NIPOutwardFacade {
             fundsTransferEntity.setResponseCode(NIP_09.getCode());
             fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
 
-            iMarker.setRequest(" Mapping to FTSingleCreditRequestVO ", ftSingleCreditRequestVO.toString());
             String ftSingleCreditRequestXmlString = xmlUtil.marshal(FTSingleCreditRequestVO.class, ftSingleCreditRequestVO);
             iMarker.setRequest(" Clear ftSingleCreditRequestXml String ", ftSingleCreditRequestXmlString);
             final val encryptedXmlString = encryptString(ftSingleCreditRequestXmlString);
-            iMarker.setRequest(" Encrypted ftSingleCreditRequestXml String ", encryptedXmlString);
 
             final val fundtransfersingleitemDc = new FundtransfersingleitemDc();
             fundtransfersingleitemDc.setRequest(encryptedXmlString);
             iMarker.info(" Sending Request to NIPOutwardWS ");
             final val fundTransferSingleItemDcResponse = nipOutwardWS.fundsTransfer(iMarker, fundtransfersingleitemDc);
             iMarker.info(" Received  Response from NIPOutwardWS ");
-            iMarker.setResponse(" Encrypted  Response from NIPOutwardWS : FT "+ fundTransferSingleItemDcResponse.getReturn());
-            if(StringUtils.isEmpty(fundTransferSingleItemDcResponse.getReturn())){
 
+            if(StringUtils.isEmpty(fundTransferSingleItemDcResponse.getReturn())){
+                iMarker.setResponse(" No  Response from NIPOutwardWS : FT "+ fundTransferSingleItemDcResponse.getReturn());
                 //update db
                 fundsTransferDbService.updateFTResponseCode(sessionId, NIP_106.getCode());
                 //call client endpoint
@@ -173,15 +170,14 @@ public class NIPOutwardFacade {
             final val tsqSingleItemRequestVO = nipOutwardMapper.buildTsqSingleItemRequestVO(ftSingleCreditResponseVO.getSessionId());
 
             String tsqSingleItemRequestXmlString = xmlUtil.marshal(TsqSingleItemRequestVO.class, tsqSingleItemRequestVO);
-
+            iMarker.setRequest(" tsqSingleItemRequestXmlString  to NIBSS ", tsqSingleItemRequestXmlString);
             final val encryptedTsqSingleItemRequestXmlString = encryptString(tsqSingleItemRequestXmlString);
-            iMarker.setRequest(" Encrypted tsqSingleItemRequestXmlString  to NIBSS ", encryptedTsqSingleItemRequestXmlString);
 
             final val txnstatusquerysingleitem = new Txnstatusquerysingleitem();
             txnstatusquerysingleitem.setRequest(encryptedTsqSingleItemRequestXmlString);
 
             final val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(iMarker, txnstatusquerysingleitem);
-            iMarker.setResponse(" Encrypted  Response from NIPOutwardWS : TSQ "+ txnStatusQuerySingleItemResponse.getReturn());
+
 
             final val tsqSingleItemResponseXmlString = decryptString(txnStatusQuerySingleItemResponse.getReturn());
             iMarker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);
