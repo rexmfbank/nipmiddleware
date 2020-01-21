@@ -1,6 +1,9 @@
 package com.globalaccelerex.nipmiddleware.config;
 
+import com.globalaccelerex.nipmiddleware.security.AccessControlHttpClient;
+import com.globalaccelerex.nipmiddleware.security.AccessControlRestTemplate;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -18,5 +21,14 @@ public class BeanConfig {
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setThreadNamePrefix("Async-");
         return executor;
+    }
+
+    @Bean
+    @Autowired
+    public AccessControlHttpClient getAccessControlHttpClient(AccessControlConfig config) {
+        log.trace(" setting HTTP client for access control service");
+        return new AccessControlHttpClient.HTTPClientBuilder(config)
+                .restTemplate(new AccessControlRestTemplate().getClient())
+                .createClient();
     }
 }

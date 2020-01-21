@@ -9,4 +9,6 @@ public interface ClientAPI {
     String FUNDS_TRANSFER="/ft";
 
     String TSQ = "/tsq";
+
+
 }

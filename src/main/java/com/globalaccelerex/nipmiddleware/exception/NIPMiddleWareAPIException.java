@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.exception;
 
+import com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +12,13 @@ public class NIPMiddleWareAPIException extends RuntimeException {
 
     private ErrorResponse errorResponse;
 
-    public NIPMiddleWareAPIException(String responseCode , String responseMessage ,  boolean retry){
+    public NIPMiddleWareAPIException(String responseCode , String responseMessage ){
         errorResponse = ErrorResponse.builder()
                 .responseCode(responseCode)
                 .responseMessage(responseMessage)
-                .retry(retry)
                 .build();
     }
+
+
 }
 

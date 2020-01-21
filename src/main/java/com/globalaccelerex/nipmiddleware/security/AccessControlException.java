@@ -11,4 +11,11 @@ public class AccessControlException extends AuthenticationServiceException {
 
     private ErrorResponse errorResponse;
 
+    public AccessControlException(ErrorResponse errorResponse){
+        super(errorResponse.getResponseMessage());
+        setErrorResponse(errorResponse);
+    }
+
+
+
 }

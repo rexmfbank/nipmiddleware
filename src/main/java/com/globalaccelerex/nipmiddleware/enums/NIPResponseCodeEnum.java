@@ -115,7 +115,9 @@ public enum NIPResponseCodeEnum {
 
     NIP_112("112","Authentication Error :  Invalid signature sent", FAILED),
 
-    NIP_113("113","Authentication Error :  Invalid signature sent", FAILED);
+    NIP_113("113","Authentication Error :  Invalid signature sent", FAILED),
+
+    NIP_114("114","Authorization Error :  Could not connect to resource", FAILED);
 
     @Getter
     private final String code;
