@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer;
 
+import com.globalaccelerex.nipmiddleware.annotation.AmountConstraint;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,9 @@ public class FTSingleCreditRequest extends BaseRequest {
 
     @NotBlank
     private String destinationInstitutionCode;
+
+    @NotBlank
+    private String paymentReference;
 
     private String nameEnquiryReference;
 
@@ -40,7 +44,7 @@ public class FTSingleCreditRequest extends BaseRequest {
 
     private String narration;//max 100 , optional
 
-    //@AmountConstraint
+    @AmountConstraint
     private String amount;//decimal place
 
 }

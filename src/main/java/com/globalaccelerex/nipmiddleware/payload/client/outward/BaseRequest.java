@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-//@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseRequest {
@@ -18,6 +17,6 @@ public class BaseRequest {
     private IMarker marker;
 
     @NotEmpty
-    private String requestId;
+    private String clientId;
 
 }

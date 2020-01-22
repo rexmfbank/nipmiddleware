@@ -4,10 +4,13 @@ import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Repository
 public interface FundsTransferRepository extends PagingAndSortingRepository<FundsTransferEntity,Integer> {
 
     Optional<FundsTransferEntity> findBySessionId(String sessionId);
+
+    Optional<FundsTransferEntity> findByClientIdAndPaymentReference(String clientId, String paymentReference);
 }

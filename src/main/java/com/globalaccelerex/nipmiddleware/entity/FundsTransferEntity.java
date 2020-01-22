@@ -30,12 +30,15 @@ public class FundsTransferEntity {
     @Column(nullable = false)
     private BigDecimal amount;
 
-    //@NotBlank
     private String nameEnquiryReference;// client may not send it as first
 
     @NotBlank
     @Column(nullable = false)
     private String sessionId;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String clientId;
 
     private String channelCode;
 
@@ -49,7 +52,6 @@ public class FundsTransferEntity {
     @Column(nullable = false)
     private String beneficiaryAccountNo;
 
-    //@NotBlank
     private String beneficiaryBVN;
 
     private String beneficiaryKYCLevel;
@@ -88,10 +90,6 @@ public class FundsTransferEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
 
-//    @PrePersist
-//    private void prePersist(){
-//        paymentStatusEnum = PENDING;
-//    }
 
     @Transient
     public boolean isPending(){

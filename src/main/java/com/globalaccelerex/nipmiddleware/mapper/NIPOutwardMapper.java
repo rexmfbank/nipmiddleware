@@ -5,6 +5,7 @@ import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTSingleCreditRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.nameenquiry.NESingleResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.outward.tsq.TsqResponse;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.fundtransfer.FTSingleCreditRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
@@ -59,7 +60,6 @@ public class NIPOutwardMapper {
                 .accountNo(ftSingleCreditRequest.getBeneficiaryAccountNo())
                 .destinationInstitutionCode(ftSingleCreditRequest.getDestinationInstitutionCode())
                 .build();
-        neSingleRequest.setRequestId(RandomStringUtils.randomNumeric(6));
         return neSingleRequest;
     };
 
@@ -110,6 +110,27 @@ public class NIPOutwardMapper {
         return fundsTransferEntity;
     };
 
-
+    public Function<FundsTransferEntity , TsqResponse> mapTsqResponse = fundsTransferEntity -> {
+        final val tsqResponse = TsqResponse.builder()
+                .amount(fundsTransferEntity.getAmount().toPlainString())
+                .beneficiaryAccountName(fundsTransferEntity.getBeneficiaryAccountName())
+                .beneficiaryAccountNo(fundsTransferEntity.getBeneficiaryAccountNo())
+                .beneficiaryBVN(fundsTransferEntity.getBeneficiaryBVN())
+                .beneficiaryKYCLevel(fundsTransferEntity.getBeneficiaryKYCLevel())
+                .destinationInstitutionCode(fundsTransferEntity.getDestinationInstitutionCode())
+                .narration(fundsTransferEntity.getNarration())
+                .nameEnquiryReference(fundsTransferEntity.getNameEnquiryReference())
+                .originatorAccountName(fundsTransferEntity.getOriginatorAccountName())
+                .originatorAccountNo(fundsTransferEntity.getOriginatorAccountNo())
+                .originatorBVN(fundsTransferEntity.getOriginatorBVN())
+                .originatorKYCLevel(fundsTransferEntity.getOriginatorKYCLevel())
+                .originatorInstitutionCode(fundsTransferEntity.getOriginatorInstitutionCode())
+                .paymentReference(fundsTransferEntity.getPaymentReference())
+                .transactionLocation(fundsTransferEntity.getTransactionLocation())
+                .build();
+        tsqResponse.setResponseCode(fundsTransferEntity.getResponseCode());
+        tsqResponse.setSessionId(fundsTransferEntity.getSessionId());
+        return tsqResponse;
+    };
 
 }
