@@ -3,10 +3,9 @@ package com.globalaccelerex.nipmiddleware.service;
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectCreditRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectCreditResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
@@ -50,5 +49,17 @@ public class NIPInwardService {
 
     public TSQuerySingleResponseVO handleTSQ(TSQuerySingleRequestVO tsQuerySingleRequestVO){
         return bankRestService.doTsq(tsQuerySingleRequestVO);
+    }
+
+    public FTAdviceDirectCreditResponseVO handleFTAdviceDirectCredit(FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO){
+        return bankRestService.doFTAdviceDirectCredit(ftAdviceDirectCreditRequestVO);
+    }
+
+    public FTAdviceDirectDebitResponseVO handleFTAdviceDirectDebit(FTAdviceDirectDebitRequestVO ftAdviceDirectDebitRequestVO){
+        return bankRestService.doFTAdviceDirectDebit(ftAdviceDirectDebitRequestVO);
+    }
+
+    public MandateAdviceResponseVO handleMandateAdvice(MandateAdviceRequestVO mandateAdviceRequestVO){
+        return bankRestService.doMandateAdvice(mandateAdviceRequestVO);
     }
 }

@@ -1,8 +1,11 @@
 package com.globalaccelerex.nipmiddleware.controller;
 
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTAdviceDirectCreditRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTAdviceDirectDebitRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectCreditRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
 import com.globalaccelerex.nipmiddleware.util.MockResponseUtil;
@@ -58,4 +61,21 @@ public class BankController {
         return new ResponseEntity(tsqSingleItemResponseVO, HttpStatus.OK);
     }
 
+    @PostMapping(FT_ADVICE_DIRECT_DEBIT_API)
+    public ResponseEntity<?> doFT_Advice_DirectDebit(@Valid @RequestBody FTAdviceDirectDebitRequestVO ftAdviceDirectDebitRequestVO){
+        final val ftDirectDebitResponseVO = mockResponseUtil.mapFTAdviceDirectDebitResponseVO.apply(ftAdviceDirectDebitRequestVO);
+        return new ResponseEntity(ftDirectDebitResponseVO, HttpStatus.OK);
+    }
+
+    @PostMapping(FT_ADVICE_DIRECT_CREDIT_API)
+    public ResponseEntity<?> doFT_Active_DirectCredit(@Valid @RequestBody FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO){
+        final val ftDirectCreditResponseVO = mockResponseUtil.mapFTAdviceDirectCreditResponseVO.apply(ftAdviceDirectCreditRequestVO);
+        return new ResponseEntity(ftDirectCreditResponseVO, HttpStatus.OK);
+    }
+
+    @PostMapping(MANDATE_ADVICE_API)
+    public ResponseEntity<?> doMandateAdvice(@Valid @RequestBody MandateAdviceRequestVO mandateAdviceRequestVO){
+        final val mandateAdviceResponseVO = mockResponseUtil.mapMandateAdviceResponseVO.apply(mandateAdviceRequestVO);
+        return new ResponseEntity(mandateAdviceResponseVO, HttpStatus.OK);
+    }
 }
