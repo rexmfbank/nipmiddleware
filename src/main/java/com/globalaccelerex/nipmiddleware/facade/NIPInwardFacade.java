@@ -5,12 +5,13 @@ import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.ws.Financialinstitutionlist;
-import com.globalaccelerex.nipmiddleware.payload.nip.ws.FinancialinstitutionlistResponse;
-import com.globalaccelerex.nipmiddleware.payload.nip.ws.Nameenquirysingleitem;
-import com.globalaccelerex.nipmiddleware.payload.nip.ws.NameenquirysingleitemResponse;
+import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
 import com.globalaccelerex.nipmiddleware.service.NIPInwardService;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
 import com.globalaccelerex.nipmiddleware.util.XmlUtil;
@@ -75,5 +76,27 @@ public class NIPInwardFacade extends AbstractInwardFacade{
         return financialinstitutionlistResponse;
     }
 
+    public TxnstatusquerysingleitemResponse handleTSQ(Txnstatusquerysingleitem txnstatusquerysingleitem, IMarker marker){
+        final val encryptedTsqString = txnstatusquerysingleitem.getRequest();
+        final val clearTsqString = nipConfig.isIgnoreEncryption() ? encryptedTsqString :  decryptString(encryptedTsqString);
+
+        marker.setRequest(" TSQ Clear String ",clearTsqString);
+
+        final val tsQuerySingleRequestVO = xmlUtil.unmarshal(clearTsqString, TSQuerySingleRequestVO.class);
+        // some backend calls
+
+        final val tsQuerySingleResponseVO = nipInwardService.handleTSQ(tsQuerySingleRequestVO);
+
+        marker.setResponse("Response from TSQ CBA " + tsQuerySingleResponseVO.toString());
+
+        final val tsQuerySingleResponseVOXmlString = xmlUtil.marshal(TSQuerySingleResponseVO.class, tsQuerySingleResponseVO);
+
+        final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? tsQuerySingleResponseVOXmlString :  encryptString(tsQuerySingleResponseVOXmlString);
+
+        final val txnstatusquerysingleitemResponse = new TxnstatusquerysingleitemResponse();
+        txnstatusquerysingleitemResponse.setReturn(encryptedXmlString);
+        return txnstatusquerysingleitemResponse;
+
+    }
 
 }
