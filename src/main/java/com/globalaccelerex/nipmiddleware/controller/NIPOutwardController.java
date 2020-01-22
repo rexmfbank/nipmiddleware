@@ -58,11 +58,15 @@ public class NIPOutwardController {
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
             final val sessionId = sessionIdUtil.generateSessionId();
-            nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
+
 
             final val result = nipOutwardFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
             final val ftPendingResponse = new FTPendingResponse(result);
             ftPendingResponse.setClientId(ftSingleCreditRequest.getClientId());
+            if (!result){
+                nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
+            }
+
             marker.setMainResponse(ftPendingResponse.toString(), false);
             return new ResponseEntity(ftPendingResponse, HttpStatus.OK);
         }finally {
