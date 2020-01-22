@@ -3,6 +3,8 @@ package com.globalaccelerex.nipmiddleware.controller;
 import com.globalaccelerex.nipmiddleware.facade.NIPOutwardFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
+import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTPendingResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTSingleCreditRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 
-import static com.globalaccelerex.nipmiddleware.api.ClientAPI.NAME_ENQUIRY;
-import static com.globalaccelerex.nipmiddleware.api.ClientAPI.NIP_OUTWARD_API;
+import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
 
 @Slf4j
 @RestController
@@ -48,6 +49,25 @@ public class NIPOutwardController {
             marker.setMainResponse(neSingleResponse.toString(), false);
             return new ResponseEntity(neSingleResponse, HttpStatus.OK);
         } finally {
+            marker.done();
+        }
+    }
+
+    @PostMapping(FUNDS_TRANSFER)
+    public ResponseEntity<?> doFundsTransfer(@Valid @RequestBody FTSingleCreditRequest ftSingleCreditRequest){
+        IMarker marker = Marker.fromString();
+        try {
+            ftSingleCreditRequest.setMarker(marker);
+            marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
+            final val sessionId = sessionIdUtil.generateSessionId();
+            nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
+            final val ftPendingResponse = new FTPendingResponse();
+            ftPendingResponse.setOriginalRequestId(ftSingleCreditRequest.getRequestId());
+            ftPendingResponse.setSessionId(sessionId);
+            marker.setMainResponse(ftPendingResponse.toString(), false);
+            return new ResponseEntity(ftPendingResponse, HttpStatus.OK);
+        }finally {
             marker.done();
         }
     }
