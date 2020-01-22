@@ -3,6 +3,8 @@ package com.globalaccelerex.nipmiddleware.facade;
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirectDebitRequestVO;
@@ -123,4 +125,28 @@ public class NIPInwardFacade extends AbstractInwardFacade{
         mandateAdviceResponse.setReturn(encryptedXmlString);
         return mandateAdviceResponse;
     }
+
+    public BalanceenquiryResponse handleBalanceEnquiry(Balanceenquiry balanceenquiry, IMarker marker){
+        final val encryptedBalanceEnquiryString = balanceenquiry.getRequest();
+        final val clearBalanceEnquiryString = nipConfig.isIgnoreEncryption() ? encryptedBalanceEnquiryString : decryptString(encryptedBalanceEnquiryString);
+
+        marker.setRequest(" Balance Enquiry Clear String ",clearBalanceEnquiryString);
+
+        final val balanceEnquiryRequestVO = xmlUtil.unmarshal(clearBalanceEnquiryString, BalanceEnquiryRequestVO.class);
+
+        //some backend calls
+
+        final val balanceEnquiryResponseVO = nipInwardService.handleBalanceEnquiry(balanceEnquiryRequestVO);
+
+        marker.setResponse("Response from balance Enquiry CBA " + balanceEnquiryResponseVO.toString());
+
+        final val balanceEnquiryResponseVOXmlString = xmlUtil.marshal(BalanceEnquiryResponseVO.class, balanceEnquiryResponseVO);
+
+        final val encryptedXmlString =nipConfig.isIgnoreEncryption() ?balanceEnquiryResponseVOXmlString :  encryptString(balanceEnquiryResponseVOXmlString);
+
+        final val balanceEnquiryResponse = new BalanceenquiryResponse();
+        balanceEnquiryResponse.setReturn(encryptedXmlString);
+        return balanceEnquiryResponse;
+    }
+
 }

@@ -38,7 +38,6 @@ public class NIPOutwardController {
     @PostMapping(NAME_ENQUIRY)
     public ResponseEntity<?> doNameEnquiry(@Valid @RequestBody NESingleRequest neSingleRequest){
         IMarker marker = Marker.fromString();
-
         try {
             neSingleRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().

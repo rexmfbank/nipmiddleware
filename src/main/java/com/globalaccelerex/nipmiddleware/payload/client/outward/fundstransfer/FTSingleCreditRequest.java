@@ -6,7 +6,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 
 @Data
 @ToString
@@ -44,8 +47,10 @@ public class FTSingleCreditRequest extends BaseRequest {
 
     private String narration;//max 100 , optional
 
-    @AmountConstraint
-    private String amount;//decimal place
+    @DecimalMin(value = "0.00", inclusive = true)
+    private BigDecimal amount;
+
+    private String transactionLocation;
 
 }
 

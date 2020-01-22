@@ -2,6 +2,7 @@ package com.globalaccelerex.nipmiddleware.endpoint;
 
 
 import com.globalaccelerex.nipmiddleware.facade.FTInwardFacade;
+import com.globalaccelerex.nipmiddleware.facade.LienInwardFacade;
 import com.globalaccelerex.nipmiddleware.facade.NIPInwardFacade;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
@@ -26,10 +27,13 @@ public class NIPInwardEndpoint {
 
     private final FTInwardFacade ftInwardFacade;
 
+    private final LienInwardFacade lienInwardFacade;
+
     @Autowired
-    public NIPInwardEndpoint(NIPInwardFacade nipInwardFacade, FTInwardFacade ftInwardFacade){
+    public NIPInwardEndpoint(NIPInwardFacade nipInwardFacade, FTInwardFacade ftInwardFacade, LienInwardFacade lienInwardFacade){
         this.nipInwardFacade = nipInwardFacade;
         this.ftInwardFacade = ftInwardFacade;
+        this.lienInwardFacade = lienInwardFacade;
     }
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = NAME_ENQUIRY_REQUEST)
@@ -162,8 +166,104 @@ public class NIPInwardEndpoint {
         }finally {
             iMarker.done();
         }
-
-
     }
 
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =ACCOUNT_BLOCK_REQUEST)
+    public @ResponsePayload JAXBElement<AccountblockResponse> handleAccountBlock(@RequestPayload JAXBElement<Accountblock> accountblock) {
+        log.info("<<< Account Block >>>");
+        final val iMarker = Marker.fromString();
+        try {
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), accountblock.getValue().getRequest(), false);
+            final val objectFactory = new ObjectFactory();
+            final val accountBlockResponse = lienInwardFacade.handleAccountBlock(accountblock.getValue(), iMarker);
+            iMarker.setMainResponse(accountBlockResponse.getReturn(), false);
+            return objectFactory.createAccountblockResponse(accountBlockResponse);
+        } finally {
+            iMarker.done();
+        }
+    }
+
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =ACCOUNT_UNBLOCK_REQUEST)
+    public @ResponsePayload JAXBElement<AccountunblockResponse> handleAccountUnblock(@RequestPayload JAXBElement<Accountunblock> accountUnblock){
+        log.info("<<< Account Unblock >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), accountUnblock.getValue().getRequest(), false);
+            final val objectFactory = new ObjectFactory();
+            final val accountunblockResponse = lienInwardFacade.handleAccountUnblock(accountUnblock.getValue(), iMarker);
+            iMarker.setMainResponse(accountunblockResponse.getReturn() , false);
+            return objectFactory.createAccountunblockResponse(accountunblockResponse);
+        }finally {
+            iMarker.done();
+        }
+    }
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = AMOUNT_BLOCK_REQUEST)
+    public @ResponsePayload JAXBElement<AmountblockResponse> handleAmountBlock(@RequestPayload JAXBElement<Amountblock> amountblock){
+        log.info("<<< AmountBlock >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), amountblock.getValue().getRequest(), false);
+            final val objectFactory = new ObjectFactory();
+            final val amountBlockResponse = lienInwardFacade.handleAmountBlock(amountblock.getValue(), iMarker);
+            iMarker.setMainResponse(amountBlockResponse.getReturn() , false);
+            return objectFactory.createAmountblockResponse(amountBlockResponse);
+        }finally {
+            iMarker.done();
+        }
+    }
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = AMOUNT_UNBLOCK_REQUEST)
+    public @ResponsePayload JAXBElement<AmountunblockResponse> handleAmountUnblock(@RequestPayload JAXBElement<Amountunblock> amountunblock){
+        log.info("<<< AmountUnBlock >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), amountunblock.getValue().getRequest(), false);
+            final val objectFactory = new ObjectFactory();
+            final val amountUnblockResponse = lienInwardFacade.handleAmountUnblock(amountunblock.getValue(), iMarker);
+            iMarker.setMainResponse(amountUnblockResponse.getReturn() , false);
+            return objectFactory.createAmountunblockResponse(amountUnblockResponse);
+        }finally {
+            iMarker.done();
+        }
+    }
+
+    @ResponsePayload
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = BALANCE_ENQUIRY_REQUEST)
+    public  JAXBElement<BalanceenquiryResponse> handleBalanceEnquiry(@RequestPayload JAXBElement<Balanceenquiry> balanceEnquiry){
+        log.info("<<< Balance Enquiry >>>");
+        final val iMarker = Marker.fromString();
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), balanceEnquiry.getValue().getRequest(), false);
+        final val objectFactory = new ObjectFactory();
+            final val balanceEnquiryResponse = nipInwardFacade.handleBalanceEnquiry(balanceEnquiry.getValue(), iMarker);
+            iMarker.setMainResponse(balanceEnquiryResponse.getReturn() , false);
+            return objectFactory.createBalanceenquiryResponse(balanceEnquiryResponse);
+        }finally {
+            iMarker.done();
+        }
+    }
+
+    @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =FT_CREDIT_ACKNOWLEDGEMENT_REQUEST)
+    public @ResponsePayload JAXBElement<FtackcreditrequestResponse> handleFTAckCredit(@RequestPayload JAXBElement<Ftackcreditrequest> ftackcreditrequest){
+        log.info("<<< Ft Acknowledgement Credit >>>");
+        final val iMarker = Marker.fromString();
+
+        try{
+            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                    build().toUri().toASCIIString(), ftackcreditrequest.getValue().getRequest(), false);
+            final val objectFactory = new ObjectFactory();
+            final val ftAckCreditRequestResponse = ftInwardFacade.handleFTAckCredit(ftackcreditrequest.getValue(), iMarker);
+            iMarker.setMainResponse(ftAckCreditRequestResponse.getReturn() , false);
+            return objectFactory.createFtackcreditrequestResponse(ftAckCreditRequestResponse);
+        }finally {
+            iMarker.done();
+        }
+    }
 }

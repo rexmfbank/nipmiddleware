@@ -13,7 +13,6 @@ import com.globalaccelerex.nipmiddleware.payload.nip.outward.tsq.TsqSingleItemRe
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,7 +72,7 @@ public class NIPOutwardMapper {
 
     public Function<FTSingleCreditRequest , FTSingleCreditRequestVO> mapFTSingleCreditRequestVO = (FTSingleCreditRequest ftSingleCreditRequest) -> {
         return FTSingleCreditRequestVO.builder()
-                .amount(ftSingleCreditRequest.getAmount())
+                .amount(ftSingleCreditRequest.getAmount().toPlainString())
                 .beneficiaryAccountName(ftSingleCreditRequest.getBeneficiaryAccountName())
                 .beneficiaryAccountNo(ftSingleCreditRequest.getBeneficiaryAccountNo())
                 .beneficiaryBVN(ftSingleCreditRequest.getBeneficiaryBVN())
@@ -85,14 +84,15 @@ public class NIPOutwardMapper {
                 .originatorAccountNo(ftSingleCreditRequest.getOriginatorAccountNo())
                 .originatorBVN(ftSingleCreditRequest.getOriginatorBVN())
                 .originatorKYCLevel(ftSingleCreditRequest.getOriginatorKYCLevel())
-                .paymentReference("")
-                .transactionLocation("")
+                .paymentReference(ftSingleCreditRequest.getPaymentReference())
+                .transactionLocation(ftSingleCreditRequest.getTransactionLocation())
+
                 .build();
     };
 
     public Function<FTSingleCreditRequest, FundsTransferEntity> mapFundsTransferEntity = ftSingleCreditRequest -> {
         final val fundsTransferEntity = FundsTransferEntity.builder()
-                .amount(new BigDecimal(ftSingleCreditRequest.getAmount()))
+                .amount(ftSingleCreditRequest.getAmount())
                 .beneficiaryAccountName(ftSingleCreditRequest.getBeneficiaryAccountName())
                 .beneficiaryAccountNo(ftSingleCreditRequest.getBeneficiaryAccountNo())
                 .beneficiaryBVN(ftSingleCreditRequest.getBeneficiaryBVN())
@@ -106,6 +106,7 @@ public class NIPOutwardMapper {
                 .originatorBVN(ftSingleCreditRequest.getOriginatorBVN())
                 .originatorInstitutionCode(nipConfig.getSenderBankCode())
                 .originatorKYCLevel(ftSingleCreditRequest.getOriginatorKYCLevel())
+                .paymentReference(ftSingleCreditRequest.getPaymentReference())
                 .build();
         return fundsTransferEntity;
     };

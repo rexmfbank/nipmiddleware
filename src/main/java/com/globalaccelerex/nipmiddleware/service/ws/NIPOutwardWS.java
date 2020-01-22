@@ -33,7 +33,6 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
                     .marshalSendAndReceive(webServiceURL, nameEnquirySingleItem,
                             message -> ((SoapMessage) message).setSoapAction(soapActionURL));
             nameenquirysingleitemResponse = response.getValue();
-            marker.info("Response String :::: " + nameenquirysingleitemResponse.getReturn());
         } catch (Exception ex) {
             marker.info(ex);
             throw new NIPMiddleWareAPIException("Error",ex.getMessage(),false);

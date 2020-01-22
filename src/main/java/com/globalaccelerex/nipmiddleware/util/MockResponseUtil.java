@@ -2,6 +2,16 @@ package com.globalaccelerex.nipmiddleware.util;
 
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
@@ -207,4 +217,76 @@ public class MockResponseUtil {
                     .sessionId(mandateAdviceRequestVO.getSessionId())
                     .build();
 
+    public Function<AccountBlockRequestVO, AccountBlockResponseVO> mapAccountBlockResponseVO =
+            accountBlockRequestVO -> AccountBlockResponseVO.builder()
+            .channelCode(accountBlockRequestVO.getChannelCode())
+            .destinationInstitutionCode(accountBlockRequestVO.getDestinationInstitutionCode())
+            .narration(accountBlockRequestVO.getNarration())
+            .reasonCode(accountBlockRequestVO.getReasonCode())
+            .referenceCode(accountBlockRequestVO.getReferenceCode())
+            .responseCode(NIP_00.getCode())
+            .sessionId(accountBlockRequestVO.getSessionId())
+            .targetAccountName(accountBlockRequestVO.getTargetAccountName())
+            .targetAccountNo(accountBlockRequestVO.getTargetAccountNo())
+            .targetBVN(accountBlockRequestVO.getTargetBVN())
+            .build();
+
+    public Function<AccountUnblockRequestVO , AccountUnblockResponseVO> mapAccountUnblockResponseVO =
+            accountUnblockRequestVO -> AccountUnblockResponseVO.builder()
+            .channelCode(accountUnblockRequestVO.getChannelCode())
+            .destinationInstitutionCode(accountUnblockRequestVO.getDestinationInstitutionCode())
+            .narration(accountUnblockRequestVO.getNarration())
+            .responseCode(NIP_00.getCode())
+            .referenceCode(accountUnblockRequestVO.getReferenceCode())
+            .reasonCode(accountUnblockRequestVO.getReasonCode())
+            .sessionId(accountUnblockRequestVO.getSessionId())
+            .targetAccountName(accountUnblockRequestVO.getTargetAccountName())
+            .targetAccountNo(accountUnblockRequestVO.getTargetAccountNo())
+            .targetBVN(accountUnblockRequestVO.getTargetBVN())
+            .build();
+
+    public Function<AmountBlockRequestVO , AmountBlockResponseVO> mapAmountBlockResponseVO =
+            amountBlockRequestVO -> AmountBlockResponseVO.builder()
+            .amount(amountBlockRequestVO.getAmount())
+            .channelCode(amountBlockRequestVO.getChannelCode())
+            .destinationInstitutionCode(amountBlockRequestVO.getDestinationInstitutionCode())
+            .narration(amountBlockRequestVO.getNarration())
+            .reasonCode(amountBlockRequestVO.getReasonCode())
+            .referenceCode(amountBlockRequestVO.getReferenceCode())
+            .responseCode(NIP_00.getCode())
+            .sessionId(amountBlockRequestVO.getSessionId())
+            .targetAccountName(amountBlockRequestVO.getTargetAccountName())
+            .targetAccountNo(amountBlockRequestVO.getTargetAccountNo())
+            .targetBVN(amountBlockRequestVO.getTargetBVN())
+            .build();
+
+    public Function<AmountUnblockRequestVO, AmountUnblockResponseVO> mapAmountUnblockResponseVO =
+            amountUnblockRequestVO -> AmountUnblockResponseVO.builder()
+                    .amount(amountUnblockRequestVO.getAmount())
+                    .channelCode(amountUnblockRequestVO.getChannelCode())
+                    .destinationInstitutionCode(amountUnblockRequestVO.getDestinationInstitutionCode())
+                    .narration(amountUnblockRequestVO.getNarration())
+                    .reasonCode(amountUnblockRequestVO.getReasonCode())
+                    .referenceCode(amountUnblockRequestVO.getReferenceCode())
+                    .responseCode(NIP_00.getCode())
+                    .sessionId(amountUnblockRequestVO.getSessionId())
+                    .targetAccountName(amountUnblockRequestVO.getTargetAccountName())
+                    .targetAccountNo(amountUnblockRequestVO.getTargetAccountNo())
+                    .targetBVN(amountUnblockRequestVO.getTargetBVN())
+                    .build();
+
+    public BalanceEnquiryResponseVO buildBalanceEnquiryResponseVO(BalanceEnquiryRequestVO balanceEnquiryRequestVO){
+        return BalanceEnquiryResponseVO.builder()
+                .authorizationCode(balanceEnquiryRequestVO.getAuthorizationCode())
+                .availableBalance("2,340,000")
+                .channelCode(balanceEnquiryRequestVO.getChannelCode())
+                .destinationInstitutionCode(balanceEnquiryRequestVO.getDestinationInstitutionCode())
+                .responseCode(NIP_00.getCode())
+                .sessionID(balanceEnquiryRequestVO.getSessionID())
+                .targetAccountName(balanceEnquiryRequestVO.getTargetAccountName())
+                .targetAccountNo(balanceEnquiryRequestVO.getTargetAccountNo())
+                .targetBankVerificationNo(balanceEnquiryRequestVO.getTargetBankVerificationNo())
+                .build();
+
+    }
 }

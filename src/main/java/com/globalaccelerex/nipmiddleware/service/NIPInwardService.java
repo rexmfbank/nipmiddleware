@@ -1,6 +1,16 @@
 package com.globalaccelerex.nipmiddleware.service;
 
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
@@ -61,5 +71,25 @@ public class NIPInwardService {
 
     public MandateAdviceResponseVO handleMandateAdvice(MandateAdviceRequestVO mandateAdviceRequestVO){
         return bankRestService.doMandateAdvice(mandateAdviceRequestVO);
+    }
+
+    public AccountBlockResponseVO handleAccountBlock(AccountBlockRequestVO accountBlockRequestVO){
+        return bankRestService.doAccountBlock(accountBlockRequestVO);
+    }
+
+    public AccountUnblockResponseVO handleAccountUnblock(AccountUnblockRequestVO accountUnblockRequestVO){
+        return bankRestService.doAccountUnblock(accountUnblockRequestVO);
+    }
+
+    public AmountBlockResponseVO handleAmountBlock(AmountBlockRequestVO amountBlockRequestVO){
+        return bankRestService.doAmountBlock(amountBlockRequestVO);
+    }
+
+    public AmountUnblockResponseVO handleAmountUnblock(AmountUnblockRequestVO amountUnblockRequestVO){
+        return bankRestService.doAmountUnblock(amountUnblockRequestVO);
+    }
+
+    public BalanceEnquiryResponseVO handleBalanceEnquiry(BalanceEnquiryRequestVO balanceEnquiryRequestVO){
+        return bankRestService.doBalanceEnquiry(balanceEnquiryRequestVO);
     }
 }

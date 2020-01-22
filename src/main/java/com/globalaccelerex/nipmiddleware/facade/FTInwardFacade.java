@@ -115,4 +115,18 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransferAdviceDdResponse;
     }
 
+    public FtackcreditrequestResponse handleFTAckCredit(Ftackcreditrequest ftackcreditrequest, IMarker marker){
+        final val encryptedFTAckCreditString = ftackcreditrequest.getRequest();
+        final val clearFTAckCreditString = nipConfig.isIgnoreEncryption() ? encryptedFTAckCreditString : decryptString(encryptedFTAckCreditString);
+
+        marker.setRequest(" FT Acknowledge Credit Clear String ",clearFTAckCreditString);
+
+        final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? clearFTAckCreditString : encryptString(clearFTAckCreditString);
+        marker.setResponse("Response from FT Acknowledge Credit  CBA " + encryptedXmlString.toString());
+
+        final val ftackcreditrequestResponse = new FtackcreditrequestResponse();
+        ftackcreditrequestResponse.setReturn(encryptedXmlString);
+        return ftackcreditrequestResponse;
+    }
+
 }
