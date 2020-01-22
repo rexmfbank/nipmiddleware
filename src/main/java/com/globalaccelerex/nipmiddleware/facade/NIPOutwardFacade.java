@@ -3,6 +3,7 @@ package com.globalaccelerex.nipmiddleware.facade;
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.mapper.NIPOutwardMapper;
+import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTPendingResponse;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTSingleCreditRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.nameenquiry.NESingleResponse;
@@ -96,6 +97,7 @@ public class NIPOutwardFacade {
         neSingleResponse.setClientId(clientId);
         return neSingleResponse;
     }
+
 
     @Async
     public void doFundsTransferAsync(FTSingleCreditRequest ftSingleCreditRequest, String sessionId){
