@@ -86,6 +86,7 @@ public class NIPOutwardMapper {
                 .originatorKYCLevel(ftSingleCreditRequest.getOriginatorKYCLevel())
                 .paymentReference(ftSingleCreditRequest.getPaymentReference())
                 .transactionLocation(ftSingleCreditRequest.getTransactionLocation())
+
                 .build();
     };
 
