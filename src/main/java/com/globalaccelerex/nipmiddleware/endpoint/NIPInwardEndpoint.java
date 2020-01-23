@@ -38,8 +38,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = NAME_ENQUIRY_REQUEST)
     public @ResponsePayload  JAXBElement<NameenquirysingleitemResponse> handleNE(@RequestPayload JAXBElement<Nameenquirysingleitem> nameEnquirySingleItem) {
-        log.info("<<< NameEnquiry >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< NameEnquiry >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), nameEnquirySingleItem.getValue().getRequest(), false);
@@ -54,8 +55,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = FI_LIST_REQUEST)
     public @ResponsePayload JAXBElement<FinancialinstitutionlistResponse> updateFI(@RequestPayload JAXBElement<Financialinstitutionlist> financialinstitutionlist){
-        log.info("<<< FIList >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< FIList >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), financialinstitutionlist.getValue().getRequest(), false);
@@ -70,8 +72,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = FT_DIRECT_DEBIT_REQUEST)
     public @ResponsePayload JAXBElement<FundtransfersingleitemDdResponse> handleFT_DD(@RequestPayload JAXBElement<FundtransfersingleitemDd> fundtransfersingleitemDd){
-        log.info("<<< FT Single Item Dd >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< FT Single Item Dd >>>");
+
 
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
@@ -88,8 +91,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = FT_DIRECT_CREDIT_REQUEST)
     public @ResponsePayload JAXBElement<FundtransfersingleitemDcResponse> handleFT_DC(@RequestPayload JAXBElement<FundtransfersingleitemDc> fundtransfersingleitemDc){
-        log.info("<<< FT Single Item Dc >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< FT Single Item Dc >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), fundtransfersingleitemDc.getValue().getRequest(), false);
@@ -104,8 +108,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = TSQ_REQUEST)
     public @ResponsePayload JAXBElement<TxnstatusquerysingleitemResponse> handleTSQ(@RequestPayload JAXBElement<Txnstatusquerysingleitem> txnStatusQuerySingleItem){
-        log.info("<<< TSQ >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< TSQ >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), txnStatusQuerySingleItem.getValue().getRequest(), false);
@@ -120,8 +125,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = FT_ADVICE_DIRECT_CREDIT_REQUEST)
     public @ResponsePayload JAXBElement<FundtransferAdviceDcResponse> handleFundTransferAdvice_DC(@RequestPayload JAXBElement<FundtransferAdviceDc> fundtransferAdviceDC){
-        log.info("<<< FT Advice DC >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< FT Advice DC >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), fundtransferAdviceDC.getValue().getRequest(), false);
@@ -138,8 +144,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = FT_ADVICE_DIRECT_DEBIT_REQUEST)
     public @ResponsePayload JAXBElement<FundtransferAdviceDdResponse> handleFundTransferAdvice_DD(@RequestPayload JAXBElement<FundtransferAdviceDd> fundtransferAdviceDD){
-        log.info("<<< FT Advice DD >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< FT Advice DD >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), fundtransferAdviceDD.getValue().getRequest(), false);
@@ -154,8 +161,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =MANDATE_ADVICE_REQUEST)
     public @ResponsePayload JAXBElement<MandateadviceResponse> handleMandateAdvice(@RequestPayload JAXBElement<Mandateadvice> mandateAdvice){
-        log.info("<<< Mandate Advice >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< Mandate Advice >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), mandateAdvice.getValue().getRequest(), false);
@@ -170,8 +178,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =ACCOUNT_BLOCK_REQUEST)
     public @ResponsePayload JAXBElement<AccountblockResponse> handleAccountBlock(@RequestPayload JAXBElement<Accountblock> accountblock) {
-        log.info("<<< Account Block >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< Account Block >>>");
+
         try {
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), accountblock.getValue().getRequest(), false);
@@ -187,8 +196,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =ACCOUNT_UNBLOCK_REQUEST)
     public @ResponsePayload JAXBElement<AccountunblockResponse> handleAccountUnblock(@RequestPayload JAXBElement<Accountunblock> accountUnblock){
-        log.info("<<< Account Unblock >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< Account Unblock >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), accountUnblock.getValue().getRequest(), false);
@@ -203,8 +213,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = AMOUNT_BLOCK_REQUEST)
     public @ResponsePayload JAXBElement<AmountblockResponse> handleAmountBlock(@RequestPayload JAXBElement<Amountblock> amountblock){
-        log.info("<<< AmountBlock >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< AmountBlock >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), amountblock.getValue().getRequest(), false);
@@ -219,8 +230,9 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = AMOUNT_UNBLOCK_REQUEST)
     public @ResponsePayload JAXBElement<AmountunblockResponse> handleAmountUnblock(@RequestPayload JAXBElement<Amountunblock> amountunblock){
-        log.info("<<< AmountUnBlock >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< AmountUnBlock >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), amountunblock.getValue().getRequest(), false);
@@ -236,8 +248,9 @@ public class NIPInwardEndpoint {
     @ResponsePayload
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = BALANCE_ENQUIRY_REQUEST)
     public  JAXBElement<BalanceenquiryResponse> handleBalanceEnquiry(@RequestPayload JAXBElement<Balanceenquiry> balanceEnquiry){
-        log.info("<<< Balance Enquiry >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< Balance Enquiry >>>");
+
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), balanceEnquiry.getValue().getRequest(), false);
@@ -252,8 +265,8 @@ public class NIPInwardEndpoint {
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart =FT_CREDIT_ACKNOWLEDGEMENT_REQUEST)
     public @ResponsePayload JAXBElement<FtackcreditrequestResponse> handleFTAckCredit(@RequestPayload JAXBElement<Ftackcreditrequest> ftackcreditrequest){
-        log.info("<<< Ft Acknowledgement Credit >>>");
         final val iMarker = Marker.fromString();
+        iMarker.info("<<< Ft Acknowledgement Credit >>>");
 
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().

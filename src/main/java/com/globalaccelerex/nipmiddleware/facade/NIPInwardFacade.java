@@ -39,7 +39,6 @@ public class NIPInwardFacade extends AbstractInwardFacade{
     public NameenquirysingleitemResponse handleNameEnquiry(Nameenquirysingleitem nameenquirysingleitem, IMarker marker){
         final val encryptedNEString = nameenquirysingleitem.getRequest();
         final val clearNEString = nipConfig.isIgnoreEncryption() ? encryptedNEString : decryptString(encryptedNEString);
-        //log.info("\n encryptedNEString ::::: {} \n clearNEString ::::: {}" ,encryptedNEString, clearNEString);
 
         marker.setRequest(" NameEnquiry Clear String ",clearNEString);
 

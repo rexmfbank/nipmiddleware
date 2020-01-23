@@ -78,11 +78,13 @@ public class NIPOutwardFacade {
         iMarker.info(" Sending Request to NIPOutwardWS ");
         val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
 
-        iMarker.info(" Received  Response from NIPOutwardWS ");
+
         if(StringUtils.isEmpty(nameEnquirySingleItemResponse.getReturn())){
+            iMarker.info(" Empty  Response from NIPOutwardWS ");
             final val errorResponse = new ErrorResponse(NIP_01);
             throw new NIPMiddleWareAPIException(errorResponse);
         }
+        iMarker.info(" Received  Response from NIPOutwardWS ");
         final val neSingleResponseXmlString = decryptString(nameEnquirySingleItemResponse.getReturn());
         iMarker.setResponse("Clear Name Enquiry response  from NIBSS " +neSingleResponseXmlString);
 
@@ -96,8 +98,9 @@ public class NIPOutwardFacade {
 
     @Async
     public void doFundsTransferAsync(FTSingleCreditRequest ftSingleCreditRequest, String sessionId){
-        log.info("::::: Handling Async Method for Funds Transfer ::::::: ");
+
         val iMarker = ftSingleCreditRequest.getMarker();
+        iMarker.info("::::: Handling Async Method for Funds Transfer ::::::: ");
         // do a mapping to entity and save record in db
         final val neSingleRequest = nipOutwardMapper.mapNESingleRequest.apply(ftSingleCreditRequest);
         neSingleRequest.setMarker(iMarker);
@@ -165,9 +168,9 @@ public class NIPOutwardFacade {
 
             //simulate a waiting period of 60secs
             /* */
-            log.info("----------- Stimulating {} miliseconds wait ---------------",nipConfig.getTsqWaitTime());
+            log.info("----------- Stimulating " + nipConfig.getTsqWaitTime() + " milliseconds wait ---------------");
             Thread.sleep(nipConfig.getTsqWaitTime());
-            log.info("----------- Completed {} miliseconds wait ---------------",nipConfig.getTsqWaitTime());
+            log.info("----------- Completed " + nipConfig.getTsqWaitTime() + "  milliseconds wait ---------------");
 
             final val tsqSingleItemRequestVO = nipOutwardMapper.buildTsqSingleItemRequestVO(ftSingleCreditResponseVO.getSessionId());
 
@@ -181,7 +184,6 @@ public class NIPOutwardFacade {
             txnstatusquerysingleitem.setRequest(encryptedTsqSingleItemRequestXmlString);
 
             final val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(iMarker, txnstatusquerysingleitem);
-            iMarker.setResponse(" Encrypted  Response from NIPOutwardWS : TSQ "+ txnStatusQuerySingleItemResponse.getReturn());
             final val tsqSingleItemResponseXmlString = decryptString(txnStatusQuerySingleItemResponse.getReturn());
             iMarker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);
 
@@ -203,8 +205,9 @@ public class NIPOutwardFacade {
     }
 
     public TsqResponse doTsq(TsqRequest tsqRequest){
-        log.info("::::: Handling Tsq ::::::: ");
         val iMarker = tsqRequest.getMarker();
+        iMarker.info("::::: Handling Tsq ::::::: ");
+
         iMarker.setRequest(" TSQRequest from client payload ", tsqRequest.toString());
         TsqResponse tsqResponse = null;
         //check if transaction is pending before doing the webservice call
@@ -225,7 +228,7 @@ public class NIPOutwardFacade {
             iMarker.info(" Sending Request to NIPOutwardWS ");
 
             final val txnstatusquerysingleitemResponse = nipOutwardWS.txnStatus(iMarker, txnstatusquerysingleitem);
-            log.info(" Received  Response from NIPOutwardWS ");
+            iMarker.info(" Received  Response from NIPOutwardWS ");
 
             final val tsqSingleItemResponseXmlString = decryptString(txnstatusquerysingleitemResponse.getReturn());
             iMarker.setResponse(" Clear  Response from NIPOutwardWS : TSQ "+ tsqSingleItemResponseXmlString);

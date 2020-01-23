@@ -38,6 +38,7 @@ public class NIPOutwardController {
     @PostMapping(NAME_ENQUIRY)
     public ResponseEntity<?> doNameEnquiry(@Valid @RequestBody NESingleRequest neSingleRequest){
         IMarker marker = Marker.fromString();
+        marker.info("<<<<<<<< doNameEnquiry >>>>>>>>");
         try {
             neSingleRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
@@ -53,12 +54,12 @@ public class NIPOutwardController {
     @PostMapping(FUNDS_TRANSFER)
     public ResponseEntity<?> doFundsTransfer(@Valid @RequestBody FTSingleCreditRequest ftSingleCreditRequest){
         IMarker marker = Marker.fromString();
+        marker.info("<<<<<<<< doFundsTransfer >>>>>>>>");
         try {
             ftSingleCreditRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
             final val sessionId = sessionIdUtil.generateSessionId();
-
 
             final val result = nipOutwardFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
             final val ftPendingResponse = new FTPendingResponse(result);
@@ -77,6 +78,7 @@ public class NIPOutwardController {
     @GetMapping(TSQ)
     public ResponseEntity<?> doTsq(@Valid TsqRequest tsqRequest){
         IMarker marker = Marker.fromString();
+        marker.info("<<<<<<<< doTsq >>>>>>>>");
         try{
             tsqRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
