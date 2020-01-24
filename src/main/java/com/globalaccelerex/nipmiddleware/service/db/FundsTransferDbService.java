@@ -32,7 +32,7 @@ public class FundsTransferDbService {
         if(fundsTransferEntityOpt.isPresent()){
             return fundsTransferEntityOpt.get();
         }else{
-            throw new NIPMiddleWareAPIException(NIP_15.getCode(),NIP_15.getDescription(),false);
+            throw new NIPMiddleWareAPIException(NIP_15);
         }
     }
 

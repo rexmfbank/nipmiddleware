@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.globalaccelerex.nipmiddleware.api.AccessControlAPI.VALIDATE_TOKEN_API;
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_111;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_112;
 
 @Slf4j
 @Component
@@ -33,6 +34,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        log.info("============ authenticate ===================");
         authentication.setAuthenticated(true);
         val authenticationToken = (AuthenticationToken) authentication;
         validate(authenticationToken);
@@ -46,8 +48,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
         val authenticationData = (AuthenticationData) authenticationToken.getPrincipal();
         validateAccessToken(authenticationData);
+        validateSignature(authenticationData);
     }
 
+    private void validateSignature(AuthenticationData data) {
+        if (!data.isValidSignature()) {
+            val errorResponse = new ErrorResponse(NIP_112);
+            throw new AccessControlException(errorResponse);
+        }
+    }
     private void validateAccessToken(AuthenticationData authenticationData) {
         try{
             if(StringUtils.isBlank(authenticationData.getAccessToken())){
@@ -78,11 +87,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             .build(new CacheLoader<String, AccessControlResponse>() {
                 @Override
                 public AccessControlResponse load(String accessToken) {
-                    return validateToken(accessToken);
+                    return validateAccessToken(accessToken);
                 }
             });
 
-    private AccessControlResponse validateToken(String accessToken) {
+    private AccessControlResponse validateAccessToken(String accessToken) {
         log.info("performing validate access token toward access control service  ");
         val accessControlResponse = accessControlHttpClient.
                 getRequest(VALIDATE_TOKEN_API, null, AccessControlResponse.class, null, Collections.singletonMap(TOKEN_IDENTIFIER, accessToken));

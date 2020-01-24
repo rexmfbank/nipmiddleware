@@ -2,6 +2,7 @@ package com.globalaccelerex.nipmiddleware.security;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -9,6 +10,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 @Data
 @Builder
 @Slf4j
+@ToString
 public class AuthenticationData {
 
     private String nonce;

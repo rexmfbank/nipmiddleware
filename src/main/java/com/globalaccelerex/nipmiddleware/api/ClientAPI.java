@@ -10,5 +10,9 @@ public interface ClientAPI {
 
     String TSQ = "/tsq";
 
+    String ADMIN_API = "/api/nipmiddleware/v1/admin";
+
+    String CREATE_CLIENT = "/createClient";
+
 
 }

@@ -40,7 +40,7 @@ public class CustomAuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws IOException, ServletException {
-
+        log.info("============ doFilter ===================");
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
@@ -75,8 +75,8 @@ public class CustomAuthenticationFilter extends GenericFilterBean {
 
     private void attemptAuthentication(HttpServletRequest request,
                                        HttpServletResponse response) throws IOException, AuthenticationException {
-        val token = request.getHeader("X_TOKEN");
-        val userToken = request.getHeader("X_USER_TOKEN");
+        val accessToken = request.getHeader("X_TOKEN");
+        //val userToken = request.getHeader("X_USER_TOKEN");
         val timestamp = request.getHeader("Timestamp");
         val nonce = request.getHeader("Nonce");
         val signature = request.getHeader("Signature");
@@ -90,15 +90,14 @@ public class CustomAuthenticationFilter extends GenericFilterBean {
         }
 
         val authenticationData = AuthenticationData.builder()
-                .accessToken(token)
-                .userAccessToken(userToken)
+                .accessToken(accessToken)
                 .nonce(nonce)
                 .signature(signature)
                 .timestamp(timestamp)
                 .httpMethod(httpMethod)
                 .encodedURL(encodedURL)
                 .build();
-
+        log.info("\n AuthenticationData :::::: {}" , authenticationData.toString());
         val authenticationToken = new AuthenticationToken(authenticationData);
         authenticationManager.authenticate(authenticationToken);
     }

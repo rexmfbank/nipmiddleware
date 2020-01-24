@@ -27,4 +27,7 @@ public class AppConfig {
     @NotNull
     private String soapActionUrl;
 
+    @NotNull
+    private String jwtToken;
+
 }
