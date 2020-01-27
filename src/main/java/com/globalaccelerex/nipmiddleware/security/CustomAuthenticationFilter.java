@@ -98,6 +98,7 @@ public class CustomAuthenticationFilter extends GenericFilterBean {
                 .encodedURL(encodedURL)
                 .build();
         log.info("\n AuthenticationData :::::: {}" , authenticationData.toString());
+        log.info("\n AuthenticationData Signature :::::: {}" , authenticationData.isValidSignature());
         val authenticationToken = new AuthenticationToken(authenticationData);
         authenticationManager.authenticate(authenticationToken);
     }

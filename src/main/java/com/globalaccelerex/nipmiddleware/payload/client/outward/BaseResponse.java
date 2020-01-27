@@ -31,6 +31,8 @@ public class BaseResponse {
         responseTime = new Date();
     }
 
+
+
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;
         this.responseDescription = NIPResponseCodeEnum.getResponseDescription(responseCode).getDescription();

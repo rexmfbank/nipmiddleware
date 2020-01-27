@@ -11,6 +11,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00;
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_114;
 
 @Slf4j
@@ -36,8 +37,9 @@ public class ClientFacade {
         final val clientName = createClientRequest.getClientName();
         final val clientId = createClientRequest.getClientId();
         final val output = clientDbService.findClientByClientIdOrClientName(clientId, clientName);
+
         if(output){
-            throw new NIPMiddleWareAPIException(NIP_114);
+            throw new NIPMiddleWareAPIException(NIP_114,iMarker);
         }
         final val clientEntity = utilMapper.mapClientEntity.apply(createClientRequest);
         clientDbService.saveClientEntity(clientEntity);
@@ -45,9 +47,14 @@ public class ClientFacade {
         final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
         iMarker.info("::::::: JwtToken :::: " + jwtTokenStr);
 
-        final val createClientResponse = new CreateClientResponse();
+        final val createClientResponse = new CreateClientResponse(NIP_00);
         createClientResponse.setClientId(createClientRequest.getClientId());
         createClientResponse.setSecretKey(jwtTokenStr);
+        createClientResponse.setClientName(createClientRequest.getClientName());
+        createClientResponse.setContactEmail(createClientRequest.getContactEmail());
+        createClientResponse.setContactPhone(createClientRequest.getContactPhone());
+        createClientResponse.setBusinessDesc(createClientRequest.getBusinessDesc());
+        createClientResponse.setCallbackUrl(createClientRequest.getCallbackUrl());
         return createClientResponse;
     }
 }

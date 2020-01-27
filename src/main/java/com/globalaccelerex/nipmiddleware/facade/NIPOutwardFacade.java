@@ -82,7 +82,7 @@ public class NIPOutwardFacade {
         if(StringUtils.isEmpty(nameEnquirySingleItemResponse.getReturn())){
             iMarker.info(" Empty  Response from NIPOutwardWS ");
             final val errorResponse = new ErrorResponse(NIP_01);
-            throw new NIPMiddleWareAPIException(errorResponse);
+            throw new NIPMiddleWareAPIException(iMarker,errorResponse);
         }
         iMarker.info(" Received  Response from NIPOutwardWS ");
         final val neSingleResponseXmlString = decryptString(nameEnquirySingleItemResponse.getReturn());
@@ -211,7 +211,7 @@ public class NIPOutwardFacade {
         iMarker.setRequest(" TSQRequest from client payload ", tsqRequest.toString());
         TsqResponse tsqResponse = null;
         //check if transaction is pending before doing the webservice call
-        final val fundsTransferEntity = fundsTransferDbService.findRecord(tsqRequest.getClientId(), tsqRequest.getPaymentReference());
+        final val fundsTransferEntity = fundsTransferDbService.findRecord(tsqRequest.getClientId(), tsqRequest.getPaymentReference(),iMarker);
         final val sessionId = fundsTransferEntity.getSessionId();
         if(fundsTransferEntity.isPending()){
             final val tsqSingleItemRequestVO = nipOutwardMapper.buildTsqSingleItemRequestVO(sessionId);

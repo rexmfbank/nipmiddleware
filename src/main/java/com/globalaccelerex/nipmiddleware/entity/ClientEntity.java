@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Data
-@Table
+@Table(name="client_entity")
 @Entity
 @Builder
 @AllArgsConstructor
@@ -24,10 +24,10 @@ public class ClientEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique  =true , nullable = false)
+    @Column(unique  =true , nullable = false , name = "client_id")
     private String clientId;
 
-    @Column(unique  =true, nullable = false)
+    @Column(unique  =true, nullable = false , name = "client_name")
     private String clientName;
 
     @Column(nullable = false)
@@ -35,19 +35,25 @@ public class ClientEntity {
 
     private boolean active ;
 
+    @Column(name ="business_Desc")
     private String businessDesc;
 
+    @Column(name ="callback_url")
     private String callbackUrl;
 
+    @Column(name ="contact_email")
     private String contactEmail;
 
+    @Column(name ="contact_phone")
     private String contactPhone;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name ="created_at")
     private Date createdAt;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name ="last_updated_at")
     private Date lastUpdatedAt;
 }
