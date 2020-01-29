@@ -1,7 +1,8 @@
-package com.globalaccelerex.nipmiddleware.security;
+package com.globalaccelerex.nipmiddleware.security.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
+import com.globalaccelerex.nipmiddleware.security.AccessControlException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,7 @@ import java.util.TimeZone;
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_109;
 
 @Slf4j
-public class CustomAuthenticationFilter extends GenericFilterBean {
+public class AdminAuthenticationFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
     private static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("Africa/Lagos");
@@ -34,13 +35,12 @@ public class CustomAuthenticationFilter extends GenericFilterBean {
         OBJECT_MAPPER.setTimeZone(DEFAULT_TIMEZONE);
     }
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public AdminAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws IOException, ServletException {
-        log.info("============ doFilter ===================");
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
@@ -89,7 +89,7 @@ public class CustomAuthenticationFilter extends GenericFilterBean {
             encodedURL = URLEncoder.encode(new UrlPathHelper().getPathWithinApplication(request) + "?" + queryString, "UTF-8");
         }
 
-        val authenticationData = AuthenticationData.builder()
+        val authenticationData = AdminAuthenticationData.builder()
                 .accessToken(accessToken)
                 .nonce(nonce)
                 .signature(signature)
@@ -99,7 +99,7 @@ public class CustomAuthenticationFilter extends GenericFilterBean {
                 .build();
         log.info("\n AuthenticationData :::::: {}" , authenticationData.toString());
         log.info("\n AuthenticationData Signature :::::: {}" , authenticationData.isValidSignature());
-        val authenticationToken = new AuthenticationToken(authenticationData);
+        val authenticationToken = new AdminAuthenticationToken(authenticationData);
         authenticationManager.authenticate(authenticationToken);
     }
 }

@@ -1,6 +1,9 @@
-package com.globalaccelerex.nipmiddleware.security;
+package com.globalaccelerex.nipmiddleware.security.admin;
 
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
+import com.globalaccelerex.nipmiddleware.security.AccessControlException;
+import com.globalaccelerex.nipmiddleware.security.AccessControlHttpClient;
+import com.globalaccelerex.nipmiddleware.security.AccessControlResponse;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -25,7 +28,7 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_11
 
 @Slf4j
 @Component
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class AdminAuthenticationProvider implements AuthenticationProvider {
 
     private static final String TOKEN_IDENTIFIER = "X_TOKEN";
 
@@ -34,30 +37,29 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        log.info("============ authenticate ===================");
         authentication.setAuthenticated(true);
-        val authenticationToken = (AuthenticationToken) authentication;
+        val authenticationToken = (AdminAuthenticationToken) authentication;
         validate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         return authentication;
     }
 
-    private void validate(AuthenticationToken authenticationToken) {
-        if (!AuthenticationData.class.isInstance(authenticationToken.getPrincipal())) {
+    private void validate(AdminAuthenticationToken authenticationToken) {
+        if (!AdminAuthenticationData.class.isInstance(authenticationToken.getPrincipal())) {
             throw new AuthenticationCredentialsNotFoundException("Unable to authenticate invalid principal");
         }
-        val authenticationData = (AuthenticationData) authenticationToken.getPrincipal();
+        val authenticationData = (AdminAuthenticationData) authenticationToken.getPrincipal();
         validateAccessToken(authenticationData);
         validateSignature(authenticationData);
     }
 
-    private void validateSignature(AuthenticationData data) {
+    private void validateSignature(AdminAuthenticationData data) {
         if (!data.isValidSignature()) {
             val errorResponse = new ErrorResponse(NIP_112);
             throw new AccessControlException(errorResponse);
         }
     }
-    private void validateAccessToken(AuthenticationData authenticationData) {
+    private void validateAccessToken(AdminAuthenticationData authenticationData) {
         try{
             if(StringUtils.isBlank(authenticationData.getAccessToken())){
                 final val errorResponse = new ErrorResponse(NIP_111);
@@ -65,9 +67,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             }
 
             final val accessControlResponse = cache.getUnchecked(authenticationData.getAccessToken());
-            if(StringUtils.isNotBlank(accessControlResponse.getAccessSecret())){
-                authenticationData.setAccessSecret(accessControlResponse.getAccessSecret());
-            }
         }catch (UncheckedExecutionException exception) {
             if (AccessControlException.class.isInstance(exception.getCause())) {
                 throw (AccessControlException) exception.getCause();
@@ -77,7 +76,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.equals(AuthenticationToken.class);
+        return authentication.equals(AdminAuthenticationToken.class);
     }
 
     private LoadingCache<String, AccessControlResponse> cache = CacheBuilder.newBuilder()

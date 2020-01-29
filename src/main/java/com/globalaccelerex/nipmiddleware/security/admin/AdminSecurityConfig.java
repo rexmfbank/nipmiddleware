@@ -1,7 +1,7 @@
-package com.globalaccelerex.nipmiddleware.config;
+package com.globalaccelerex.nipmiddleware.security.admin;
 
-import com.globalaccelerex.nipmiddleware.security.CustomAuthenticationFilter;
-import com.globalaccelerex.nipmiddleware.security.CustomAuthenticationProvider;
+import com.globalaccelerex.nipmiddleware.security.admin.AdminAuthenticationFilter;
+import com.globalaccelerex.nipmiddleware.security.admin.AdminAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,31 +18,29 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import javax.servlet.http.HttpServletResponse;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.ADMIN_API;
-import static com.globalaccelerex.nipmiddleware.api.ClientAPI.NIP_OUTWARD_API;
 
 @Slf4j
 @Order(1)
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private CustomAuthenticationProvider customAuthenticationProvider;
+    private AdminAuthenticationProvider customAuthenticationProvider;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http.antMatcher(ADMIN_API + "/**").
-                csrf().disable().
-                cors().and().
-                sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
-                and().
-                authorizeRequests().
-                anyRequest().authenticated().
-                and().
-                anonymous().disable().
-                exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint());
-        http.addFilterBefore(new CustomAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
+                csrf().disable().cors()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests().anyRequest().authenticated()
+                .and()
+                .anonymous().disable()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint());
+        http.addFilterBefore(new AdminAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
     }
 
     @Override

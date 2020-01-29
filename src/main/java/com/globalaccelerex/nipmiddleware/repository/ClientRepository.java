@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface ClientRepository extends PagingAndSortingRepository<ClientEntity,Integer> {
 
     Optional<ClientEntity> findByClientIdOrClientName(String clientId , String clientName);
+
+    Optional<ClientEntity> findByClientId(String clientId);
 }

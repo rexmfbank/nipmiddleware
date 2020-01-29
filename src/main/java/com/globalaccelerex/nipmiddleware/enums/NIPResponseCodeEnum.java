@@ -117,7 +117,17 @@ public enum NIPResponseCodeEnum {
 
     NIP_113("113","Authorization Error :  Could not connect to resource", FAILED),
 
-    NIP_114("114","Application  Error :  Client Details already exist in the database", FAILED);
+    NIP_114("114","Application  Error :  Client Details already exist in the database", FAILED),
+
+    NIP_115("115","Authentication  Error :  Client ID not sent ", FAILED),
+
+    NIP_116("116","Authentication  Error :  Client ID not sent ", FAILED),
+
+    NIP_117("117","Authentication Error :  User token not sent in request", FAILED),
+
+    NIP_118("118","Authentication Error :  User token has expired", FAILED),
+
+    NIP_119("119","Authentication Error :  Invalid Token sent in the request", FAILED);
 
 
 

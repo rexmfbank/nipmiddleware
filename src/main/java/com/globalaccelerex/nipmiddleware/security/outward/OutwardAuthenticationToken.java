@@ -1,22 +1,19 @@
-package com.globalaccelerex.nipmiddleware.security;
+package com.globalaccelerex.nipmiddleware.security.outward;
 
+import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import javax.security.auth.Subject;
 
-public class AuthenticationToken extends AbstractAuthenticationToken {
+public class OutwardAuthenticationToken  extends AbstractAuthenticationToken {
 
-    private AuthenticationData data;
+    @Getter
+    private OutwardAuthenticationData outwardAuthenticationData;
 
-    public AuthenticationToken(AuthenticationData data) {
+    public OutwardAuthenticationToken(OutwardAuthenticationData outwardAuthenticationData){
         super(null);
-        this.data = data;
+        this.outwardAuthenticationData = outwardAuthenticationData;
         setAuthenticated(false);
-    }
-
-
-    public AuthenticationData getAuthenticationData(){
-        return data;
     }
 
     @Override
@@ -26,7 +23,7 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return this.data;
+        return this.outwardAuthenticationData;
     }
 
     @Override
