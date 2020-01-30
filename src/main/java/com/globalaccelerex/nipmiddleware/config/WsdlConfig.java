@@ -22,6 +22,7 @@ public class WsdlConfig {
         return marshaller;
     }
 
+
     @Bean
     public NIPOutwardWS nipOutwardWS(Jaxb2Marshaller marshaller){
         final NIPOutwardWS nipOutwardWS = new NIPOutwardWS();

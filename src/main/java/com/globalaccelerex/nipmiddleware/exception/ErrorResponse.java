@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.exception;
 
+import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,10 @@ public class ErrorResponse {
 
     private String responseCode;
 
-    private boolean retry;
+    public ErrorResponse(NIPResponseCodeEnum nipResponseCodeEnum){
+        responseCode = nipResponseCodeEnum.getCode();
+        responseMessage = nipResponseCodeEnum.getDescription();
+    }
 
 }
 

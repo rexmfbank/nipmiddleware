@@ -3,6 +3,7 @@ package com.globalaccelerex.nipmiddleware.service.db;
 import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
+import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.repository.FundsTransferRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,12 @@ public class FundsTransferDbService {
         return fundsTransferEntityOpt.isPresent();
     }
 
-    public FundsTransferEntity findRecord(String clientId, String paymentReference){
+    public FundsTransferEntity findRecord(String clientId, String paymentReference, IMarker iMarker){
         final val fundsTransferEntityOpt = fundsTransferRepository.findByClientIdAndPaymentReference(clientId,paymentReference);
         if(fundsTransferEntityOpt.isPresent()){
             return fundsTransferEntityOpt.get();
         }else{
-            throw new NIPMiddleWareAPIException(NIP_15.getCode(),NIP_15.getDescription(),false);
+            throw new NIPMiddleWareAPIException(NIP_15,iMarker);
         }
     }
 

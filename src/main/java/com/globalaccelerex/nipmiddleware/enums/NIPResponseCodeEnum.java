@@ -105,7 +105,30 @@ public enum NIPResponseCodeEnum {
 
     NIP_107("107","Application Error : Transaction could not be completed", PENDING),
 
-    NIP_108("108","Application Error :  Payment Reference Not Unique", FAILED);
+    NIP_108("108","Application Error :  Payment Reference Not Unique", FAILED),
+
+    NIP_109("109","Authorization  Error :  Unauthorised access to resource", FAILED),
+
+    NIP_110("110","Authentication Error :  Invalid signature sent", FAILED),
+
+    NIP_111("111","Authentication Error :  Access token not sent in request", FAILED),
+
+    NIP_112("112","Authentication Error :  Invalid signature sent", FAILED),
+
+    NIP_113("113","Authorization Error :  Could not connect to resource", FAILED),
+
+    NIP_114("114","Application  Error :  Client Details already exist in the database", FAILED),
+
+    NIP_115("115","Authentication  Error :  Client ID not sent ", FAILED),
+
+    NIP_116("116","Authentication  Error :  Invalid Client ID  ", FAILED),
+
+    NIP_117("117","Authentication Error :  User token not sent in request", FAILED),
+
+    NIP_118("118","Authentication Error :  User token has expired", FAILED),
+
+    NIP_119("119","Authentication Error :  Invalid Token sent in the request", FAILED);
+
 
 
     @Getter

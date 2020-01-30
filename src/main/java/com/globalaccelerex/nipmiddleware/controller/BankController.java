@@ -31,6 +31,7 @@ import static com.globalaccelerex.nipmiddleware.api.BankAPI.*;
 @Slf4j
 @RestController
 @RequestMapping(CBA_API)
+
 public class BankController {
 
     @Autowired
