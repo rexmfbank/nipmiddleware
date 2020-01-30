@@ -121,7 +121,7 @@ public enum NIPResponseCodeEnum {
 
     NIP_115("115","Authentication  Error :  Client ID not sent ", FAILED),
 
-    NIP_116("116","Authentication  Error :  Client ID not sent ", FAILED),
+    NIP_116("116","Authentication  Error :  Invalid Client ID  ", FAILED),
 
     NIP_117("117","Authentication Error :  User token not sent in request", FAILED),
 

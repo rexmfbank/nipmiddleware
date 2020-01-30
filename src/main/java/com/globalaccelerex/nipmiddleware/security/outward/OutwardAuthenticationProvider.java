@@ -81,6 +81,12 @@ public class OutwardAuthenticationProvider implements AuthenticationProvider {
         }
         try{
             final val claims = jwtTokenUtil.parseJWT(outwardAuthenticationData.getUserToken());
+            final val clientId = claims.getId();
+            if(!StringUtils.equalsIgnoreCase(clientId, outwardAuthenticationData.getClientId())){
+                final val errorResponse = new ErrorResponse(NIP_116);
+                throw new AccessControlException(errorResponse);
+            }
+
         }catch(ExpiredJwtException ex){
             log.error("Expired Token Exception {}", ex);
             final val errorResponse = new ErrorResponse(NIP_118);
