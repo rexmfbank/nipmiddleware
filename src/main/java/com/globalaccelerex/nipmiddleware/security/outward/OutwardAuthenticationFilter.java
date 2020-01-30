@@ -72,7 +72,8 @@ public class OutwardAuthenticationFilter extends GenericFilterBean {
                 .timestamp(timestamp)
                 .userToken(userToken)
                 .build();
-
+        log.info("\n Outward Authentication Data :::::: {}" , outwardAuthenticationData.toString());
+        log.info("\n Outward Authentication Data Signature :::::: {}" , outwardAuthenticationData.isValidSignature());
         final val outwardAuthenticationToken = new OutwardAuthenticationToken(outwardAuthenticationData);
         authenticationManager.authenticate(outwardAuthenticationToken);
     }

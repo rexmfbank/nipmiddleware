@@ -32,7 +32,9 @@ public class OutwardAuthenticationData {
     private static final String DELIMITER = "&&";
 
     public boolean isValidSignature() {
-        val cipher = new StringBuilder().append(accessToken)
+        val cipherStr = new StringBuilder().append(accessToken)
+                .append(DELIMITER)
+                .append(userToken)
                 .append(DELIMITER)
                 .append(clientId)
                 .append(DELIMITER)
@@ -44,8 +46,10 @@ public class OutwardAuthenticationData {
                 .append(DELIMITER)
                 .append(encodedURL)
                 .toString();
-        log.trace("cipher is "+ cipher + " => "+ DigestUtils.sha512Hex(cipher));
-        return DigestUtils.sha512Hex(cipher).equalsIgnoreCase(signature);
+        log.trace("cipher is "+ cipherStr + " => "+ DigestUtils.sha512Hex(cipherStr));
+        log.info("\n Signature ::: {} \n" , signature);
+        log.info("\n DigestUtils ::: {} \n" , DigestUtils.sha512Hex(cipherStr));
+        return DigestUtils.sha512Hex(cipherStr).equalsIgnoreCase(signature);
 
     }
 
