@@ -1,11 +1,14 @@
 package com.globalaccelerex.nipmiddleware.security.outward;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
+import com.globalaccelerex.nipmiddleware.security.AccessControlException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.util.UrlPathHelper;
@@ -19,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.TimeZone;
+
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_109;
 
 @Slf4j
 public class OutwardAuthenticationFilter extends GenericFilterBean {
@@ -41,6 +46,33 @@ public class OutwardAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
+        try{
+            attemptAuthentication(request, response);
+            filterChain.doFilter(request, response);
+        }catch (AuthenticationException authenticationException) {
+            SecurityContextHolder.clearContext();
+            log.error("Internal authentication service exception => " +authenticationException.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+            if (AccessControlException.class.isInstance(authenticationException)) {
+                AccessControlException ex = (AccessControlException) authenticationException;
+                response.addHeader("Content-Type", "application/json");
+
+                response.getWriter().print(OBJECT_MAPPER.writeValueAsString(ex.getErrorResponse()));
+            } else {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authenticationException.getMessage());
+            }
+        }catch (Exception ex){
+            SecurityContextHolder.clearContext();
+            log.error("Unknown client service exception "+ ex.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.addHeader("Content-Type", "application/json");
+
+            final val errorResponse = new ErrorResponse();
+            errorResponse.setResponseCode(NIP_109.getCode());
+            errorResponse.setResponseMessage(NIP_109.getDescription());
+            response.getWriter().print(OBJECT_MAPPER.writeValueAsString(errorResponse));
+        }
 
     }
 

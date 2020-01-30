@@ -29,7 +29,6 @@ public class OutwardSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.antMatcher(NIP_OUTWARD_API + "/**").
                 csrf().disable().cors()
                 .and()
