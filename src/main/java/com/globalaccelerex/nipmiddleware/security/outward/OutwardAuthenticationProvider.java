@@ -4,7 +4,6 @@ import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
 import com.globalaccelerex.nipmiddleware.security.AccessControlException;
 import com.globalaccelerex.nipmiddleware.security.AccessControlHttpClient;
 import com.globalaccelerex.nipmiddleware.security.AccessControlResponse;
-import com.globalaccelerex.nipmiddleware.security.admin.AdminAuthenticationData;
 import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import com.google.common.cache.CacheBuilder;
@@ -120,7 +119,7 @@ public class OutwardAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return false;
+        return authentication.equals(OutwardAuthenticationToken.class);
     }
 
 
