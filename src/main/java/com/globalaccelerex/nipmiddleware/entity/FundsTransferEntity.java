@@ -30,20 +30,19 @@ public class FundsTransferEntity {
     @Column(nullable = false)
     private BigDecimal amount;
 
+
     private String nameEnquiryReference;// client may not send it as first
 
     @NotBlank
-    @Column(nullable = false)
     private String sessionId;
 
     @NotBlank
-    @Column(nullable = false)
     private String clientId;
+
 
     private String channelCode;
 
     @NotBlank
-    @Column(nullable = false)
     private String destinationInstitutionCode;
 
     private String beneficiaryAccountName;
@@ -52,23 +51,25 @@ public class FundsTransferEntity {
     @Column(nullable = false)
     private String beneficiaryAccountNo;
 
+
     private String beneficiaryBVN;
 
+
     private String beneficiaryKYCLevel;
+
 
     private String originatorAccountName;
 
     @NotBlank
-    @Column(nullable = false)
     private String originatorAccountNo;
 
     @NotBlank
-    @Column(nullable = false)
     private String originatorInstitutionCode;
 
     private String originatorBVN;
 
     private String originatorKYCLevel;
+
 
     private String transactionLocation;
 
