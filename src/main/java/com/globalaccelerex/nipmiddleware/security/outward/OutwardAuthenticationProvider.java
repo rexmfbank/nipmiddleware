@@ -53,7 +53,7 @@ public class OutwardAuthenticationProvider implements AuthenticationProvider {
         final val outwardAuthenticationData = outwardAuthenticationToken.getOutwardAuthenticationData();
         validateAccessToken(outwardAuthenticationData);
         validateSignature(outwardAuthenticationData);
-        validateClientId(outwardAuthenticationData);
+        //validateClientId(outwardAuthenticationData);
         //validateJwtToken(outwardAuthenticationData); would still need to work on this.disable for now
         SecurityContextHolder.getContext().setAuthentication(outwardAuthenticationToken);
         return authentication;

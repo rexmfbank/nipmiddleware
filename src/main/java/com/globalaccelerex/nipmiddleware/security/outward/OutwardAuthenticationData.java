@@ -46,7 +46,7 @@ public class OutwardAuthenticationData {
                 .append(DELIMITER)
                 .append(encodedURL)
                 .toString();
-        log.info("cipher is "+ cipherStr + " => "+ DigestUtils.sha512Hex(cipherStr));
+        log.trace("cipher is "+ cipherStr + " => "+ DigestUtils.sha512Hex(cipherStr));
         return DigestUtils.sha512Hex(cipherStr).equalsIgnoreCase(signature);
 
     }
