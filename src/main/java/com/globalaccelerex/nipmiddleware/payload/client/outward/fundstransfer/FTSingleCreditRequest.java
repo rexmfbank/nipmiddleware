@@ -40,7 +40,7 @@ public class FTSingleCreditRequest extends BaseRequest {
     @NotBlank
     private String originatorAccountNo;
 
-    @NotBlank
+    //@NotBlank
     private String originatorBVN;
 
     private String originatorKYCLevel;

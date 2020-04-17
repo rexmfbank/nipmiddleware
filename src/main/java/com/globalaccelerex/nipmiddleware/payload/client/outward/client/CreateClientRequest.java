@@ -6,12 +6,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@JsonIgnoreProperties({"sessionId"})
 public class CreateClientRequest extends BaseRequest {
 
     @NotBlank
@@ -24,6 +24,7 @@ public class CreateClientRequest extends BaseRequest {
 
     private String callbackUrl;
 
+    @Email
     private String contactEmail;
 
     private String contactPhone;
