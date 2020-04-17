@@ -67,7 +67,7 @@ public class NIPOutwardController {
             if (!result){
                 nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
             }
-
+            ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());
             marker.setMainResponse(ftPendingResponse.toString(), false);
             return new ResponseEntity(ftPendingResponse, HttpStatus.OK);
         }finally {
@@ -76,7 +76,7 @@ public class NIPOutwardController {
     }
 
     @GetMapping(TSQ)
-    public ResponseEntity<?> doTsq(@Valid TsqRequest tsqRequest){
+    public ResponseEntity<?> doTsq(@Valid @RequestBody TsqRequest tsqRequest){
         IMarker marker = Marker.fromString();
         marker.info("<<<<<<<< doTsq >>>>>>>>");
         try{
