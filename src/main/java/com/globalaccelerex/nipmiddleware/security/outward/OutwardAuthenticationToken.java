@@ -30,4 +30,9 @@ public class OutwardAuthenticationToken  extends AbstractAuthenticationToken {
     public boolean implies(Subject subject) {
         return super.implies(subject); //To change body of generated methods, choose Tools | Templates.
     }
+
+    public void setAuthenticationData(OutwardAuthenticationData data){
+        this.outwardAuthenticationData = data;
+    }
+
 }
