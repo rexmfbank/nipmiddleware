@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.controller;
 
+import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
 import com.globalaccelerex.nipmiddleware.facade.NIPOutwardFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
@@ -7,18 +8,23 @@ import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FT
 import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTSingleCreditRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.tsq.TsqRequest;
+import com.globalaccelerex.nipmiddleware.security.outward.OutwardAuthenticationData;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_124;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_126;
 
 @Slf4j
 @RestController
@@ -28,6 +34,32 @@ public class NIPOutwardController {
     private final NIPOutwardFacade nipOutwardFacade;
 
     private final SessionIdUtil sessionIdUtil;
+
+
+    private OutwardAuthenticationData getPrincipal() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null){
+            return null;
+        }
+        if (!OutwardAuthenticationData.class.isInstance(auth.getPrincipal())) {
+            return null;
+        }
+        return (OutwardAuthenticationData) auth.getPrincipal();
+    }
+
+    private ResponseEntity validateClient(IMarker marker, OutwardAuthenticationData token) {
+        if (token == null) {
+            marker.setMainResponse("Invalid authentication", false);
+            return new ResponseEntity(new ErrorResponse(NIP_126), HttpStatus.UNAUTHORIZED);
+        }
+        if (token.getClient() == null) {
+            marker.setMainResponse("Client not found", false);
+            return new ResponseEntity(new ErrorResponse(NIP_124), HttpStatus.UNAUTHORIZED);
+        }
+        return null;
+    }
+
+
 
     @Autowired
     public NIPOutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil) {
@@ -39,7 +71,14 @@ public class NIPOutwardController {
     public ResponseEntity<?> doNameEnquiry(@Valid @RequestBody NESingleRequest neSingleRequest){
         IMarker marker = Marker.fromString();
         marker.info("<<<<<<<< doNameEnquiry >>>>>>>>");
+        OutwardAuthenticationData token = getPrincipal();
         try {
+
+            ResponseEntity entity = validateClient(marker, token);
+            if (entity != null) {
+                return entity;
+            }
+
             neSingleRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), neSingleRequest.toString(), false);

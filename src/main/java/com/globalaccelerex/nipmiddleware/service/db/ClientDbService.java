@@ -12,6 +12,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_116;
@@ -39,11 +40,8 @@ public class ClientDbService {
         try{
             return clientCache.getUnchecked(clientId);
         }catch (UncheckedExecutionException exception){
-            if (AccessControlException.class.isInstance(exception.getCause())) {
-                throw (AccessControlException) exception.getCause();
-            }
+            return null;
         }
-        return null;
     }
 
     private LoadingCache<String, ClientEntity> clientCache = CacheBuilder.newBuilder()
@@ -53,7 +51,7 @@ public class ClientDbService {
             .build(new CacheLoader<String, ClientEntity>() {
                 @Override
                 public ClientEntity load(String clientId) {
-                    return findClientByClientId(clientId);
+                    return clientRepository.findByClientId(clientId).orElse(null);
                 }
             });
 }

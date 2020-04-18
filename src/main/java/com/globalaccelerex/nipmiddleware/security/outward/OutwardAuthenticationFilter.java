@@ -78,34 +78,14 @@ public class OutwardAuthenticationFilter extends GenericFilterBean {
 
     private void attemptAuthentication(HttpServletRequest request,
                                        HttpServletResponse response) throws IOException, AuthenticationException {
-        val accessToken = request.getHeader("X_TOKEN");
-        val userToken = request.getHeader("X_USER_TOKEN");
-        val timestamp = request.getHeader("Timestamp");
-        val nonce = request.getHeader("Nonce");
-        val signature = request.getHeader("Signature");
-        val clientId = request.getHeader("clientId");
-        val httpMethod = request.getMethod().toUpperCase();
-        val queryString = StringUtils.defaultIfBlank(new UrlPathHelper().getOriginatingQueryString(request), "");
+        String authorization = request.getHeader("Authorization");
 
-        String encodedURL = null;
-        if (StringUtils.isBlank(queryString)) {
-            encodedURL = URLEncoder.encode(new UrlPathHelper().getPathWithinApplication(request), "UTF-8");
-        } else {
-            encodedURL = URLEncoder.encode(new UrlPathHelper().getPathWithinApplication(request) + "?" + queryString, "UTF-8");
-        }
+
 
         final val outwardAuthenticationData = OutwardAuthenticationData.builder()
-                .accessToken(accessToken)
-                .clientId(clientId)
-                .encodedURL(encodedURL)
-                .httpMethod(httpMethod)
-                .nonce(nonce)
-                .signature(signature)
-                .timestamp(timestamp)
-                .userToken(userToken)
+                .authorization(authorization)
                 .build();
-        log.info("\n Outward Authentication Data :::::: {}" , outwardAuthenticationData.toString());
-        log.info("\n Outward Authentication Data Signature :::::: {}" , outwardAuthenticationData.isValidSignature());
+
         final val outwardAuthenticationToken = new OutwardAuthenticationToken(outwardAuthenticationData);
         authenticationManager.authenticate(outwardAuthenticationToken);
     }

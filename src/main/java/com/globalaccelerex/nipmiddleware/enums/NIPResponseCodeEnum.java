@@ -128,7 +128,14 @@ public enum NIPResponseCodeEnum {
     NIP_118("118","Authentication Error :  User token has expired", FAILED),
 
     NIP_119("119","Authentication Error :  Invalid Token sent in the request", FAILED),
-    NIP_120("120","Authentication Error :  Access forbidden to User", FAILED);
+    NIP_120("120","Authentication Error :  Access forbidden to User", FAILED),
+    NIP_121("121","Authentication Error :  Invalid Authorization Sent", FAILED),
+    NIP_122("122","Authentication Error :  Invalid Authentication details found", FAILED),
+    NIP_123("123","Authentication Error :  Invalid Authorization Sent; username or password not found", FAILED),
+    NIP_124("124","Authentication Error :  Client not found", FAILED),
+    NIP_125("125","Authentication Error :  Invalid Client Secret Key", FAILED),
+    NIP_126("126","Authentication Error :  Invalid authentication", FAILED)
+    ;
 
 
 
