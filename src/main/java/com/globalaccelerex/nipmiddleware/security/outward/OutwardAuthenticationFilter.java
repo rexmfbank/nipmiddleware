@@ -3,6 +3,7 @@ package com.globalaccelerex.nipmiddleware.security.outward;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
 import com.globalaccelerex.nipmiddleware.security.AccessControlException;
+import com.google.common.cache.CacheLoader;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,7 @@ import java.net.URLEncoder;
 import java.util.TimeZone;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_109;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_124;
 
 @Slf4j
 public class OutwardAuthenticationFilter extends GenericFilterBean {
@@ -62,7 +64,18 @@ public class OutwardAuthenticationFilter extends GenericFilterBean {
             } else {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authenticationException.getMessage());
             }
-        }catch (Exception ex){
+        }catch (CacheLoader.InvalidCacheLoadException i ){
+            SecurityContextHolder.clearContext();
+            log.error("Client not found"+ i.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.addHeader("Content-Type", "application/json");
+
+            final val errorResponse = new ErrorResponse();
+            errorResponse.setResponseCode(NIP_124.getCode());
+            errorResponse.setResponseMessage(NIP_124.getDescription());
+            response.getWriter().print(OBJECT_MAPPER.writeValueAsString(errorResponse));
+        }
+        catch (Exception ex){
             SecurityContextHolder.clearContext();
             log.error("Unknown client service exception "+ ex.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
