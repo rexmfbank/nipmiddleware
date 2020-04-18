@@ -21,6 +21,8 @@ public class AdminAuthenticationData {
 
     private String accessToken;
 
+    private String accessSecret;
+
     private String httpMethod;
 
     private String encodedURL;
@@ -31,6 +33,8 @@ public class AdminAuthenticationData {
 
         final val cipherStr = new StringBuilder()
                 .append(accessToken)
+                .append(DELIMITER)
+                .append(accessSecret)
                 .append(DELIMITER)
                 .append(timestamp)
                 .append(DELIMITER)

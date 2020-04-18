@@ -10,5 +10,6 @@ import lombok.Data;
 public class AccessControlResponse {
     private String accessToken;
     private String accessSecret;
+    private String allowedServices;
     private long validTill ;
 }

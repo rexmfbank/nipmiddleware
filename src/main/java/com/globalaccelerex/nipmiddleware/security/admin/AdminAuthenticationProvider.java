@@ -23,14 +23,14 @@ import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static com.globalaccelerex.nipmiddleware.api.AccessControlAPI.VALIDATE_TOKEN_API;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_111;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_112;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 
 @Slf4j
 @Component
 public class AdminAuthenticationProvider implements AuthenticationProvider {
 
     private static final String TOKEN_IDENTIFIER = "X_TOKEN";
+    private static final String ALLOWED_SERVICE = "nip-service";
 
     @Autowired
     private AccessControlHttpClient accessControlHttpClient;
@@ -67,6 +67,12 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
             }
 
             final val accessControlResponse = cache.getUnchecked(authenticationData.getAccessToken());
+            if(StringUtils.isNotBlank(accessControlResponse.getAllowedServices()) && !accessControlResponse.getAllowedServices().contains(ALLOWED_SERVICE)){
+                throw new AccessControlException(new ErrorResponse(NIP_120));
+            }
+            if (StringUtils.isNotBlank(accessControlResponse.getAccessSecret())) {
+                authenticationData.setAccessSecret(accessControlResponse.getAccessSecret());
+            }
         }catch (UncheckedExecutionException exception) {
             if (AccessControlException.class.isInstance(exception.getCause())) {
                 throw (AccessControlException) exception.getCause();
