@@ -101,36 +101,46 @@ public class NIPOutwardFacade {
 
         val iMarker = ftSingleCreditRequest.getMarker();
         iMarker.info("::::: Handling Async Method for Funds Transfer ::::::: ");
-        // do a mapping to entity and save record in db
-        final val neSingleRequest = nipOutwardMapper.mapNESingleRequest.apply(ftSingleCreditRequest);
-        neSingleRequest.setMarker(iMarker);
-        final val fundsTransferEntity = nipOutwardMapper.mapFundsTransferEntity.apply(ftSingleCreditRequest);
-        fundsTransferEntity.setSessionId(sessionId);
         NESingleResponse neSingleResponse = null;
-        if(StringUtils.isEmpty(ftSingleCreditRequest.getNameEnquiryReference())){
-            //we need to do a nameEnquiry
-            neSingleResponse = doNameEnquiry(neSingleRequest);
+        final val fundsTransferEntity = nipOutwardMapper.mapFundsTransferEntity.apply(ftSingleCreditRequest);
+        // do a mapping to entity and save record in db
+        try {
+            final val neSingleRequest = nipOutwardMapper.mapNESingleRequest.apply(ftSingleCreditRequest);
+            neSingleRequest.setMarker(iMarker);
+            fundsTransferEntity.setSessionId(sessionId);
 
-            fundsTransferEntity.setNameEnquiryReference(neSingleResponse.getSessionId());
-            if(StringUtils.isNotEmpty(ftSingleCreditRequest.getBeneficiaryBVN()) && !StringUtils.equalsIgnoreCase(ftSingleCreditRequest.getBeneficiaryBVN(),neSingleResponse.getBankVerificationNo())){
-                //the supplied BVN and the NIBSS BVN are not the same
-                //update the db
-                fundsTransferEntity.setResponseCode(NIP_104.getCode());
-                fundsTransferEntity.setPaymentStatusEnum(FAILED);
-                fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
-                //send a response to the client callback
-                return;
+            if(StringUtils.isEmpty(ftSingleCreditRequest.getNameEnquiryReference())){
+                //we need to do a nameEnquiry
+                neSingleResponse = doNameEnquiry(neSingleRequest);
+
+                fundsTransferEntity.setNameEnquiryReference(neSingleResponse.getSessionId());
+                if(StringUtils.isNotEmpty(ftSingleCreditRequest.getBeneficiaryBVN()) && !StringUtils.equalsIgnoreCase(ftSingleCreditRequest.getBeneficiaryBVN(),neSingleResponse.getBankVerificationNo())){
+                    //the supplied BVN and the NIBSS BVN are not the same
+                    //update the db
+                    fundsTransferEntity.setResponseCode(NIP_104.getCode());
+                    fundsTransferEntity.setPaymentStatusEnum(FAILED);
+                    fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
+                    //send a response to the client callback
+                    return;
+                }
+                if(StringUtils.isEmpty(neSingleResponse.getAccountName()) || (!neSingleResponse.isSuccessResponse())){
+                    //discontinue FT since we don't have a response as regards the beneficiary account name
+                    //update the db
+                    fundsTransferEntity.setResponseCode(NIP_105.getCode());
+                    fundsTransferEntity.setPaymentStatusEnum(FAILED);
+                    fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
+                    //send a response to the client callback
+                    return;
+                }
             }
-            if(StringUtils.isEmpty(neSingleResponse.getAccountName()) || (!neSingleResponse.isSuccessResponse())){
-                //discontinue FT since we don't have a response as regards the beneficiary account name
-                //update the db
-                fundsTransferEntity.setResponseCode(NIP_105.getCode());
-                fundsTransferEntity.setPaymentStatusEnum(FAILED);
-                fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
-                //send a response to the client callback
-                return;
-            }
+        }catch (Exception exception){
+            iMarker.info(exception.getMessage(),exception);
+            fundsTransferEntity.setResponseCode(NIP_105.getCode());
+            fundsTransferEntity.setPaymentStatusEnum(FAILED);
+            fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
+            return;
         }
+
 
         try{
             // go ahead with the FT
@@ -193,8 +203,8 @@ public class NIPOutwardFacade {
             //update db
             fundsTransferDbService.updateFTResponseCode(tsqSingleItemResponseVO.getSessionId(), tsqSingleItemResponseVO.getResponseCode());
             //call client endpoint and push response to him
-        }catch(Exception ex){
-            log.error("Caught this exception ::::: {}", ex);
+        }catch(Exception exception){
+            iMarker.info(exception.getMessage(),exception);
             fundsTransferDbService.updateFTResponseCode(sessionId, NIP_107.getCode());
 
         }

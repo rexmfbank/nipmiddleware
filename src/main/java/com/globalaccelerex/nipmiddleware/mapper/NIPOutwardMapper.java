@@ -97,6 +97,7 @@ public class NIPOutwardMapper {
                 .beneficiaryAccountNo(ftSingleCreditRequest.getBeneficiaryAccountNo())
                 .beneficiaryBVN(ftSingleCreditRequest.getBeneficiaryBVN())
                 .beneficiaryKYCLevel(ftSingleCreditRequest.getBeneficiaryKYCLevel())
+                .clientId(ftSingleCreditRequest.getClientId())
                 .channelCode(String.valueOf(CC_1.getCode()))
                 .destinationInstitutionCode(ftSingleCreditRequest.getDestinationInstitutionCode())
                 .nameEnquiryReference(ftSingleCreditRequest.getNameEnquiryReference())
