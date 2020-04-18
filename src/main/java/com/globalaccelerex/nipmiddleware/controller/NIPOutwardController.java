@@ -23,8 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_124;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_126;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 
 @Slf4j
 @RestController
@@ -47,7 +46,8 @@ public class NIPOutwardController {
         return (OutwardAuthenticationData) auth.getPrincipal();
     }
 
-    private ResponseEntity validateClient(IMarker marker, OutwardAuthenticationData token) {
+    private ResponseEntity validateClient(IMarker marker, String clientId) {
+        OutwardAuthenticationData token = getPrincipal();
         if (token == null) {
             marker.setMainResponse("Invalid authentication", false);
             return new ResponseEntity(new ErrorResponse(NIP_126), HttpStatus.UNAUTHORIZED);
@@ -55,6 +55,11 @@ public class NIPOutwardController {
         if (token.getClient() == null) {
             marker.setMainResponse("Client not found", false);
             return new ResponseEntity(new ErrorResponse(NIP_124), HttpStatus.UNAUTHORIZED);
+        }
+
+        if (!clientId.equalsIgnoreCase(token.getClient().getClientId())) {
+            marker.setMainResponse("Unauthorised access", false);
+            return new ResponseEntity(new ErrorResponse(NIP_127), HttpStatus.BAD_REQUEST);
         }
         return null;
     }
@@ -71,10 +76,9 @@ public class NIPOutwardController {
     public ResponseEntity<?> doNameEnquiry(@Valid @RequestBody NESingleRequest neSingleRequest){
         IMarker marker = Marker.fromString();
         marker.info("<<<<<<<< doNameEnquiry >>>>>>>>");
-        OutwardAuthenticationData token = getPrincipal();
         try {
 
-            ResponseEntity entity = validateClient(marker, token);
+            ResponseEntity entity = validateClient(marker,neSingleRequest.getClientId());
             if (entity != null) {
                 return entity;
             }
@@ -95,6 +99,10 @@ public class NIPOutwardController {
         IMarker marker = Marker.fromString();
         marker.info("<<<<<<<< doFundsTransfer >>>>>>>>");
         try {
+            ResponseEntity entity = validateClient(marker,ftSingleCreditRequest.getClientId());
+            if (entity != null) {
+                return entity;
+            }
             ftSingleCreditRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
@@ -115,10 +123,15 @@ public class NIPOutwardController {
     }
 
     @GetMapping(TSQ)
-    public ResponseEntity<?> doTsq(@Valid @RequestBody TsqRequest tsqRequest){
+    public ResponseEntity<?> doTsq(@Valid @ModelAttribute TsqRequest tsqRequest){
         IMarker marker = Marker.fromString();
         marker.info("<<<<<<<< doTsq >>>>>>>>");
         try{
+            ResponseEntity entity = validateClient(marker,tsqRequest.getClientId());
+            if (entity != null) {
+                return entity;
+            }
+
             tsqRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), tsqRequest.toString(), false);
