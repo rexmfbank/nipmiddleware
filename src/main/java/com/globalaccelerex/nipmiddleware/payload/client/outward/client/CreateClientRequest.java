@@ -5,6 +5,7 @@ import com.globalaccelerex.nipmiddleware.payload.client.outward.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -22,9 +23,11 @@ public class CreateClientRequest extends BaseRequest {
 
     private String businessDesc;
 
+    @NotBlank
+    @URL(message = " Requires a valid callback url ")
     private String callbackUrl;
 
-    @Email
+    @Email (message = " Requires a valid email ")
     private String contactEmail;
 
     private String contactPhone;
