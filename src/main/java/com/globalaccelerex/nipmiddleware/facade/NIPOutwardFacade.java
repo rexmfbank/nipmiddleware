@@ -91,7 +91,7 @@ public class NIPOutwardFacade {
         final val neSingleResponseVO = xmlUtil.unmarshal(neSingleResponseXmlString, NESingleResponseVO.class);
 
         final val neSingleResponse = nipOutwardMapper.mapNESingleResponseVO.apply(neSingleResponseVO);
-        neSingleResponse.setSessionId(sessionId);
+        neSingleResponse.setNameEnquiryReference(sessionId);
         neSingleResponse.setClientId(clientId);
         return neSingleResponse;
     }
@@ -113,7 +113,7 @@ public class NIPOutwardFacade {
                 //we need to do a nameEnquiry
                 neSingleResponse = doNameEnquiry(neSingleRequest);
 
-                fundsTransferEntity.setNameEnquiryReference(neSingleResponse.getSessionId());
+                fundsTransferEntity.setNameEnquiryReference(neSingleResponse.getNameEnquiryReference());
                 if(StringUtils.isNotEmpty(ftSingleCreditRequest.getBeneficiaryBVN()) && !StringUtils.equalsIgnoreCase(ftSingleCreditRequest.getBeneficiaryBVN(),neSingleResponse.getBankVerificationNo())){
                     //the supplied BVN and the NIBSS BVN are not the same
                     //update the db
@@ -146,7 +146,7 @@ public class NIPOutwardFacade {
             // go ahead with the FT
             final val ftSingleCreditRequestVO = nipOutwardMapper.mapFTSingleCreditRequestVO.apply(ftSingleCreditRequest);
             ftSingleCreditRequestVO.setSessionId(sessionId);
-            ftSingleCreditRequestVO.setNameEnquiryRef(neSingleResponse == null ? ftSingleCreditRequest.getNameEnquiryReference() :  neSingleResponse.getSessionId());
+            ftSingleCreditRequestVO.setNameEnquiryRef(neSingleResponse == null ? ftSingleCreditRequest.getNameEnquiryReference() :  neSingleResponse.getNameEnquiryReference());
 
             fundsTransferEntity.setPaymentStatusEnum(PENDING);
             fundsTransferEntity.setResponseCode(NIP_09.getCode());

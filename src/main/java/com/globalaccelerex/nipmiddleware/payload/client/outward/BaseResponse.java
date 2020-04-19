@@ -17,9 +17,6 @@ public class BaseResponse {
     @NotEmpty
     private String clientId;
 
-    //@NotEmpty
-    private String sessionId;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date responseTime;
 
@@ -30,8 +27,6 @@ public class BaseResponse {
     public BaseResponse(){
         responseTime = new Date();
     }
-
-
 
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;

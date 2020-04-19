@@ -50,14 +50,14 @@ public class NIPOutwardMapper {
                 .kycLevel(neSingleResponseVO.getKycLevel())
                 .build();
         neSingleResponse.setResponseCode(neSingleResponseVO.getResponseCode());
-        neSingleResponse.setSessionId(neSingleResponseVO.getSessionId());
+        neSingleResponse.setNameEnquiryReference(neSingleResponseVO.getSessionId());
         return neSingleResponse;
     };
 
     public Function<FTSingleCreditRequest, NESingleRequest> mapNESingleRequest = ftSingleCreditRequest ->{
         final val neSingleRequest = NESingleRequest.builder()
                 .accountNo(ftSingleCreditRequest.getBeneficiaryAccountNo())
-                .destinationInstitutionCode(ftSingleCreditRequest.getDestinationInstitutionCode())
+                .destinationInstitutionCode(ftSingleCreditRequest.getDestinationBankCode())
                 .build();
         return neSingleRequest;
     };
@@ -78,7 +78,7 @@ public class NIPOutwardMapper {
                 .beneficiaryBVN(ftSingleCreditRequest.getBeneficiaryBVN())
                 .beneficiaryKYCLevel(ftSingleCreditRequest.getBeneficiaryKYCLevel())
                 .channelCode(String.valueOf(CC_1.getCode()))
-                .destinationInstitutionCode(ftSingleCreditRequest.getDestinationInstitutionCode())
+                .destinationInstitutionCode(ftSingleCreditRequest.getDestinationBankCode())
                 .narration(StringUtils.substring(ftSingleCreditRequest.getNarration() ,0 ,100))
                 .originatorAccountName(ftSingleCreditRequest.getOriginatorAccountName())
                 .originatorAccountNo(ftSingleCreditRequest.getOriginatorAccountNo())
@@ -99,7 +99,7 @@ public class NIPOutwardMapper {
                 .beneficiaryKYCLevel(ftSingleCreditRequest.getBeneficiaryKYCLevel())
                 .clientId(ftSingleCreditRequest.getClientId())
                 .channelCode(String.valueOf(CC_1.getCode()))
-                .destinationInstitutionCode(ftSingleCreditRequest.getDestinationInstitutionCode())
+                .destinationInstitutionCode(ftSingleCreditRequest.getDestinationBankCode())
                 .nameEnquiryReference(ftSingleCreditRequest.getNameEnquiryReference())
                 .narration(ftSingleCreditRequest.getNarration())
                 .originatorAccountName(ftSingleCreditRequest.getOriginatorAccountName())

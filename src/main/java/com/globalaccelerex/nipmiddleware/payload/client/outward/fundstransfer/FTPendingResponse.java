@@ -10,8 +10,9 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 
 @Getter
 @Setter
-@JsonIgnoreProperties({"sessionId"})
 public class FTPendingResponse extends BaseResponse {
+
+    private String sessionId;
 
     private String paymentReference;
 

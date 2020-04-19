@@ -20,6 +20,6 @@ public class NESingleResponse extends BaseResponse {
 
     private String kycLevel;
 
-
+    private String nameEnquiryReference;
 
 }

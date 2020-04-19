@@ -17,28 +17,30 @@ import java.math.BigDecimal;
 public class FTSingleCreditRequest extends BaseRequest {
 
     @NotBlank
-    private String destinationInstitutionCode;
+    private String destinationBankCode;
 
     @NotBlank
     private String paymentReference;
 
-    private String nameEnquiryReference;
-
-    @NotBlank
-    private String beneficiaryAccountName;
-
     @NotBlank
     private String beneficiaryAccountNo;
+
+    @NotBlank
+    private String originatorAccountNo;
+
+    private String nameEnquiryReference;
+
+    private String beneficiaryAccountName;
+
+
 
     private String beneficiaryBVN; // optional
 
     private String beneficiaryKYCLevel;//optional
 
-    @NotBlank
-    private String originatorAccountName;
+    private String originatorAccountName;//optional
 
-    @NotBlank
-    private String originatorAccountNo;
+
 
     private String originatorBVN;
 

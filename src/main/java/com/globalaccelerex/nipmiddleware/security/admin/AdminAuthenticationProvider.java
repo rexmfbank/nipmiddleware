@@ -55,7 +55,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
 
     private void validateSignature(AdminAuthenticationData data) {
         if (!data.isValidSignature()) {
-            val errorResponse = new ErrorResponse(NIP_112);
+            val errorResponse = new ErrorResponse(NIP_110);
             throw new AccessControlException(errorResponse);
         }
     }

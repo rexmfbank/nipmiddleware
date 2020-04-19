@@ -93,8 +93,6 @@ public class OutwardAuthenticationFilter extends GenericFilterBean {
                                        HttpServletResponse response) throws IOException, AuthenticationException {
         String authorization = request.getHeader("Authorization");
 
-
-
         final val outwardAuthenticationData = OutwardAuthenticationData.builder()
                 .authorization(authorization)
                 .build();
