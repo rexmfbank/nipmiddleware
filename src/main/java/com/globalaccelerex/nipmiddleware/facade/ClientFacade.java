@@ -51,7 +51,6 @@ public class ClientFacade {
         clientDbService.saveClientEntity(clientEntity);
 
         final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
-        iMarker.info("::::::: JwtToken :::: " + jwtTokenStr);
 
         final val createClientResponse = new CreateClientResponse(NIP_00);
         createClientResponse.setClientId(createClientRequest.getClientId());

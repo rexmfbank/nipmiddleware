@@ -45,8 +45,6 @@ public class AdminAuthenticationData {
                 .append(encodedURL)
                 .toString();
         log.trace("cipher is "+ cipherStr + " => "+ DigestUtils.sha512Hex(cipherStr));
-        log.info("\n Signature ::: {} \n" , signature);
-        log.info("\n DigestUtils ::: {} \n" , DigestUtils.sha512Hex(cipherStr));
         return DigestUtils.sha512Hex(cipherStr).equalsIgnoreCase(signature);
 
     }

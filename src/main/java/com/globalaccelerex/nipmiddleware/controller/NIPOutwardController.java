@@ -28,43 +28,11 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 @Slf4j
 @RestController
 @RequestMapping(NIP_OUTWARD_API)
-public class NIPOutwardController {
+public class NIPOutwardController extends APIController{
 
     private final NIPOutwardFacade nipOutwardFacade;
 
     private final SessionIdUtil sessionIdUtil;
-
-
-    private OutwardAuthenticationData getPrincipal() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || auth.getPrincipal() == null){
-            return null;
-        }
-        if (!OutwardAuthenticationData.class.isInstance(auth.getPrincipal())) {
-            return null;
-        }
-        return (OutwardAuthenticationData) auth.getPrincipal();
-    }
-
-    private ResponseEntity validateClient(IMarker marker, String clientId) {
-        OutwardAuthenticationData token = getPrincipal();
-        if (token == null) {
-            marker.setMainResponse("Invalid authentication", false);
-            return new ResponseEntity(new ErrorResponse(NIP_126), HttpStatus.UNAUTHORIZED);
-        }
-        if (token.getClient() == null) {
-            marker.setMainResponse("Client not found", false);
-            return new ResponseEntity(new ErrorResponse(NIP_124), HttpStatus.UNAUTHORIZED);
-        }
-
-        if (!clientId.equalsIgnoreCase(token.getClient().getClientId())) {
-            marker.setMainResponse("Unauthorised access", false);
-            return new ResponseEntity(new ErrorResponse(NIP_127), HttpStatus.BAD_REQUEST);
-        }
-        return null;
-    }
-
-
 
     @Autowired
     public NIPOutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil) {

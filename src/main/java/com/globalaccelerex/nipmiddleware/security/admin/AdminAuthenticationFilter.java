@@ -97,8 +97,6 @@ public class AdminAuthenticationFilter extends GenericFilterBean {
                 .httpMethod(httpMethod)
                 .encodedURL(encodedURL)
                 .build();
-        log.info("\n AuthenticationData :::::: {}" , authenticationData.toString());
-        log.info("\n AuthenticationData Signature :::::: {}" , authenticationData.isValidSignature());
         val authenticationToken = new AdminAuthenticationToken(authenticationData);
         authenticationManager.authenticate(authenticationToken);
     }
