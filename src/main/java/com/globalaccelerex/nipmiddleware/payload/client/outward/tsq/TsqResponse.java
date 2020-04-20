@@ -12,6 +12,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class TsqResponse extends BaseResponse {
 
+    private String sessionId;
+
     private String destinationInstitutionCode;
 
     private String beneficiaryAccountName;

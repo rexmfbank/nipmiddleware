@@ -113,8 +113,6 @@ public enum NIPResponseCodeEnum {
 
     NIP_111("NIP_111","Authentication Error :  Access token not sent in request", FAILED),
 
-    NIP_112("NIP_112","Authentication Error :  Invalid signature sent", FAILED),
-
     NIP_113("NIP_113","Authorization Error :  Could not connect to resource", FAILED),
 
     NIP_114("NIP_114","Application  Error :  Client Details already exist in the database", FAILED),

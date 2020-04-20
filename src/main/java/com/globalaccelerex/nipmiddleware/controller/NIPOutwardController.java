@@ -82,6 +82,7 @@ public class NIPOutwardController extends APIController{
             if (!result){
                 nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
             }
+            ftPendingResponse.setSessionId(sessionId);
             ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());
             marker.setMainResponse(ftPendingResponse.toString(), false);
             return new ResponseEntity(ftPendingResponse, HttpStatus.OK);
