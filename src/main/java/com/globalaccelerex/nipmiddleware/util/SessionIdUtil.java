@@ -16,6 +16,10 @@ public class SessionIdUtil {
 
     private final NipConfig nipConfig;
 
+    String DATE_TIME_FORMAT = "yyMMddHHmmss";
+
+    int SESSION_ID_LENGTH = 12;
+
     @Autowired
     public SessionIdUtil(NipConfig nipConfig) {
         this.nipConfig = nipConfig;
@@ -24,8 +28,8 @@ public class SessionIdUtil {
     public String generateSessionId(){
         val builder = new StringBuilder();
         builder.append(nipConfig.getSenderBankCode())
-                .append(DateFormatUtils.format(new Date(),nipConfig.getDateTimeFormat()))
-                .append(RandomStringUtils.randomNumeric(nipConfig.getSessionIdLength()));
+                .append(DateFormatUtils.format(new Date(),DATE_TIME_FORMAT))
+                .append(RandomStringUtils.randomNumeric(SESSION_ID_LENGTH));
         return builder.toString();
     }
 }
