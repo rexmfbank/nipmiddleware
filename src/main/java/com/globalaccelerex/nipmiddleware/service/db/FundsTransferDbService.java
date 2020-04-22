@@ -37,11 +37,11 @@ public class FundsTransferDbService {
         }
     }
 
-    public void updateFTResponseCode(String sessionId , String responseCode){
+    public FundsTransferEntity updateFTResponseCode(String sessionId , String responseCode){
         final val fundsTransferEntity = fundsTransferRepository.findBySessionId(sessionId).get();
         fundsTransferEntity.setResponseCode(responseCode);
         fundsTransferEntity.setPaymentStatusEnum(NIPResponseCodeEnum.getPaymentStatusEnum(responseCode));
-        fundsTransferRepository.save(fundsTransferEntity);
+        return fundsTransferRepository.save(fundsTransferEntity);
     }
 
     public void saveFundsTransferEntity(FundsTransferEntity fundsTransferEntity){

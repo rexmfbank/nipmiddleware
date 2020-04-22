@@ -23,7 +23,6 @@ public class CreateClientRequest extends BaseRequest {
 
     private String businessDesc;
 
-    @NotBlank
     @URL(message = " Requires a valid callback url ")
     private String callbackUrl;
 

@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @ConfigurationProperties(prefix = "app")
@@ -29,5 +30,24 @@ public class AppConfig {
 
     @NotNull
     private String jwtToken;
+
+    @NotNull
+    @Valid
+    private Event event;
+
+    @Data
+    public static class Event {
+
+        @NotNull
+        private Queue queue;
+    }
+
+    @Data
+    public static class Queue {
+
+        @NotNull
+        private String name;
+
+    }
 
 }

@@ -21,12 +21,6 @@ public class NipConfig {
     private String senderBankCode;
 
     @NotNull
-    private String dateTimeFormat;
-
-    @NotNull
-    private int sessionIdLength;
-
-    @NotNull
     private String ssmPrivateKeyPath;
 
     @NotNull
