@@ -20,6 +20,7 @@ public class SessionIdUtil {
 
     int SESSION_ID_LENGTH = 12;
 
+
     @Autowired
     public SessionIdUtil(NipConfig nipConfig) {
         this.nipConfig = nipConfig;
