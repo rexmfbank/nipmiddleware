@@ -48,9 +48,10 @@ public class NIPOutwardMapper {
                 .accountNo(neSingleResponseVO.getAccountNo())
                 .bankVerificationNo(neSingleResponseVO.getBvn())
                 .kycLevel(neSingleResponseVO.getKycLevel())
+                .destinationInstitutionCode(neSingleResponseVO.getDestinationInstitutionCode())
+                .nameEnquiryReference(neSingleResponseVO.getSessionId())
                 .build();
         neSingleResponse.setResponseCode(neSingleResponseVO.getResponseCode());
-        neSingleResponse.setNameEnquiryReference(neSingleResponseVO.getSessionId());
         return neSingleResponse;
     };
 

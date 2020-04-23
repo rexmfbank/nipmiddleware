@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum QueueMode {
 
+    TSQ("TSQ"),
     CALLBACK("CALLBACK");
 
     private QueueMode(String type ){

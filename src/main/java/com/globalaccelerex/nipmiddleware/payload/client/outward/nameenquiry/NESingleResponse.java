@@ -22,4 +22,6 @@ public class NESingleResponse extends BaseResponse {
 
     private String nameEnquiryReference;
 
+    private String destinationInstitutionCode;
+
 }

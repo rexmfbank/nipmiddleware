@@ -10,7 +10,9 @@ import java.util.Optional;
 @Repository
 public interface FundsTransferRepository extends PagingAndSortingRepository<FundsTransferEntity,Integer> {
 
-    Optional<FundsTransferEntity> findBySessionId(String sessionId);
+    Optional<FundsTransferEntity> findBySessionIdAndClientId(String sessionId, String clientId);
 
     Optional<FundsTransferEntity> findByClientIdAndPaymentReference(String clientId, String paymentReference);
+
+
 }
