@@ -28,6 +28,11 @@ public class FundsTransferDbService {
         return fundsTransferEntityOpt.isPresent();
     }
 
+    public FundsTransferEntity findRecord(String clientId, String sessionId){
+        val fundsTransferEntityOpt = fundsTransferRepository.findBySessionIdAndClientId(sessionId, clientId);
+        return fundsTransferEntityOpt.get();
+    }
+
     public FundsTransferEntity findRecord(String clientId, String paymentReference, IMarker iMarker){
         final val fundsTransferEntityOpt = fundsTransferRepository.findByClientIdAndPaymentReference(clientId,paymentReference);
         if(fundsTransferEntityOpt.isPresent()){
@@ -37,8 +42,8 @@ public class FundsTransferDbService {
         }
     }
 
-    public FundsTransferEntity updateFTResponseCode(String sessionId , String responseCode){
-        final val fundsTransferEntity = fundsTransferRepository.findBySessionId(sessionId).get();
+    public FundsTransferEntity updateFTResponseCode(String sessionId , String responseCode , String clientId){
+        final val fundsTransferEntity = fundsTransferRepository.findBySessionIdAndClientId(sessionId,clientId).get();
         fundsTransferEntity.setResponseCode(responseCode);
         fundsTransferEntity.setPaymentStatusEnum(NIPResponseCodeEnum.getPaymentStatusEnum(responseCode));
         return fundsTransferRepository.save(fundsTransferEntity);
