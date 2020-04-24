@@ -16,16 +16,16 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class FTSingleCreditRequest extends BaseRequest {
 
-    @NotBlank
+    @NotBlank (message = "destination bank code is required")
     private String destinationBankCode;
 
-    @NotBlank
+    @NotBlank(message = "payment reference is required")
     private String paymentReference;
 
-    @NotBlank
+    @NotBlank(message = "beneficiary account number is required")
     private String beneficiaryAccountNo;
 
-    @NotBlank
+    @NotBlank(message = "originator account no is required")
     private String originatorAccountNo;
 
     private String nameEnquiryReference;
@@ -48,7 +48,7 @@ public class FTSingleCreditRequest extends BaseRequest {
 
     private String narration;//max 100 , optional
 
-    @DecimalMin(value = "0.00", inclusive = true)
+    @DecimalMin(value = "0.00", inclusive = true ,message = "AMount can not be less that zero")
     private BigDecimal amount;
 
     private String transactionLocation;

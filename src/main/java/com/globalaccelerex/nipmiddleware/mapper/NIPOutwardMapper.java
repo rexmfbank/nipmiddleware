@@ -37,7 +37,7 @@ public class NIPOutwardMapper {
         NESingleRequestVO requestVO = new NESingleRequestVO();
         requestVO.setAccountNo(neSingleRequest.getAccountNo());
         requestVO.setChannelCode(String.valueOf(CC_1.getCode()));
-        requestVO.setDestinationInstitutionCode(neSingleRequest.getDestinationInstitutionCode());
+        requestVO.setDestinationInstitutionCode(neSingleRequest.getDestinationBankCode());
         requestVO.setSessionId(sessionIdUtil.generateSessionId());
         return requestVO;
     };
@@ -58,7 +58,7 @@ public class NIPOutwardMapper {
     public Function<FTSingleCreditRequest, NESingleRequest> mapNESingleRequest = ftSingleCreditRequest ->{
         final val neSingleRequest = NESingleRequest.builder()
                 .accountNo(ftSingleCreditRequest.getBeneficiaryAccountNo())
-                .destinationInstitutionCode(ftSingleCreditRequest.getDestinationBankCode())
+                .destinationBankCode(ftSingleCreditRequest.getDestinationBankCode())
                 .build();
         return neSingleRequest;
     };

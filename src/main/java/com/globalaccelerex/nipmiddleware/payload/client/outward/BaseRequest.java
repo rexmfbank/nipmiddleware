@@ -16,7 +16,7 @@ public class BaseRequest {
     @JsonIgnore
     private IMarker marker;
 
-    @NotEmpty
+    @NotEmpty(message = "clientId is")
     private String clientId;
 
 }

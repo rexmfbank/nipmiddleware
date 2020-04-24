@@ -21,7 +21,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.TimeZone;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00;
+import static com.globalaccelerex.nipmiddleware.messaging.SQSService.DEFAULT_MAX_WAIT_IN_SECONDS;
+
 
 @Service
 public class ClientCallbackService {
@@ -40,7 +41,7 @@ public class ClientCallbackService {
 
     private final ClientDbService clientDbService;
 
-
+    public static final int DEFAULT_QUEUE_WAIT_PERIOD = 90;
 
     private static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("Africa/Lagos");
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -84,11 +85,15 @@ public class ClientCallbackService {
             marker.info("Error occurred while doing callback  ", ex);
             queuePayload.setReQueue(true);
             marker.setResponse(ex.getMessage());
-            queuePayload.setWaitDuration(queuePayload.getWaitDuration());
-            return queuePayload;
+            queuePayload.setWaitDuration((queuePayload.getWaitDuration() == 0) ? DEFAULT_QUEUE_WAIT_PERIOD : queuePayload.getWaitDuration() + DEFAULT_QUEUE_WAIT_PERIOD);
+
+        }finally {
+            if(queuePayload.getWaitDuration() > DEFAULT_MAX_WAIT_IN_SECONDS){
+                queuePayload.setReQueue(false);
+                queuePayload.setWaitDuration(0);
+            }
         }
-        queuePayload.setReQueue(false);
-        queuePayload.setWaitDuration(0);
+
         return queuePayload;
     }
 
@@ -140,11 +145,13 @@ public class ClientCallbackService {
             marker.info("Error occurred while handling FT  ", ex);
             queuePayload.setReQueue(true);
             marker.setResponse(ex.getMessage());
-            queuePayload.setWaitDuration(queuePayload.getWaitDuration());
-            return queuePayload;
+            queuePayload.setWaitDuration((queuePayload.getWaitDuration() == 0) ? DEFAULT_QUEUE_WAIT_PERIOD : queuePayload.getWaitDuration() + DEFAULT_QUEUE_WAIT_PERIOD);
+        }finally {
+            if(queuePayload.getWaitDuration() > DEFAULT_MAX_WAIT_IN_SECONDS){
+                queuePayload.setReQueue(false);
+                queuePayload.setWaitDuration(0);
+            }
         }
-        queuePayload.setReQueue(false);
-        queuePayload.setWaitDuration(0);
         return queuePayload;
     }
 

@@ -185,19 +185,18 @@ public class NIPOutwardFacade {
             fundTransferSingleItemDc.setRequest(encryptedXmlString);
             iMarker.info(" Sending Request to NIPOutwardWS ");
             final val fundTransferSingleItemDcResponse = nipOutwardWS.fundsTransfer(iMarker, fundTransferSingleItemDc);
-            iMarker.info(" Received  Response from NIPOutwardWS ");
-            if(StringUtils.isEmpty(fundTransferSingleItemDcResponse.getReturn())){
-                //update db
-                fundsTransferDbService.updateFTResponseCode(sessionId, NIP_106.getCode(),clientId);
-                //write a response to SQS to do Tsq
-                writeToSQS(clientId,TSQ, sessionId);
-                return;
-            }
+            iMarker.info(" Received  Response from NIPOutwardWS >>>>> " + fundTransferSingleItemDcResponse.getReturn());
+//            if(StringUtils.isEmpty(fundTransferSingleItemDcResponse.getReturn())){
+//                //update db
+//                fundsTransferDbService.updateFTResponseCode(sessionId, NIP_106.getCode(),clientId);
+//                //write a response to SQS to do Tsq
+//                writeToSQS(clientId,TSQ, sessionId);
+//                return;
+//            }
             final val ftSingleItemDcResponseXmlString = decryptString(fundTransferSingleItemDcResponse.getReturn());
             iMarker.setResponse(" Clear  Response from NIPOutwardWS : FT  " + ftSingleItemDcResponseXmlString);
 
             final val ftSingleCreditResponseVO = xmlUtil.unmarshal(ftSingleItemDcResponseXmlString, FTSingleCreditResponseVO.class);
-
 
             //write a response to SQS to do Tsq
             writeToSQS(clientId,TSQ, sessionId);
