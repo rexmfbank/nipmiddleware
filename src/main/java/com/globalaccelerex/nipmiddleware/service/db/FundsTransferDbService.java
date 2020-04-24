@@ -43,9 +43,11 @@ public class FundsTransferDbService {
     }
 
     public FundsTransferEntity updateFTResponseCode(String sessionId , String responseCode , String clientId){
-        final val fundsTransferEntity = fundsTransferRepository.findBySessionIdAndClientId(sessionId,clientId).get();
-        fundsTransferEntity.setResponseCode(responseCode);
-        fundsTransferEntity.setPaymentStatusEnum(NIPResponseCodeEnum.getPaymentStatusEnum(responseCode));
+        final val fundsTransferEntity = fundsTransferRepository.findBySessionIdAndClientId(sessionId,clientId).orElse(null);
+        if (fundsTransferEntity != null){
+            fundsTransferEntity.setResponseCode(responseCode);
+            fundsTransferEntity.setPaymentStatusEnum(NIPResponseCodeEnum.getPaymentStatusEnum(responseCode));
+        }
         return fundsTransferRepository.save(fundsTransferEntity);
     }
 
