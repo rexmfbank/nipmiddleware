@@ -15,10 +15,10 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode(callSuper = true)
 public class CreateClientRequest extends BaseRequest {
 
-    @NotBlank
+    @NotBlank(message = " Client Name required ")
     private String clientName;
 
-    @NotBlank
+    @NotBlank(message = " client password required ")
     private String clientPassword; // clientId & clientPassword ll be used to confirm the client
 
     private String businessDesc;

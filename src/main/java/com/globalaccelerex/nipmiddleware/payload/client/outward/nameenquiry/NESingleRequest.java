@@ -12,10 +12,10 @@ import javax.validation.constraints.NotEmpty;
 @EqualsAndHashCode(callSuper = true)
 public class NESingleRequest extends BaseRequest {
 
-    @NotEmpty
-    private String destinationInstitutionCode;
+    @NotEmpty(message = "destination bank code is required")
+    private String destinationBankCode;
 
-    @NotEmpty
+    @NotEmpty(message = "Account No is required")
     private String accountNo;
 
 

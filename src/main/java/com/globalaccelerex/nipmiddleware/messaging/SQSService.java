@@ -23,7 +23,8 @@ public class SQSService {
     @Autowired
     QueueMessagingTemplate messagingTemplate;
 
-    public final static int DEFAULT_MAX_WAIT_IN_SECONDS = 60;
+    public final static int DEFAULT_MAX_WAIT_IN_SECONDS = 150;
+
 
     @Autowired
     AppConfig config;
