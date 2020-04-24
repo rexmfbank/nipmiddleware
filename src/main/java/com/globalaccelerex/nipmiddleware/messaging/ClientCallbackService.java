@@ -129,7 +129,7 @@ public class ClientCallbackService {
             //update db
             fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId );
 
-            if (fundsTransferEntity != null){
+            if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode())){
                 val clientEntity = clientDbService.findClientByClientId(clientId);
                 val callbackUrl = clientEntity.getCallbackUrl();
 
