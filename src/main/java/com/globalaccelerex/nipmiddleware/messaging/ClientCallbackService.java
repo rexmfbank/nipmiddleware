@@ -109,6 +109,8 @@ public class ClientCallbackService {
 
             /*
             ************************** SIMULATING RESPONSE FROM NIBSS **************************
+
+             */
             val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(marker, txnStatusQuerySingleitem);
             val tsqSingleItemResponseXmlString = ssmUtil.decryptResponse(txnStatusQuerySingleItemResponse.getReturn());
             marker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);
@@ -117,8 +119,8 @@ public class ClientCallbackService {
             marker.info(" TsqSingleItemResponseVO " + tsqSingleItemResponseVO.toString());
 
             val responseCode = tsqSingleItemResponseVO.getResponseCode();
-            */
-            val responseCode = NIP_00.getCode();
+
+           // val responseCode = NIP_00.getCode();
             //update db
             fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId );
 

@@ -175,6 +175,7 @@ public class NIPOutwardFacade {
 
             /*
             ************************** SIMULATING RESPONSE FROM NIBSS **************************
+             */
             String ftSingleCreditRequestXmlString = xmlUtil.marshal(FTSingleCreditRequestVO.class, ftSingleCreditRequestVO);
             iMarker.setRequest(" Clear ftSingleCreditRequestXml String ", ftSingleCreditRequestXmlString);
             final val encryptedXmlString = encryptString(ftSingleCreditRequestXmlString);
@@ -197,7 +198,7 @@ public class NIPOutwardFacade {
 
             final val ftSingleCreditResponseVO = xmlUtil.unmarshal(ftSingleItemDcResponseXmlString, FTSingleCreditResponseVO.class);
 
-             */
+
             //write a response to SQS to do Tsq
             writeToSQS(clientId,TSQ, sessionId);
 
