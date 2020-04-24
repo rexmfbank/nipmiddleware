@@ -6,6 +6,7 @@ import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.repository.FundsTransferRepository;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,10 +44,15 @@ public class FundsTransferDbService {
     }
 
     public FundsTransferEntity updateFTResponseCode(String sessionId , String responseCode , String clientId){
-        final val fundsTransferEntity = fundsTransferRepository.findBySessionIdAndClientId(sessionId,clientId).get();
-        fundsTransferEntity.setResponseCode(responseCode);
-        fundsTransferEntity.setPaymentStatusEnum(NIPResponseCodeEnum.getPaymentStatusEnum(responseCode));
-        return fundsTransferRepository.save(fundsTransferEntity);
+        final val fundsTransferEntity = fundsTransferRepository.findBySessionIdAndClientId(sessionId,clientId).orElse(new FundsTransferEntity());
+        if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode())){
+            fundsTransferEntity.setResponseCode(responseCode);
+            fundsTransferEntity.setPaymentStatusEnum(NIPResponseCodeEnum.getPaymentStatusEnum(responseCode));
+            return fundsTransferRepository.save(fundsTransferEntity);
+        }
+        else {
+            return new FundsTransferEntity();
+        }
     }
 
     public void saveFundsTransferEntity(FundsTransferEntity fundsTransferEntity){

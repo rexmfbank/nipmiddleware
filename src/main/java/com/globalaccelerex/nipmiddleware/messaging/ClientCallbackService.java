@@ -129,17 +129,19 @@ public class ClientCallbackService {
             //update db
             fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId );
 
-            val clientEntity = clientDbService.findClientByClientId(clientId);
-            val callbackUrl = clientEntity.getCallbackUrl();
+            if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode())){
+                val clientEntity = clientDbService.findClientByClientId(clientId);
+                val callbackUrl = clientEntity.getCallbackUrl();
 
-            if(StringUtils.isNotBlank(callbackUrl)) {
-                val tsqResponse = nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
-                tsqResponse.setClientId(clientId);
+                if(StringUtils.isNotBlank(callbackUrl)) {
+                    val tsqResponse = nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
+                    tsqResponse.setClientId(clientId);
 
-                marker.setRequest(callbackUrl, OBJECT_MAPPER.writeValueAsString(tsqResponse));
-                final val tsqCallbackResponse = hTTPRestTemplate.getClient()
-                        .postForObject(HTTPHelpers.buildURI(callbackUrl, ""), tsqResponse, String.class);
-                marker.setResponse(tsqCallbackResponse.toString());
+                    marker.setRequest(callbackUrl, OBJECT_MAPPER.writeValueAsString(tsqResponse));
+                    final val tsqCallbackResponse = hTTPRestTemplate.getClient()
+                            .postForObject(HTTPHelpers.buildURI(callbackUrl, ""), tsqResponse, String.class);
+                    marker.setResponse(tsqCallbackResponse.toString());
+                }
             }
         }catch (Exception ex){
             marker.info("Error occurred while handling FT  ", ex);
