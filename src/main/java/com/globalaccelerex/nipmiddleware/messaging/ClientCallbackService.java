@@ -41,7 +41,7 @@ public class ClientCallbackService {
 
     private final ClientDbService clientDbService;
 
-    public static final int DEFAULT_QUEUE_WAIT_PERIOD = 90;
+    public static final int DEFAULT_QUEUE_WAIT_PERIOD = 30;
 
     private static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("Africa/Lagos");
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();

@@ -48,7 +48,7 @@ public class FTSingleCreditRequest extends BaseRequest {
 
     private String narration;//max 100 , optional
 
-    @DecimalMin(value = "0.00", inclusive = true ,message = "AMount can not be less that zero")
+    @DecimalMin(value = "0.00", inclusive = true ,message = "amount can not be less that zero")
     private BigDecimal amount;
 
     private String transactionLocation;
