@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @ToString
+@JsonIgnoreProperties({"clientPassword"})
 @EqualsAndHashCode(callSuper = true)
 public class CreateClientRequest extends BaseRequest {
 
@@ -19,7 +20,7 @@ public class CreateClientRequest extends BaseRequest {
     private String clientName;
 
     @NotBlank(message = " client password required ")
-    private String clientPassword; // clientId & clientPassword ll be used to confirm the client
+    private String clientPassword;
 
     private String businessDesc;
 

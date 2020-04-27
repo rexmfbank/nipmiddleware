@@ -11,7 +11,7 @@ public class MockFTResponse {
                 .accountName("Ayodeji Ilori")
                 .accountNo(neSingleRequest.getAccountNo())
                 .bankVerificationNo("2136748372615")
-                .destinationInstitutionCode(neSingleRequest.getDestinationInstitutionCode())
+                .destinationInstitutionCode(neSingleRequest.getDestinationBankCode())
                 .kycLevel("1")
                 .nameEnquiryReference(String.valueOf(System.currentTimeMillis()))
                 .build();

@@ -2,13 +2,11 @@ package com.globalaccelerex.nipmiddleware.security.outward;
 
 import com.globalaccelerex.nipmiddleware.entity.ClientEntity;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
-import com.globalaccelerex.nipmiddleware.security.AccessControlException;
+import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlException;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Base64;

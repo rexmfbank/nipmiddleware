@@ -2,7 +2,7 @@ package com.globalaccelerex.nipmiddleware.security.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
-import com.globalaccelerex.nipmiddleware.security.AccessControlException;
+import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;

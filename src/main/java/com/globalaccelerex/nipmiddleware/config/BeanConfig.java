@@ -1,9 +1,8 @@
 package com.globalaccelerex.nipmiddleware.config;
 
-import com.globalaccelerex.nipmiddleware.security.AccessControlHttpClient;
-import com.globalaccelerex.nipmiddleware.security.AccessControlRestTemplate;
+import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlHttpClient;
+import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlRestTemplate;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;

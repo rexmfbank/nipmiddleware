@@ -1,9 +1,9 @@
 package com.globalaccelerex.nipmiddleware.security.admin;
 
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
-import com.globalaccelerex.nipmiddleware.security.AccessControlException;
-import com.globalaccelerex.nipmiddleware.security.AccessControlHttpClient;
-import com.globalaccelerex.nipmiddleware.security.AccessControlResponse;
+import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlException;
+import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlHttpClient;
+import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlResponse;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
