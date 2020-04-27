@@ -2,17 +2,14 @@ package com.globalaccelerex.nipmiddleware.security.outward;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
-import com.globalaccelerex.nipmiddleware.security.AccessControlException;
+import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlException;
 import com.google.common.cache.CacheLoader;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,7 +18,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.TimeZone;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_109;

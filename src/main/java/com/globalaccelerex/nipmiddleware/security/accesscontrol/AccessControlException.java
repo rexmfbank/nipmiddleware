@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.security;
+package com.globalaccelerex.nipmiddleware.security.accesscontrol;
 
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
 import lombok.*;

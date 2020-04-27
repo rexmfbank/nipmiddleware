@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.security;
+package com.globalaccelerex.nipmiddleware.security.accesscontrol;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;

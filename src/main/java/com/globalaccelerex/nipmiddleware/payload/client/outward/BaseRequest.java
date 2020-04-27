@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.payload.client.outward;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.globalaccelerex.nipmiddleware.annotation.IsAlphaNumeric;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class BaseRequest {
     @JsonIgnore
     private IMarker marker;
 
+    @IsAlphaNumeric
     @NotEmpty(message = "clientId is required")
     private String clientId;
 
