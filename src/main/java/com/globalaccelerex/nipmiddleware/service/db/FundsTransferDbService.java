@@ -42,6 +42,16 @@ public class FundsTransferDbService {
         }
     }
 
+    public FundsTransferEntity findRecord(String clientId, String paymentReference, String sessionId, IMarker iMarker){
+        final val fundsTransferEntityOpt = fundsTransferRepository
+                .findByClientIdAndPaymentReferenceAndSessionId(clientId,paymentReference,sessionId);
+        if(fundsTransferEntityOpt.isPresent()){
+            return fundsTransferEntityOpt.get();
+        }else{
+            throw new NIPMiddleWareAPIException(NIP_15,iMarker);
+        }
+    }
+
     public FundsTransferEntity updateFTResponseCode(String sessionId , String responseCode , String clientId){
         final val fundsTransferEntity = fundsTransferRepository.findBySessionIdAndClientId(sessionId,clientId).get();
         fundsTransferEntity.setResponseCode(responseCode);

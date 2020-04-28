@@ -6,6 +6,7 @@ import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
 import com.globalaccelerex.nipmiddleware.model.Response;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.actuate.autoconfigure.web.servlet.ManagementErrorEndpoint;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.validation.BindException;
@@ -44,16 +45,14 @@ public class GenericExceptionHandler {
 
         marker.info("processBeanValidationError  => " + printStackTrace(ex));
         List<FieldError> error = ex.getBindingResult().getFieldErrors();
-        if (error.isEmpty()){
-            return new ErrorResponse(NIP_100);
-        }else{
-            if (StringUtils.length(error.get(0).getDefaultMessage()) > 70){
-                return new ErrorResponse(NIP_100, "Request validation failed rejected value "+ error.get(0).getRejectedValue().toString());
-            }else {
-                return new ErrorResponse(NIP_100,  error.get(0).getRejectedValue().toString());
-            }
 
+        if (!error.isEmpty()){
+            for(FieldError anError : error){
+                marker.info("Field Name ::: [ " + anError.getField() + " ]  message ::: [ " + anError.getDefaultMessage() + " ] ");
+            }
+//
         }
+        return new ErrorResponse(NIP_100);
     }
 
     @ExceptionHandler(HttpMessageConversionException.class)
