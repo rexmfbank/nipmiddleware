@@ -22,8 +22,8 @@ public class FTSingleCreditRequest extends BaseRequest {
     @NotBlank(message = "payment reference is required")
     private String paymentReference;
 
-    @NotBlank(message = "beneficiary account number is required")
-    private String beneficiaryAccountNo;
+    @NotBlank(message = "destination account number is required")
+    private String destinationAccountNo;
 
     @NotBlank(message = "originator account no is required")
     private String originatorAccountNo;
