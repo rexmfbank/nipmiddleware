@@ -22,8 +22,8 @@ public class ClientDbService {
         this.clientRepository = clientRepository;
     }
 
-    public boolean findClientByClientIdOrClientName(String clientId , String clientName){
-        final val optClientEntity = clientRepository.findByClientIdOrClientName(clientId, clientName);
+    public boolean findClientByClientIdOrClientName(String clientId ){
+        final val optClientEntity = clientRepository.findByClientId(clientId);
         return optClientEntity.isPresent();
     }
 
