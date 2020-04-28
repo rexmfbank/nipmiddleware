@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @ToString
-@JsonIgnoreProperties({"clientPassword"})
 @EqualsAndHashCode(callSuper = true)
 public class CreateClientRequest extends BaseRequest {
 

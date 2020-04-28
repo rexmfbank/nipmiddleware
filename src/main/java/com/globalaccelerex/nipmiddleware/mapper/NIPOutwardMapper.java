@@ -57,7 +57,7 @@ public class NIPOutwardMapper {
 
     public Function<FTSingleCreditRequest, NESingleRequest> mapNESingleRequest = ftSingleCreditRequest ->{
         final val neSingleRequest = NESingleRequest.builder()
-                .accountNo(ftSingleCreditRequest.getBeneficiaryAccountNo())
+                .accountNo(ftSingleCreditRequest.getDestinationAccountNo())
                 .destinationBankCode(ftSingleCreditRequest.getDestinationBankCode())
                 .build();
         return neSingleRequest;
@@ -75,7 +75,7 @@ public class NIPOutwardMapper {
         return FTSingleCreditRequestVO.builder()
                 .amount(ftSingleCreditRequest.getAmount().toPlainString())
                 .beneficiaryAccountName(ftSingleCreditRequest.getBeneficiaryAccountName())
-                .beneficiaryAccountNo(ftSingleCreditRequest.getBeneficiaryAccountNo())
+                .beneficiaryAccountNo(ftSingleCreditRequest.getDestinationAccountNo())
                 .beneficiaryBVN(ftSingleCreditRequest.getBeneficiaryBVN())
                 .beneficiaryKYCLevel(ftSingleCreditRequest.getBeneficiaryKYCLevel())
                 .channelCode(String.valueOf(CC_1.getCode()))
@@ -95,7 +95,7 @@ public class NIPOutwardMapper {
         final val fundsTransferEntity = FundsTransferEntity.builder()
                 .amount(ftSingleCreditRequest.getAmount())
                 .beneficiaryAccountName(ftSingleCreditRequest.getBeneficiaryAccountName())
-                .beneficiaryAccountNo(ftSingleCreditRequest.getBeneficiaryAccountNo())
+                .beneficiaryAccountNo(ftSingleCreditRequest.getDestinationAccountNo())
                 .beneficiaryBVN(ftSingleCreditRequest.getBeneficiaryBVN())
                 .beneficiaryKYCLevel(ftSingleCreditRequest.getBeneficiaryKYCLevel())
                 .clientId(ftSingleCreditRequest.getClientId())

@@ -36,11 +36,11 @@ public class ClientController {
         IMarker marker = Marker.fromString();
         marker.info("<<<<<<<< createClient  >>>>>>>>");
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                build().toUri().toASCIIString(), createClientRequest.toString(), false);
+                build().toUri().toASCIIString(), createClientRequest.toString(), true);
         createClientRequest.setMarker(marker);
         try{
             final val createClientResponse = clientFacade.createClient(createClientRequest);
-            marker.setMainResponse(createClientResponse.toString(), false);
+            marker.setMainResponse(createClientResponse.toString(), true);
             return new ResponseEntity(createClientResponse, HttpStatus.OK);
         }finally {
             marker.done();
