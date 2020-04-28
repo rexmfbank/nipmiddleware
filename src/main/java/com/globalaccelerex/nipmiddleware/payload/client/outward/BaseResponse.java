@@ -33,10 +33,6 @@ public class BaseResponse {
         this.responseDescription = NIPResponseCodeEnum.getResponseDescription(responseCode).getDescription();
     }
 
-    @JsonIgnore
-    public boolean isSuccessResponse(){
-        return StringUtils.equalsIgnoreCase(responseCode,NIPResponseCodeEnum.NIP_00.getCode()) ;
-    }
 
 }
 

@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.facade;
 
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
+import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.mapper.NIPOutwardMapper;
@@ -124,7 +125,6 @@ public class NIPOutwardFacade {
 
                 neSingleResponse = doNameEnquiry(neSingleRequest);
 
-
                 fundsTransferEntity.setNameEnquiryReference(neSingleResponse.getNameEnquiryReference());
                 if(StringUtils.isNotEmpty(ftSingleCreditRequest.getBeneficiaryBVN()) && !StringUtils.equalsIgnoreCase(ftSingleCreditRequest.getBeneficiaryBVN(),neSingleResponse.getBankVerificationNo())){
                     //the supplied BVN and the NIBSS BVN are not the same
@@ -136,7 +136,7 @@ public class NIPOutwardFacade {
                     writeToSQS(clientId,CALLBACK, sessionId);
                     return;
                 }
-                if(StringUtils.isEmpty(neSingleResponse.getAccountName()) || (!neSingleResponse.isSuccessResponse())){
+                if(StringUtils.isEmpty(neSingleResponse.getAccountName()) || (!NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode()))){
                     //discontinue FT since we don't have a response as regards the beneficiary account name
                     //update the db
                     fundsTransferEntity.setResponseCode(NIP_105.getCode());
@@ -146,14 +146,17 @@ public class NIPOutwardFacade {
                     writeToSQS(clientId,CALLBACK, sessionId);
                     return;
                 }
+                ftSingleCreditRequest.setBeneficiaryBVN(neSingleResponse.getBankVerificationNo());
+                ftSingleCreditRequest.setBeneficiaryKYCLevel(neSingleResponse.getKycLevel());
             }
         }catch (Exception exception){
+
             iMarker.info(exception.getMessage(),exception);
             fundsTransferEntity.setResponseCode(NIP_105.getCode());
             fundsTransferEntity.setPaymentStatusEnum(FAILED);
             fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
             //write a response to SQS to do client callback
-            writeToSQS(clientId,CALLBACK, sessionId);
+             writeToSQS(clientId,CALLBACK, sessionId);
             return;
         }
 
@@ -162,25 +165,24 @@ public class NIPOutwardFacade {
             // go ahead with the FT
             final val ftSingleCreditRequestVO = nipOutwardMapper.mapFTSingleCreditRequestVO.apply(ftSingleCreditRequest);
             ftSingleCreditRequestVO.setSessionId(sessionId);
-            log.info("FTSingleRequest NameEnquiryRef ::::::: {}" , ftSingleCreditRequest.getNameEnquiryReference());
-            log.info("NeSingleResponse NameEnquiryRef :::::: {}" , StringUtils.defaultIfBlank(neSingleResponse.getNameEnquiryReference() ,"Not Available"));
-            ftSingleCreditRequestVO.setNameEnquiryRef(fundsTransferEntity.getNameEnquiryReference());
+            ftSingleCreditRequestVO.setNameEnquiryRef(StringUtils.defaultIfBlank(ftSingleCreditRequest.getNameEnquiryReference() ,neSingleResponse.getNameEnquiryReference()));
 
+            fundsTransferEntity.setBeneficiaryBVN(neSingleResponse.getBankVerificationNo());
+            fundsTransferEntity.setBeneficiaryKYCLevel(neSingleResponse.getKycLevel());
             fundsTransferEntity.setPaymentStatusEnum(PENDING);
             fundsTransferEntity.setResponseCode(NIP_09.getCode());
             fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
 
-
             String ftSingleCreditRequestXmlString = xmlUtil.marshal(FTSingleCreditRequestVO.class, ftSingleCreditRequestVO);
-            log.info(" Clear ftSingleCreditRequestXml String  {}", ftSingleCreditRequestXmlString);
+            iMarker.info(" Clear ftSingleCreditRequestXml String  " + ftSingleCreditRequestXmlString);
             final val encryptedXmlString = encryptString(ftSingleCreditRequestXmlString);
 
 
             final val fundTransferSingleItemDc = new FundtransfersingleitemDc();
             fundTransferSingleItemDc.setRequest(encryptedXmlString);
-            log.info(" Sending FT Request to NIPOutwardWS ");
+            iMarker.info(" Sending FT Request to NIPOutwardWS ");
             final val fundTransferSingleItemDcResponse = nipOutwardWS.fundsTransfer(iMarker, fundTransferSingleItemDc);
-            log.info(" Received  Response from NIPOutwardWS >>>>> {}" + fundTransferSingleItemDcResponse.getReturn());
+            iMarker.info(" Received  Response from NIPOutwardWS >>>>> " + fundTransferSingleItemDcResponse.getReturn());
             if(StringUtils.isEmpty(fundTransferSingleItemDcResponse.getReturn())){
                 //update db
                 log.info(" Received  No Response from NIPOutwardWS  " );
@@ -190,7 +192,7 @@ public class NIPOutwardFacade {
                 return;
             }
             final val ftSingleItemDcResponseXmlString = decryptString(fundTransferSingleItemDcResponse.getReturn());
-            log.info(" Clear  Response from NIPOutwardWS : FT  {} " + ftSingleItemDcResponseXmlString);
+            iMarker.info(" Clear  Response from NIPOutwardWS : FT   " + ftSingleItemDcResponseXmlString);
 
             final val ftSingleCreditResponseVO = xmlUtil.unmarshal(ftSingleItemDcResponseXmlString, FTSingleCreditResponseVO.class);
             iMarker.setResponse(" Response from NIPOutwardWS : FT  " + ftSingleCreditResponseVO.toString());
