@@ -42,7 +42,7 @@ public class ClientFacade {
         iMarker.info("::::::: Handling Create Client ::::::: ");
         final val clientName = createClientRequest.getClientName();
         final val clientId = createClientRequest.getClientId();
-        final val output = clientDbService.findClientByClientIdOrClientName(clientId, clientName);
+        final val output = clientDbService.findClientByClientIdOrClientName(clientId);
 
         if(output){
             throw new NIPMiddleWareAPIException(NIP_114,iMarker);

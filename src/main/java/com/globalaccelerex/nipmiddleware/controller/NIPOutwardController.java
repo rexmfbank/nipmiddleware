@@ -91,8 +91,8 @@ public class NIPOutwardController extends APIController{
         }
     }
 
-    @GetMapping(TSQ)
-    public ResponseEntity<?> doTsq(@Valid @ModelAttribute TsqRequest tsqRequest){
+    @PostMapping(TSQ)
+    public ResponseEntity<?> doTsq(@Valid @RequestBody TsqRequest tsqRequest){
         IMarker marker = Marker.fromString();
         marker.info("<<<<<<<< doTsq >>>>>>>>");
         try{
