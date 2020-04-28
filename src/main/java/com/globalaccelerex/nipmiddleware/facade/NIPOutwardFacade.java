@@ -162,9 +162,9 @@ public class NIPOutwardFacade {
             // go ahead with the FT
             final val ftSingleCreditRequestVO = nipOutwardMapper.mapFTSingleCreditRequestVO.apply(ftSingleCreditRequest);
             ftSingleCreditRequestVO.setSessionId(sessionId);
-            iMarker.info("FTSingleRequest NameEnquiryRef ::::::: " + ftSingleCreditRequest.getNameEnquiryReference());
-            iMarker.info("NeSingleResponse NameEnquiryRef :::::: " + StringUtils.defaultIfBlank(neSingleResponse.getNameEnquiryReference() ,"Not Available"));
-            ftSingleCreditRequestVO.setNameEnquiryRef(neSingleResponse == null ? ftSingleCreditRequest.getNameEnquiryReference() :  neSingleResponse.getNameEnquiryReference());
+            log.info("FTSingleRequest NameEnquiryRef ::::::: {}" , ftSingleCreditRequest.getNameEnquiryReference());
+            log.info("NeSingleResponse NameEnquiryRef :::::: {}" , StringUtils.defaultIfBlank(neSingleResponse.getNameEnquiryReference() ,"Not Available"));
+            ftSingleCreditRequestVO.setNameEnquiryRef(fundsTransferEntity.getNameEnquiryReference());
 
             fundsTransferEntity.setPaymentStatusEnum(PENDING);
             fundsTransferEntity.setResponseCode(NIP_09.getCode());
@@ -172,25 +172,25 @@ public class NIPOutwardFacade {
 
 
             String ftSingleCreditRequestXmlString = xmlUtil.marshal(FTSingleCreditRequestVO.class, ftSingleCreditRequestVO);
-            iMarker.info(" Clear ftSingleCreditRequestXml String "+ ftSingleCreditRequestXmlString);
+            log.info(" Clear ftSingleCreditRequestXml String  {}", ftSingleCreditRequestXmlString);
             final val encryptedXmlString = encryptString(ftSingleCreditRequestXmlString);
 
 
             final val fundTransferSingleItemDc = new FundtransfersingleitemDc();
             fundTransferSingleItemDc.setRequest(encryptedXmlString);
-            iMarker.info(" Sending FT Request to NIPOutwardWS ");
+            log.info(" Sending FT Request to NIPOutwardWS ");
             final val fundTransferSingleItemDcResponse = nipOutwardWS.fundsTransfer(iMarker, fundTransferSingleItemDc);
-            iMarker.info(" Received  Response from NIPOutwardWS >>>>> " + fundTransferSingleItemDcResponse.getReturn());
+            log.info(" Received  Response from NIPOutwardWS >>>>> {}" + fundTransferSingleItemDcResponse.getReturn());
             if(StringUtils.isEmpty(fundTransferSingleItemDcResponse.getReturn())){
                 //update db
-                iMarker.info(" Received  No Response from NIPOutwardWS  " );
+                log.info(" Received  No Response from NIPOutwardWS  " );
                 fundsTransferDbService.updateFTResponseCode(sessionId, NIP_106.getCode(),clientId);
                 //write a response to SQS to do Tsq
                 writeToSQS(clientId,TSQ, sessionId);
                 return;
             }
             final val ftSingleItemDcResponseXmlString = decryptString(fundTransferSingleItemDcResponse.getReturn());
-            iMarker.info(" Clear  Response from NIPOutwardWS : FT  " + ftSingleItemDcResponseXmlString);
+            log.info(" Clear  Response from NIPOutwardWS : FT  {} " + ftSingleItemDcResponseXmlString);
 
             final val ftSingleCreditResponseVO = xmlUtil.unmarshal(ftSingleItemDcResponseXmlString, FTSingleCreditResponseVO.class);
             iMarker.setResponse(" Response from NIPOutwardWS : FT  " + ftSingleCreditResponseVO.toString());
