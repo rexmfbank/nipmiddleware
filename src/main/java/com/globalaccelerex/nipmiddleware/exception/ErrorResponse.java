@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 @Data
 @Builder
@@ -28,7 +29,7 @@ public class ErrorResponse {
 
     public ErrorResponse(NIPResponseCodeEnum nipResponseCodeEnum, String responseMessage){
         responseCode = nipResponseCodeEnum.getCode();
-        this.responseMessage = responseMessage;
+        this.responseMessage = StringUtils.defaultIfBlank(responseMessage , nipResponseCodeEnum.getDescription());
     }
 
 }

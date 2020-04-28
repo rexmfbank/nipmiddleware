@@ -231,16 +231,15 @@ public class NIPOutwardFacade {
         iMarker.setRequest(" TSQRequest from client payload ", tsqRequest.toString());
         TsqResponse tsqResponse = null;
         //check if transaction is pending before doing the webservice call
-        final val fundsTransferEntity = fundsTransferDbService.findRecord(clientId, tsqRequest.getPaymentReference(),iMarker);
+        final val fundsTransferEntity = fundsTransferDbService
+                .findRecord(clientId, tsqRequest.getPaymentReference(),tsqRequest.getSessionId() ,iMarker);
         final val sessionId = fundsTransferEntity.getSessionId();
         if(fundsTransferEntity.isPending()){
             final val tsqSingleItemRequestVO = nipOutwardMapper.buildTsqSingleItemRequestVO(sessionId);
 
-
             final val tsqSingleItemRequestXmlString = xmlUtil.marshal(TsqSingleItemRequestVO.class, tsqSingleItemRequestVO);
-            iMarker.setRequest(" Clear TsqSingleItemRequestXmlString ", tsqSingleItemRequestXmlString);
+            iMarker.info(" Clear TsqSingleItemRequestXmlString " + tsqSingleItemRequestXmlString);
             final val encryptedXmlString = encryptString(tsqSingleItemRequestXmlString);
-
 
             final val txnstatusquerysingleitem = new Txnstatusquerysingleitem();
             txnstatusquerysingleitem.setRequest(encryptedXmlString);

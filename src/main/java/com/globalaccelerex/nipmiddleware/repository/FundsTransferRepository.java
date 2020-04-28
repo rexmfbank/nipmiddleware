@@ -14,5 +14,6 @@ public interface FundsTransferRepository extends PagingAndSortingRepository<Fund
 
     Optional<FundsTransferEntity> findByClientIdAndPaymentReference(String clientId, String paymentReference);
 
-
+    Optional<FundsTransferEntity>
+    findByClientIdAndPaymentReferenceAndSessionId(String clientId, String paymentReference, String sessionId);
 }
