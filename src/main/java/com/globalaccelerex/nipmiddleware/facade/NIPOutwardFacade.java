@@ -84,7 +84,7 @@ public class NIPOutwardFacade {
 
         val neSingleItem = new Nameenquirysingleitem();
         neSingleItem.setRequest(encryptedXmlString);
-        iMarker.info(" Sending Request to NIPOutwardWS ");
+        iMarker.info(" Sending Request to NIPOutwardWS for NameEnquiry");
         val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
 
 
@@ -93,12 +93,12 @@ public class NIPOutwardFacade {
             final val errorResponse = new ErrorResponse(NIP_01);
             throw new NIPMiddleWareAPIException(iMarker,errorResponse);
         }
-        iMarker.info(" Received  Response from NIPOutwardWS ");
+        iMarker.info(" Received  Response from NIPOutwardWS for NameEnquiry");
         final val neSingleResponseXmlString = decryptString(nameEnquirySingleItemResponse.getReturn());
-        iMarker.setResponse("Clear Name Enquiry response  from NIBSS " +neSingleResponseXmlString);
+        iMarker.info("Clear Name Enquiry response  from NIBSS " +neSingleResponseXmlString);
 
         final val neSingleResponseVO = xmlUtil.unmarshal(neSingleResponseXmlString, NESingleResponseVO.class);
-
+        iMarker.info("Name Enquiry response  from NIBSS " +neSingleResponseVO.toString());
         final val neSingleResponse = nipOutwardMapper.mapNESingleResponseVO.apply(neSingleResponseVO);
         neSingleResponse.setNameEnquiryReference(sessionId);
         neSingleResponse.setClientId(clientId);
@@ -162,6 +162,8 @@ public class NIPOutwardFacade {
             // go ahead with the FT
             final val ftSingleCreditRequestVO = nipOutwardMapper.mapFTSingleCreditRequestVO.apply(ftSingleCreditRequest);
             ftSingleCreditRequestVO.setSessionId(sessionId);
+            iMarker.info("FTSingleRequest NameEnquiryRef ::::::: " + ftSingleCreditRequest.getNameEnquiryReference());
+            iMarker.info("NeSingleResponse NameEnquiryRef :::::: " + StringUtils.defaultIfBlank(neSingleResponse.getNameEnquiryReference() ,"Not Available"));
             ftSingleCreditRequestVO.setNameEnquiryRef(neSingleResponse == null ? ftSingleCreditRequest.getNameEnquiryReference() :  neSingleResponse.getNameEnquiryReference());
 
             fundsTransferEntity.setPaymentStatusEnum(PENDING);
@@ -170,13 +172,13 @@ public class NIPOutwardFacade {
 
 
             String ftSingleCreditRequestXmlString = xmlUtil.marshal(FTSingleCreditRequestVO.class, ftSingleCreditRequestVO);
-            iMarker.setRequest(" Clear ftSingleCreditRequestXml String ", ftSingleCreditRequestXmlString);
+            iMarker.info(" Clear ftSingleCreditRequestXml String "+ ftSingleCreditRequestXmlString);
             final val encryptedXmlString = encryptString(ftSingleCreditRequestXmlString);
 
 
             final val fundTransferSingleItemDc = new FundtransfersingleitemDc();
             fundTransferSingleItemDc.setRequest(encryptedXmlString);
-            iMarker.info(" Sending Request to NIPOutwardWS ");
+            iMarker.info(" Sending FT Request to NIPOutwardWS ");
             final val fundTransferSingleItemDcResponse = nipOutwardWS.fundsTransfer(iMarker, fundTransferSingleItemDc);
             iMarker.info(" Received  Response from NIPOutwardWS >>>>> " + fundTransferSingleItemDcResponse.getReturn());
             if(StringUtils.isEmpty(fundTransferSingleItemDcResponse.getReturn())){
