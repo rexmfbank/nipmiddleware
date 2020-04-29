@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.controller;
 
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
+import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.facade.NIPOutwardFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
@@ -77,9 +78,11 @@ public class NIPOutwardController extends APIController{
             final val sessionId = sessionIdUtil.generateSessionId();
 
             final val result = nipOutwardFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
-            final val ftPendingResponse = new FTPendingResponse(result);
+            final val ftPendingResponse = new FTPendingResponse();
             ftPendingResponse.setClientId(ftSingleCreditRequest.getClientId());
-            if (!result){
+            if (result){
+                throw new NIPMiddleWareAPIException(NIP_108,marker);
+            }else{
                 nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
             }
             ftPendingResponse.setSessionId(sessionId);

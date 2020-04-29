@@ -18,6 +18,18 @@ import javax.validation.constraints.NotNull;
 public class NipConfig {
 
     @NotNull
+    private String webServiceUrl;
+
+    @NotNull
+    private int tsqWaitTime;
+
+    @NotNull
+    private String tsqUrl;
+
+    @NotNull
+    private String soapActionUrl;
+
+    @NotNull
     private String senderBankCode;
 
     @NotNull
@@ -34,7 +46,7 @@ public class NipConfig {
     @NotNull
     private String bankUrl;
 
-    private int tsqWaitTime;
+
 
 }
 

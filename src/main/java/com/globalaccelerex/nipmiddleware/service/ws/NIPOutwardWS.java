@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.service.ws;
 
 import com.globalaccelerex.nipmiddleware.config.AppConfig;
+import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
@@ -19,13 +20,13 @@ import static com.globalaccelerex.nipmiddleware.api.NipAPI.*;
 public class NIPOutwardWS extends WebServiceGatewaySupport {
 
     @Autowired
-    private AppConfig appConfig;
+    private NipConfig nipConfig;
 
 
     public NameenquirysingleitemResponse nameEnquiry(IMarker marker, Nameenquirysingleitem nameEnquirySingleItem) {
 
-        val webServiceURL = appConfig.getBaseUrl();
-        val soapActionURL = appConfig.getSoapActionUrl() + NAME_ENQUIRY_OUTWARD;
+        val webServiceURL = nipConfig.getWebServiceUrl();
+        val soapActionURL = nipConfig.getSoapActionUrl() + NAME_ENQUIRY_OUTWARD;
         NameenquirysingleitemResponse nameenquirysingleitemResponse = new NameenquirysingleitemResponse();
         marker.info(" ====== Doing NameEnquiry ====== ");
         try {
@@ -43,8 +44,8 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
 
     public FundtransfersingleitemDcResponse fundsTransfer(IMarker marker, FundtransfersingleitemDc fundtransfersingleitemDc) {
 
-        val webServiceURL = appConfig.getBaseUrl();
-        val soapActionURL =appConfig.getSoapActionUrl() + FUNDS_TRANSFER_OUTWARD;
+        val webServiceURL = nipConfig.getWebServiceUrl();
+        val soapActionURL =nipConfig.getSoapActionUrl() + FUNDS_TRANSFER_OUTWARD;
         FundtransfersingleitemDcResponse fundTransferSingleItemDcResponse = new FundtransfersingleitemDcResponse();
         marker.info(" ====== Doing FundsTransfer ====== ");
         try {
@@ -61,8 +62,8 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
     }
 
     public TxnstatusquerysingleitemResponse txnStatus(IMarker marker, Txnstatusquerysingleitem txnstatusquerysingleitem){
-        val webServiceURL = appConfig.getTsqUrl();
-        val soapActionURL = appConfig.getSoapActionUrl() + TSQ_OUTWARD;
+        val webServiceURL = nipConfig.getTsqUrl();
+        val soapActionURL = nipConfig.getSoapActionUrl() + TSQ_OUTWARD;
 
         TxnstatusquerysingleitemResponse txnStatusQuerySingleItemResponse = new TxnstatusquerysingleitemResponse();
         marker.info(" ====== Doing TSQ ====== ");

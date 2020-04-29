@@ -40,15 +40,13 @@ public class FTSingleCreditRequest extends BaseRequest {
 
     private String originatorAccountName;//optional
 
-
-
     private String originatorBVN;
 
     private String originatorKYCLevel;
 
     private String narration;//max 100 , optional
 
-    @DecimalMin(value = "0.00", inclusive = true ,message = "amount can not be less that zero")
+    @DecimalMin(value = "0.00", inclusive = false ,message = "Amount must be greater than zero")
     private BigDecimal amount;
 
     private String transactionLocation;
