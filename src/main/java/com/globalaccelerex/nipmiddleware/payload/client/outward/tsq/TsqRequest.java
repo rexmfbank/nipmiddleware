@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Data
@@ -17,4 +18,7 @@ public class TsqRequest extends BaseRequest {
 
     @NotEmpty(message = "PaymentReference is required")
     private String paymentReference;
+
+    @NotBlank(message = "Originator Bank Code is required")
+    private String originatorBankCode;
 }

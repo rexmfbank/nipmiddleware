@@ -20,17 +20,12 @@ public class NipConfig {
     @NotNull
     private String webServiceUrl;
 
-    @NotNull
-    private int tsqWaitTime;
 
     @NotNull
     private String tsqUrl;
 
     @NotNull
     private String soapActionUrl;
-
-    @NotNull
-    private String senderBankCode;
 
     @NotNull
     private String ssmPrivateKeyPath;

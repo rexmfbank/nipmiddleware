@@ -21,4 +21,5 @@ public class MockFTResponse {
         neSingleResponse.setResponseCode(NIP_00.getCode());
         return neSingleResponse;
     }
+
 }

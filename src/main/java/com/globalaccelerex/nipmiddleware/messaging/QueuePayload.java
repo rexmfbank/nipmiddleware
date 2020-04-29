@@ -13,6 +13,8 @@ public class QueuePayload {
 
     private int waitDuration ;
 
+    private String originatorBankCode;
+
     private QueueMode mode ;
 
     private boolean reQueue ;

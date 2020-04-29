@@ -1,6 +1,6 @@
 package com.globalaccelerex.nipmiddleware.controller;
 
-import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
+
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.facade.NIPOutwardFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
@@ -9,20 +9,15 @@ import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FT
 import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTSingleCreditRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.outward.tsq.TsqRequest;
-import com.globalaccelerex.nipmiddleware.security.outward.OutwardAuthenticationData;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import javax.validation.Valid;
-
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 
@@ -75,7 +70,7 @@ public class NIPOutwardController extends APIController{
             ftSingleCreditRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
-            final val sessionId = sessionIdUtil.generateSessionId();
+            final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
 
             final val result = nipOutwardFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
             final val ftPendingResponse = new FTPendingResponse();
