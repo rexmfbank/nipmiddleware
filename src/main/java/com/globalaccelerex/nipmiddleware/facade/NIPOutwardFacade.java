@@ -247,7 +247,7 @@ public class NIPOutwardFacade {
         final val fundsTransferEntity = fundsTransferDbService
                 .findRecord(clientId, tsqRequest.getPaymentReference(),tsqRequest.getSessionId() ,iMarker);
         final val sessionId = tsqRequest.getSessionId();
-        final val originatorBankCode = tsqRequest.getOriginatorBankCode();
+        final val originatorBankCode = fundsTransferEntity.getOriginatorInstitutionCode();
 
         if(fundsTransferEntity.isPending()){
 

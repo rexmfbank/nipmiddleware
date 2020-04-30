@@ -19,6 +19,4 @@ public class TsqRequest extends BaseRequest {
     @NotEmpty(message = "PaymentReference is required")
     private String paymentReference;
 
-    @NotBlank(message = "Originator Bank Code is required")
-    private String originatorBankCode;
 }
