@@ -50,8 +50,6 @@ public class FTSingleCreditRequest extends BaseRequest {
 
     private String narration;//max 100 , optional
 
-
-
     private String transactionLocation;
 
 }

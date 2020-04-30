@@ -55,6 +55,7 @@ public class NIPOutwardMapper {
         final val neSingleRequest = NESingleRequest.builder()
                 .accountNo(ftSingleCreditRequest.getDestinationAccountNo())
                 .destinationBankCode(ftSingleCreditRequest.getDestinationBankCode())
+                .originatorBankCode(ftSingleCreditRequest.getOriginatorBankCode())
                 .build();
         return neSingleRequest;
     };
