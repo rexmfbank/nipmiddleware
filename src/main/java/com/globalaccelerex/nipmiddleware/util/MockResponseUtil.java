@@ -59,7 +59,7 @@ public class MockResponseUtil {
                 .destinationInstitutionCode(neSingleRequestVO.getDestinationInstitutionCode())
                 .kycLevel("1")
                 .responseCode(NIP_00.getCode())
-                .sessionId(sessionIdUtil.generateSessionId())
+                .sessionId(neSingleRequestVO.getSessionId())
                 .build();
     }
 
@@ -72,7 +72,7 @@ public class MockResponseUtil {
         return FinancialInstitutionListResponseVO.builder()
                 .batchNumber(financialInstitutionListRequest.getHeader().getBatchNumber())
                 .channelCode(financialInstitutionListRequest.getHeader().getChannelCode())
-                .destinationInstitutionCode(nipConfig.getSenderBankCode())
+                .destinationInstitutionCode("xxxxxxxxxxxxx")
                 .numberOfRecords(String.valueOf(financialInstitutionListRequest.getRecordList().size()))
                 .responseCode(NIP_00.getCode())
                 .build();
@@ -96,7 +96,7 @@ public class MockResponseUtil {
                 .narration(ftDirectDebitRequestVO.getNarration())
                 .paymentReference(ftDirectDebitRequestVO.getPaymentReference())
                 .responseCode(NIP_00.getCode())
-                .sessionId(sessionIdUtil.generateSessionId())
+                .sessionId(sessionIdUtil.generateSessionId("xxxxxxxxxxx"))
                 .transactionFee(ftDirectDebitRequestVO.getTransactionFee())
                 .transactionLocation(ftDirectDebitRequestVO.getTransactionLocation())
                 .build();
@@ -119,7 +119,7 @@ public class MockResponseUtil {
                 .originatorKYCLevel(ftDirectCreditRequestVO.getOriginatorKYCLevel())
                 .paymentReference(ftDirectCreditRequestVO.getPaymentReference())
                 .responseCode(NIP_00.getCode())
-                .sessionId(sessionIdUtil.generateSessionId())
+                .sessionId(sessionIdUtil.generateSessionId("xxxxxxxxxx"))
                 .transactionLocation(ftDirectCreditRequestVO.getTransactionLocation())
                 .build();
     }

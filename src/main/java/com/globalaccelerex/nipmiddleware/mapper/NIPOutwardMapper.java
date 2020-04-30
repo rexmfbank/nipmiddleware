@@ -29,16 +29,12 @@ public class NIPOutwardMapper {
     @Autowired
     private SessionIdUtil sessionIdUtil;
 
-    @Autowired
-    private NipConfig nipConfig;
-
-
     public Function<NESingleRequest, NESingleRequestVO> mapNESingleRequestVO = neSingleRequest -> {
         NESingleRequestVO requestVO = new NESingleRequestVO();
         requestVO.setAccountNo(neSingleRequest.getAccountNo());
         requestVO.setChannelCode(String.valueOf(CC_1.getCode()));
         requestVO.setDestinationInstitutionCode(neSingleRequest.getDestinationBankCode());
-        requestVO.setSessionId(sessionIdUtil.generateSessionId());
+        requestVO.setSessionId(sessionIdUtil.generateSessionId(neSingleRequest.getOriginatorBankCode()));
         return requestVO;
     };
 
@@ -59,15 +55,16 @@ public class NIPOutwardMapper {
         final val neSingleRequest = NESingleRequest.builder()
                 .accountNo(ftSingleCreditRequest.getDestinationAccountNo())
                 .destinationBankCode(ftSingleCreditRequest.getDestinationBankCode())
+                .originatorBankCode(ftSingleCreditRequest.getOriginatorBankCode())
                 .build();
         return neSingleRequest;
     };
 
-    public TsqSingleItemRequestVO buildTsqSingleItemRequestVO(String sessionId){
+    public TsqSingleItemRequestVO buildTsqSingleItemRequestVO(String sessionId , String originatorBankCode){
         return TsqSingleItemRequestVO.builder()
                 .channelCode(String.valueOf(CC_1.getCode()))
                 .sessionId(sessionId)
-                .sourceInstitutionCode(nipConfig.getSenderBankCode())
+                .sourceInstitutionCode(originatorBankCode)
                 .build();
     }
 
@@ -106,8 +103,8 @@ public class NIPOutwardMapper {
                 .originatorAccountName(ftSingleCreditRequest.getOriginatorAccountName())
                 .originatorAccountNo(ftSingleCreditRequest.getOriginatorAccountNo())
                 .originatorBVN(ftSingleCreditRequest.getOriginatorBVN())
-                .originatorInstitutionCode(nipConfig.getSenderBankCode())
                 .originatorKYCLevel(ftSingleCreditRequest.getOriginatorKYCLevel())
+                .originatorInstitutionCode(ftSingleCreditRequest.getOriginatorBankCode())
                 .paymentReference(ftSingleCreditRequest.getPaymentReference())
                 .build();
         return fundsTransferEntity;
@@ -115,19 +112,19 @@ public class NIPOutwardMapper {
 
     public Function<FundsTransferEntity , TsqResponse> mapTsqResponse = fundsTransferEntity -> {
         final val tsqResponse = TsqResponse.builder()
-                .amount(fundsTransferEntity.getAmount().toPlainString())
+                .amount(fundsTransferEntity.getAmount())
                 .beneficiaryAccountName(fundsTransferEntity.getBeneficiaryAccountName())
-                .beneficiaryAccountNo(fundsTransferEntity.getBeneficiaryAccountNo())
+                .destinationAccountNo(fundsTransferEntity.getBeneficiaryAccountNo())
                 .beneficiaryBVN(fundsTransferEntity.getBeneficiaryBVN())
                 .beneficiaryKYCLevel(fundsTransferEntity.getBeneficiaryKYCLevel())
-                .destinationInstitutionCode(fundsTransferEntity.getDestinationInstitutionCode())
+                .destinationBankCode(fundsTransferEntity.getDestinationInstitutionCode())
                 .narration(fundsTransferEntity.getNarration())
                 .nameEnquiryReference(fundsTransferEntity.getNameEnquiryReference())
                 .originatorAccountName(fundsTransferEntity.getOriginatorAccountName())
                 .originatorAccountNo(fundsTransferEntity.getOriginatorAccountNo())
                 .originatorBVN(fundsTransferEntity.getOriginatorBVN())
                 .originatorKYCLevel(fundsTransferEntity.getOriginatorKYCLevel())
-                .originatorInstitutionCode(fundsTransferEntity.getOriginatorInstitutionCode())
+                .originatorBankCode(fundsTransferEntity.getOriginatorInstitutionCode())
                 .paymentReference(fundsTransferEntity.getPaymentReference())
                 .transactionLocation(fundsTransferEntity.getTransactionLocation())
                 .build();

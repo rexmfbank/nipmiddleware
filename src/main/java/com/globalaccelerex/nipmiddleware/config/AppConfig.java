@@ -22,11 +22,6 @@ public class AppConfig {
     @NotNull
     private String baseUrl;
 
-    @NotNull
-    private String tsqUrl;
-
-    @NotNull
-    private String soapActionUrl;
 
     @NotNull
     private String jwtToken;

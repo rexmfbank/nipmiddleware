@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Data
@@ -17,6 +18,9 @@ public class NESingleRequest extends BaseRequest {
 
     @NotEmpty(message = "Account No is required")
     private String accountNo;
+
+    @NotBlank(message = "Originator Bank Code is required")
+    private String originatorBankCode;
 
 
 }

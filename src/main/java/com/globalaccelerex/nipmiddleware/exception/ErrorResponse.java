@@ -2,14 +2,12 @@ package com.globalaccelerex.nipmiddleware.exception;
 
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.model.Response;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 
 @Data
 @Builder
+@ToString
 @NoArgsConstructor
 public class ErrorResponse {
 

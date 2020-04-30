@@ -7,7 +7,7 @@ import lombok.val;
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00;
 
 
-public class MockFTResponse {
+public class MockOutwardResponse {
 
     public static NESingleResponse buildNESingleResponseVO(NESingleRequest neSingleRequest){
         val neSingleResponse = NESingleResponse.builder()
@@ -21,4 +21,5 @@ public class MockFTResponse {
         neSingleResponse.setResponseCode(NIP_00.getCode());
         return neSingleResponse;
     }
+
 }

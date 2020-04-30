@@ -105,7 +105,7 @@ public enum NIPResponseCodeEnum {
 
     NIP_107("107","Application Error : Transaction could not be completed", PENDING),
 
-    NIP_108("108","Application Error :  Payment Reference Not Unique", FAILED),
+    NIP_108("108","Application Error :  Payment Reference Already Exists", FAILED),
 
     NIP_109("109","Authorization  Error :  Unauthorised access to resource", FAILED),
 

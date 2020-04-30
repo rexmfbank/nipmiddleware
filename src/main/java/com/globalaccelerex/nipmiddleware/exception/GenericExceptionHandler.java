@@ -33,6 +33,7 @@ public class GenericExceptionHandler {
     public ErrorResponse handleNIPMiddleWareException(NIPMiddleWareAPIException exception){
         final val marker = exception.getMarker();
         marker.info("NIPMiddleWareAPI Exception: =>" + printStackTrace(exception));
+        marker.setMainResponse(exception.getErrorResponse().toString(), false);
         marker.done();
         return exception.getErrorResponse();
     }
@@ -50,8 +51,8 @@ public class GenericExceptionHandler {
             for(FieldError anError : error){
                 marker.info("Field Name ::: [ " + anError.getField() + " ]  message ::: [ " + anError.getDefaultMessage() + " ] ");
             }
-//
         }
+        marker.done();
         return new ErrorResponse(NIP_100);
     }
 
@@ -83,7 +84,7 @@ public class GenericExceptionHandler {
         IMarker marker = Marker.fromString();
 
         marker.info("Controller Advice is being called. => " + printStackTrace(ex));
-
+        marker.done();
 
         List<FieldError> error = ex.getBindingResult().getFieldErrors();
         if (error.isEmpty()){

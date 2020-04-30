@@ -25,6 +25,8 @@ public class SQSService {
 
     public final static int DEFAULT_MAX_WAIT_IN_SECONDS = 150;
 
+    public final static int TSQ_WAIT_DURATION_IN_SECONDS = 30;
+
 
     @Autowired
     AppConfig config;

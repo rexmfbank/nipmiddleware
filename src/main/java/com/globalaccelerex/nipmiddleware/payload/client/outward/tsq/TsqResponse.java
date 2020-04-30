@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @ToString
@@ -14,11 +16,11 @@ public class TsqResponse extends BaseResponse {
 
     private String sessionId;
 
-    private String destinationInstitutionCode;
+    private String destinationBankCode;
+
+    private String destinationAccountNo;
 
     private String beneficiaryAccountName;
-
-    private String beneficiaryAccountNo;
 
     private String beneficiaryBVN;
 
@@ -38,9 +40,9 @@ public class TsqResponse extends BaseResponse {
 
     private String paymentReference;
 
-    private String amount;
+    private BigDecimal amount;
 
     private String nameEnquiryReference;
 
-    private String originatorInstitutionCode;
+    private String originatorBankCode;
 }

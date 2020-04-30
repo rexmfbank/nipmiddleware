@@ -26,9 +26,9 @@ public class SessionIdUtil {
         this.nipConfig = nipConfig;
     }
 
-    public String generateSessionId(){
+    public String generateSessionId(String originatorBankCode){
         val builder = new StringBuilder();
-        builder.append(nipConfig.getSenderBankCode())
+        builder.append(originatorBankCode)
                 .append(DateFormatUtils.format(new Date(),DATE_TIME_FORMAT))
                 .append(RandomStringUtils.randomNumeric(SESSION_ID_LENGTH));
         return builder.toString();

@@ -19,20 +19,24 @@ public class FTSingleCreditRequest extends BaseRequest {
     @NotBlank (message = "destination bank code is required")
     private String destinationBankCode;
 
-    @NotBlank(message = "payment reference is required")
-    private String paymentReference;
-
     @NotBlank(message = "destination account number is required")
     private String destinationAccountNo;
+
+    @NotBlank(message = "payment reference is required")
+    private String paymentReference;
 
     @NotBlank(message = "originator account no is required")
     private String originatorAccountNo;
 
+    @DecimalMin(value = "0.00", inclusive = false ,message = "Amount must be greater than zero")
+    private BigDecimal amount;
+
+    @NotBlank(message = "Originator Bank Code is required")
+    private String originatorBankCode;
+
     private String nameEnquiryReference;
 
     private String beneficiaryAccountName;
-
-
 
     private String beneficiaryBVN; // optional
 
@@ -40,16 +44,11 @@ public class FTSingleCreditRequest extends BaseRequest {
 
     private String originatorAccountName;//optional
 
-
-
     private String originatorBVN;
 
     private String originatorKYCLevel;
 
     private String narration;//max 100 , optional
-
-    @DecimalMin(value = "0.00", inclusive = true ,message = "amount can not be less that zero")
-    private BigDecimal amount;
 
     private String transactionLocation;
 

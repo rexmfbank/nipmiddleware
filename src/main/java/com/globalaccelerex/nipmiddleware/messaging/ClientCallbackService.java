@@ -101,8 +101,10 @@ public class ClientCallbackService {
         FundsTransferEntity fundsTransferEntity = null;
         val clientId = queuePayload.getClientId();
         val sessionId = queuePayload.getSessionId();
+        val originatorBankCode = queuePayload.getOriginatorBankCode();
+
         try{
-            final val tsqSingleItemRequestVO = nipOutwardMapper.buildTsqSingleItemRequestVO(queuePayload.getSessionId());
+            final val tsqSingleItemRequestVO = nipOutwardMapper.buildTsqSingleItemRequestVO(sessionId,originatorBankCode);
 
             String tsqSingleItemRequestXmlString = xmlUtil.marshal(TsqSingleItemRequestVO.class, tsqSingleItemRequestVO);
             marker.setRequest(" clear tsqSingleItemRequestXmlString  to NIBSS ", tsqSingleItemRequestXmlString);
