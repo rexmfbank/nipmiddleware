@@ -8,7 +8,6 @@ package com.globalaccelerex.nipmiddleware.exception;
 
 
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
-import com.globalaccelerex.nipmiddleware.model.ErrorResponse;
 import com.globalaccelerex.nipmiddleware.model.Response;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
