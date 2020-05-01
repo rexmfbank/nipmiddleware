@@ -1,7 +1,6 @@
-package com.globalaccelerex.nipmiddleware.payload.client.outward.client;
+package com.globalaccelerex.nipmiddleware.payload.client;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.BaseRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

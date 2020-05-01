@@ -3,9 +3,7 @@ package com.globalaccelerex.nipmiddleware.controller;
 import com.globalaccelerex.nipmiddleware.facade.ClientFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.client.ClientDetail;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.client.CreateClientRequest;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.client.CreateClientResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.*;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +57,24 @@ public class ClientController {
             marker.done();
         }
     }
+
+    @GetMapping(GET_CLIENTS)
+    public ResponseEntity<GetClientsResponse> getClients(@Valid @ModelAttribute GetClientsRequest getClientsRequest) {
+        IMarker marker = Marker.fromString();
+        marker.info("<<<<<<<< Get Clients  >>>>>>>>");
+        getClientsRequest.setMarker(marker);
+        marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                build().toUri().toASCIIString(), getClientsRequest.toString(), false);
+        try {
+            final val getClientsResponse = clientFacade.getClients(getClientsRequest);
+            marker.setMainResponse(getClientsResponse.toString(), false);
+            return new ResponseEntity(getClientsResponse, HttpStatus.OK);
+        } finally {
+            marker.done();
+        }
+    }
+
+
+
 
 }
