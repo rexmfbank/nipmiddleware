@@ -3,15 +3,15 @@ package com.globalaccelerex.nipmiddleware.facade;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.mapper.ClientMapper;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.client.ClientDetail;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.client.CreateClientRequest;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.client.CreateClientResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.*;
 import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 
@@ -35,7 +35,6 @@ public class ClientFacade {
     public CreateClientResponse createClient(CreateClientRequest createClientRequest){
         final val iMarker = createClientRequest.getMarker();
         iMarker.info("::::::: Handling Create Client ::::::: ");
-        final val clientName = createClientRequest.getClientName();
         final val clientId = createClientRequest.getClientId();
 
         if(clientDbService.isClientPresent(clientId).isPresent()){
@@ -50,15 +49,45 @@ public class ClientFacade {
         return createClientResponse;
     }
 
-    public ClientDetail getClientDetail(String clientId , IMarker iMarker){
+    public ClientDetail getClientDetail(String clientId , IMarker marker){
+        marker.info("processing get client  request ");
         final val clientEntityOpt = clientDbService.isClientPresent(clientId);
         if(clientEntityOpt.isPresent()){
             final val clientDetail = clientMapper.mapClientDetail.apply(clientEntityOpt.get());
-            clientDetail.setResponse(NIP_00);
+
+            marker.info("done processing get client request ");
             return clientDetail;
         }else{
-            throw new NIPMiddleWareAPIException(NIP_124,iMarker);
+            throw new NIPMiddleWareAPIException(NIP_124,marker);
         }
+    }
+
+    public GetClientsResponse getClients(GetClientsRequest getClientsRequest){
+        IMarker marker = getClientsRequest.getMarker();
+        marker.info("processing get clients  request ");
+        val requestSize = getClientsRequest.getSize();
+        val pageIndex = getClientsRequest.getPageIndex();
+        val startWith = getClientsRequest.getStartWith();
+        val pageClientEntities = clientDbService.findClients(requestSize, startWith, pageIndex);
+
+        final val clientDetailList = pageClientEntities.getContent()
+                .stream()
+                .map(clientMapper.mapClientDetail)
+                .collect(Collectors.toList());
+
+        marker.info("done processing get clients  request ");
+        return GetClientsResponse.builder()
+                .clientDetailList(clientDetailList)
+                .hasContent(pageClientEntities.hasContent())
+                .hasNext(pageClientEntities.hasNext())
+                .hasPrevious(pageClientEntities.hasPrevious())
+                .isFirst(pageClientEntities.isFirst())
+                .isLast(pageClientEntities.isLast())
+                .numberOfElement(pageClientEntities.getNumberOfElements())
+                .size(pageClientEntities.getSize())
+                .totalElements(pageClientEntities.getTotalElements())
+                .totalPages(pageClientEntities.getTotalPages())
+                .build();
     }
 
 }

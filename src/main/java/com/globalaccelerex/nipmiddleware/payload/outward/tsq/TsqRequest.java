@@ -1,11 +1,10 @@
-package com.globalaccelerex.nipmiddleware.payload.client.outward.tsq;
+package com.globalaccelerex.nipmiddleware.payload.outward.tsq;
 
-import com.globalaccelerex.nipmiddleware.payload.client.outward.BaseRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Data

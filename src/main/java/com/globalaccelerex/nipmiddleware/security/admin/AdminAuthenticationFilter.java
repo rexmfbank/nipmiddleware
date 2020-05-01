@@ -76,7 +76,6 @@ public class AdminAuthenticationFilter extends GenericFilterBean {
     private void attemptAuthentication(HttpServletRequest request,
                                        HttpServletResponse response) throws IOException, AuthenticationException {
         val accessToken = request.getHeader("X_TOKEN");
-        //val userToken = request.getHeader("X_USER_TOKEN");
         val timestamp = request.getHeader("Timestamp");
         val nonce = request.getHeader("Nonce");
         val signature = request.getHeader("Signature");

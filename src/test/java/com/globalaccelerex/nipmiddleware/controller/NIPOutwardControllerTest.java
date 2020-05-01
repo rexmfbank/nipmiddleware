@@ -1,7 +1,7 @@
 package com.globalaccelerex.nipmiddleware.controller;
 
 
-import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTPendingResponse;
+import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTPendingResponse;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.Test;

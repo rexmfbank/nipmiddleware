@@ -1,9 +1,9 @@
 package com.globalaccelerex.nipmiddleware.mapper;
 
 import com.globalaccelerex.nipmiddleware.entity.ClientEntity;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.client.ClientDetail;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.client.CreateClientRequest;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.client.CreateClientResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.ClientDetail;
+import com.globalaccelerex.nipmiddleware.payload.client.CreateClientRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.CreateClientResponse;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,15 +50,19 @@ public class ClientMapper {
         return createClientResponse;
     };
 
-    public Function<ClientEntity, ClientDetail> mapClientDetail = clientEntity ->  ClientDetail.builder()
-                .active(clientEntity.isActive())
-                .businessDesc(clientEntity.getBusinessDesc())
-                .callbackUrl(clientEntity.getCallbackUrl())
-                .clientId(clientEntity.getClientId())
-                .clientName(clientEntity.getClientName())
-                .contactEmail(clientEntity.getContactEmail())
-                .contactPhone(clientEntity.getContactPhone())
-                .build();
+    public Function<ClientEntity, ClientDetail> mapClientDetail = clientEntity ->  {
+        final val clientDetail = new ClientDetail();
+        clientDetail.setActive(clientEntity.isActive());
+        clientDetail.setBusinessDesc(clientEntity.getBusinessDesc());
+        clientDetail.setCallbackUrl(clientEntity.getCallbackUrl());
+        clientDetail.setClientId(clientEntity.getClientId());
+        clientDetail.setClientName(clientEntity.getClientName());
+        clientDetail.setContactEmail(clientEntity.getContactEmail());
+        clientDetail.setContactPhone(clientEntity.getContactPhone());
+        clientDetail.setResponse(NIP_00);
+        return clientDetail;
+    };
+
 
 
 
