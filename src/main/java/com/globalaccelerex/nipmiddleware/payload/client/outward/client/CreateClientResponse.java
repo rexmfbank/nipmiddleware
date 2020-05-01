@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@JsonIgnoreProperties({"sessionId"})
 public class CreateClientResponse extends BaseResponse {
 
     public CreateClientResponse(NIPResponseCodeEnum nipResponseCodeEnum){
