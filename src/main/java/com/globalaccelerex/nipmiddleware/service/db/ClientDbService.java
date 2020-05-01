@@ -10,6 +10,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -22,9 +23,9 @@ public class ClientDbService {
         this.clientRepository = clientRepository;
     }
 
-    public boolean findClientByClientIdOrClientName(String clientId ){
-        final val optClientEntity = clientRepository.findByClientId(clientId);
-        return optClientEntity.isPresent();
+    public Optional<ClientEntity> isClientPresent(String clientId ){
+        return clientRepository.findByClientId(clientId);
+
     }
 
     public void saveClientEntity(ClientEntity clientEntity){
@@ -46,7 +47,7 @@ public class ClientDbService {
             .build(new CacheLoader<String, ClientEntity>() {
                 @Override
                 public ClientEntity load(String clientId) {
-                    return clientRepository.findByClientId(clientId).orElse(null);
+                    return clientRepository.findByClientId(clientId).get();
                 }
             });
 }

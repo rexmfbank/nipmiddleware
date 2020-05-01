@@ -33,6 +33,10 @@ public class BaseResponse {
         this.responseDescription = NIPResponseCodeEnum.getResponseDescription(responseCode).getDescription();
     }
 
+    public void setResponse(NIPResponseCodeEnum nipResponseCodeEnum){
+        this.responseCode = nipResponseCodeEnum.getCode();
+        this.responseDescription = nipResponseCodeEnum.getDescription();
+    }
 
 }
 

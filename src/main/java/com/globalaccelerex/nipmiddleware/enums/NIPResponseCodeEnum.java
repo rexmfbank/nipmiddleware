@@ -130,7 +130,7 @@ public enum NIPResponseCodeEnum {
     NIP_121("121","Authentication Error :  Invalid Authorization Sent", FAILED),
     NIP_122("122","Authentication Error :  Invalid Authentication details found", FAILED),
     NIP_123("123","Authentication Error :  Invalid Authorization Sent; username or password not found", FAILED),
-    NIP_124("124","Authentication Error :  Client not found", FAILED),
+    NIP_124("124","Application Error :  Client not found", FAILED),
     NIP_125("125","Authentication Error :  Invalid Client Secret Key", FAILED),
     NIP_126("126","Authentication Error :  Invalid authentication", FAILED),
     NIP_127("127","Authentication Error :  Client Id does not match authenticated value", FAILED)
