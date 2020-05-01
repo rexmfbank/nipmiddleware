@@ -76,6 +76,19 @@ public class GenericExceptionHandler {
         return new ErrorResponse(NIP_100);
     }
 
+    @ExceptionHandler(ApplicationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleApplicationException(ApplicationException exception) {
+        IMarker marker = exception.getMarker();
+        ErrorResponse response = (exception.getErrorResponse() == null) ? new ErrorResponse(NIP_96.getCode(), exception.getMessage()) : exception.getErrorResponse();
+        if (marker != null) {
+            marker.info("Application Exception:", exception);
+            marker.setMainResponse(response.toString(), false);
+        }
+        return response;
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
