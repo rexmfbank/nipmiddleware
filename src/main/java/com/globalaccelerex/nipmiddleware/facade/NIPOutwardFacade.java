@@ -80,7 +80,7 @@ public class NIPOutwardFacade {
 
         String neSingleRequestXmlString = xmlUtil.marshal(NESingleRequestVO.class, neSingleRequestVO);
 
-        iMarker.info(" Clear NESingleRequestXmlString  ====> "+  neSingleRequestXmlString);
+        iMarker.setRequest(" Clear NESingleRequestXmlString  ====> ",  neSingleRequestXmlString);
         final val encryptedXmlString = encryptString(neSingleRequestXmlString);
 
         val neSingleItem = new Nameenquirysingleitem();
@@ -102,8 +102,6 @@ public class NIPOutwardFacade {
         final val neSingleResponseVO = xmlUtil.unmarshal(neSingleResponseXmlString, NESingleResponseVO.class);
         iMarker.info("Name Enquiry response  from NIBSS " +neSingleResponseVO.toString());
         final val neSingleResponse = nipOutwardMapper.mapNESingleResponseVO.apply(neSingleResponseVO);
-
-
         neSingleResponse.setNameEnquiryReference(sessionId);
         neSingleResponse.setClientId(clientId);
         return neSingleResponse;
