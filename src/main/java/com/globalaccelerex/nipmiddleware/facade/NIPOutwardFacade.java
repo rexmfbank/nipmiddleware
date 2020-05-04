@@ -80,7 +80,7 @@ public class NIPOutwardFacade {
 
         String neSingleRequestXmlString = xmlUtil.marshal(NESingleRequestVO.class, neSingleRequestVO);
 
-        iMarker.setRequest(" Clear NESingleRequestXmlString  ", neSingleRequestXmlString);
+        iMarker.info(" Clear NESingleRequestXmlString  ====> "+  neSingleRequestXmlString);
         final val encryptedXmlString = encryptString(neSingleRequestXmlString);
 
         val neSingleItem = new Nameenquirysingleitem();
@@ -191,7 +191,7 @@ public class NIPOutwardFacade {
             iMarker.info(" Received  Response from NIPOutwardWS >>>>> " + fundTransferSingleItemDcResponse.getReturn());
             if(StringUtils.isEmpty(fundTransferSingleItemDcResponse.getReturn())){
                 //update db
-                log.info(" Received  No Response from NIPOutwardWS  " );
+                iMarker.info(" Received  No Response from NIPOutwardWS  " );
                 fundsTransferDbService.updateFTResponseCode(sessionId, NIP_106.getCode(),clientId);
                 //write a response to SQS to do Tsq
                 writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
