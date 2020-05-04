@@ -45,8 +45,16 @@ public class ClientDbService {
         }
     }
 
+    public Optional<ClientEntity> isClientNamePresent(String clientName){
+        return clientRepository.findFirstByClientName(clientName);
+    }
     public void saveClientEntity(ClientEntity clientEntity){
         clientRepository.save(clientEntity);
+    }
+
+    public void updateClientEntity(ClientEntity clientEntity){
+        clientRepository.save(clientEntity);
+        clientCache.invalidate(clientEntity.getClientId());
     }
 
     public ClientEntity findClientByClientId(String clientId ){

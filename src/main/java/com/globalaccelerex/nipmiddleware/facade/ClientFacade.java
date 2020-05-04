@@ -8,6 +8,7 @@ import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +52,7 @@ public class ClientFacade {
 
     public ClientDetail getClientDetail(String clientId , IMarker marker){
         marker.info("processing get client  request ");
-        final val clientEntityOpt = clientDbService.isClientPresent(clientId);
+        val clientEntityOpt = clientDbService.isClientPresent(clientId);
         if(clientEntityOpt.isPresent()){
             final val clientDetail = clientMapper.mapClientDetail.apply(clientEntityOpt.get());
 
@@ -60,6 +61,28 @@ public class ClientFacade {
         }else{
             throw new NIPMiddleWareAPIException(NIP_124,marker);
         }
+    }
+
+    public void updateClient(UpdateClientRequest updateClientRequest){
+        IMarker marker = updateClientRequest.getMarker();
+        marker.info("processing update client  request ");
+        val clientEntityOpt = clientDbService.isClientPresent(updateClientRequest.getClientId());
+        if(!clientEntityOpt.isPresent()){
+            throw new NIPMiddleWareAPIException(NIP_124,marker);
+        }
+
+        val clientEntity = clientEntityOpt.get();
+        //check if name already exists
+        val clientEntityOpt_ = clientDbService.isClientNamePresent(updateClientRequest.getClientName());
+        if(clientEntityOpt_ .isPresent() && !StringUtils.equalsIgnoreCase(clientEntityOpt_.get().getClientId() ,updateClientRequest.getClientId())){
+            throw new NIPMiddleWareAPIException(NIP_114 , marker);
+        }
+
+        val updatedClientEntity = clientMapper.updateClientEntity(clientEntity, updateClientRequest);
+
+        clientDbService.updateClientEntity(updatedClientEntity);
+
+        marker.info("done processing update client request ");
     }
 
     public GetClientsResponse getClients(GetClientsRequest getClientsRequest){

@@ -74,7 +74,21 @@ public class ClientController {
         }
     }
 
-
+    @PostMapping(UPDATE_CLIENT)
+    public ResponseEntity<?> updateClient(@Valid @RequestBody UpdateClientRequest updateClientRequest){
+        IMarker marker = Marker.fromString();
+        marker.info("<<<<<<<< Update Client  >>>>>>>>");
+        updateClientRequest.setMarker(marker);
+        marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                build().toUri().toASCIIString(), updateClientRequest.toString(), false);
+        try {
+            clientFacade.updateClient(updateClientRequest);
+            marker.setMainResponse("", false);
+            return new ResponseEntity(HttpStatus.OK);
+        } finally {
+            marker.done();
+        }
+    }
 
 
 }
