@@ -1,13 +1,10 @@
-package com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer;
+package com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.BaseResponse;
+import com.globalaccelerex.nipmiddleware.payload.outward.BaseResponse;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_09;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 
 @Getter
 @Setter

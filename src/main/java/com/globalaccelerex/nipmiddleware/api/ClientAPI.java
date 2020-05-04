@@ -14,5 +14,13 @@ public interface ClientAPI {
 
     String CREATE_CLIENT = "/createClient";
 
+    String UPDATE_CLIENT = "/updateClient";
+
+    String GET_CLIENT = "/getClient/{clientId}";
+
+    String GET_CLIENTS= "/clients";
+
+    String PATH_VARIABLE_CLIENT_ID = "clientId";
+
 
 }

@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.payload.client.outward;
+package com.globalaccelerex.nipmiddleware.payload.outward;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.globalaccelerex.nipmiddleware.annotation.IsAlphaNumeric;
