@@ -35,7 +35,7 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
                             message -> ((SoapMessage) message).setSoapAction(soapActionURL));
             nameenquirysingleitemResponse = response.getValue();
         } catch (Exception ex) {
-            marker.info(ex);
+            marker.setResponse (ex.getMessage());
             throw new NIPMiddleWareAPIException("Error",ex.getMessage(),marker);
         }
         marker.info("done with Name Enquiry");
@@ -54,7 +54,7 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
                             message -> ((SoapMessage) message).setSoapAction(soapActionURL));
             fundTransferSingleItemDcResponse = response.getValue();
         } catch (Exception ex) {
-            marker.info(ex);
+            marker.setResponse (ex.getMessage());
             throw new NIPMiddleWareAPIException("Error",ex.getMessage(),marker);
         }
         marker.info("done with FundsTransfer DC");
@@ -73,7 +73,7 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
                             message -> ((SoapMessage) message).setSoapAction(soapActionURL));
             txnStatusQuerySingleItemResponse = response.getValue();
         }catch (Exception ex) {
-            marker.info(ex);
+            marker.setResponse (ex.getMessage());
             throw new NIPMiddleWareAPIException("Error",ex.getMessage(),marker);
         }
         marker.info("done with  TSQ");
