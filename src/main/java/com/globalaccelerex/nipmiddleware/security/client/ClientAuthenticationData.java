@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.security.outward;
+package com.globalaccelerex.nipmiddleware.security.client;
 
 import com.globalaccelerex.nipmiddleware.entity.ClientEntity;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
@@ -17,7 +17,7 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 @Builder
 @Slf4j
 @ToString
-public class OutwardAuthenticationData {
+public class ClientAuthenticationData {
 
     private String authorization;
     private String username;
