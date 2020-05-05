@@ -2,7 +2,9 @@ package com.globalaccelerex.nipmiddleware.api;
 
 public interface ClientAPI {
 
-    String NIP_OUTWARD_API = "/api/nipmiddleware/v1/outward";
+    String OUTWARD_API = "/api/nipmiddleware/v1/outward";
+
+    String CLIENT_API = "/api/nipmiddleware/v1/client";
 
     String NAME_ENQUIRY="/nameEnquiry";
 
@@ -21,6 +23,8 @@ public interface ClientAPI {
     String GET_CLIENTS= "/clients";
 
     String PATH_VARIABLE_CLIENT_ID = "clientId";
+
+    String UPDATE_PASSWORD = "/updatePassword";
 
 
 }

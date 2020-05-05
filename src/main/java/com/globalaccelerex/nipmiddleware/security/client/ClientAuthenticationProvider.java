@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.security.outward;
+package com.globalaccelerex.nipmiddleware.security.client;
 
 import com.globalaccelerex.nipmiddleware.entity.ClientEntity;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
@@ -19,7 +19,7 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 
 @Slf4j
 @Component
-public class OutwardAuthenticationProvider implements AuthenticationProvider {
+public class ClientAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private ClientDbService clientDbService;
@@ -30,8 +30,8 @@ public class OutwardAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         authentication.setAuthenticated(true);
-        final val outwardAuthenticationToken = (OutwardAuthenticationToken) authentication;
-        final val outwardAuthenticationData = outwardAuthenticationToken.getOutwardAuthenticationData();
+        final val outwardAuthenticationToken = (ClientAuthenticationToken) authentication;
+        final val outwardAuthenticationData = outwardAuthenticationToken.getClientAuthenticationData();
 
         if (StringUtils.isNotBlank(outwardAuthenticationData.getAuthorization())){
             outwardAuthenticationData.decrypt();
@@ -44,7 +44,7 @@ public class OutwardAuthenticationProvider implements AuthenticationProvider {
     }
 
 
-    private void validate(OutwardAuthenticationData data) {
+    private void validate(ClientAuthenticationData data) {
 
         // get client
         ClientEntity client = clientDbService.findClientByClientId(data.getUsername());
@@ -67,7 +67,7 @@ public class OutwardAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.equals(OutwardAuthenticationToken.class);
+        return authentication.equals(ClientAuthenticationToken.class);
     }
 
 }

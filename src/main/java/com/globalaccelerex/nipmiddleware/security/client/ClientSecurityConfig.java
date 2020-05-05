@@ -1,6 +1,5 @@
-package com.globalaccelerex.nipmiddleware.security.outward;
+package com.globalaccelerex.nipmiddleware.security.client;
 
-import com.globalaccelerex.nipmiddleware.security.admin.AdminAuthenticationFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,20 +15,20 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.servlet.http.HttpServletResponse;
 
-import static com.globalaccelerex.nipmiddleware.api.ClientAPI.NIP_OUTWARD_API;
+import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
 
 @Slf4j
 @Order(2)
 @Configuration
 @EnableWebSecurity
-public class OutwardSecurityConfig extends WebSecurityConfigurerAdapter {
+public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private OutwardAuthenticationProvider outwardAuthenticationProvider;
+    private ClientAuthenticationProvider clientAuthenticationProvider;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.antMatcher(NIP_OUTWARD_API + "/**").
+        http.antMatcher(CLIENT_API + "/**").
                 csrf().disable().cors()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -38,12 +37,12 @@ public class OutwardSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .anonymous().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint());
-        http.addFilterBefore(new OutwardAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
+        http.addFilterBefore(new ClientAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(outwardAuthenticationProvider);
+        auth.authenticationProvider(clientAuthenticationProvider);
     }
 
     @Bean
