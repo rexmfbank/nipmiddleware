@@ -90,5 +90,19 @@ public class ClientController {
         }
     }
 
-
+    @PostMapping(UPDATE_PASSWORD)
+    public ResponseEntity<?> updateClientPassword(@Valid @RequestBody UpdateClientPasswordRequest updateClientPasswordRequest){
+        IMarker marker = Marker.fromString();
+        marker.info("<<<<<<<< Update Client Password  >>>>>>>>");
+        updateClientPasswordRequest.setMarker(marker);
+        marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                build().toUri().toASCIIString(), updateClientPasswordRequest.toString(), false);
+        try {
+            clientFacade.updateClientPassword(updateClientPasswordRequest);
+            marker.setMainResponse("", false);
+            return new ResponseEntity(HttpStatus.OK);
+        } finally {
+            marker.done();
+        }
+    }
 }

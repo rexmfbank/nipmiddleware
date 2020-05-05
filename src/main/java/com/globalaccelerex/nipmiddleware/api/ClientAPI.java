@@ -22,5 +22,7 @@ public interface ClientAPI {
 
     String PATH_VARIABLE_CLIENT_ID = "clientId";
 
+    String UPDATE_PASSWORD = "/updatePassword";
+
 
 }

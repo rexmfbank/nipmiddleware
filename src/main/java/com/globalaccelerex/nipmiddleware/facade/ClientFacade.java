@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -25,6 +26,9 @@ public class ClientFacade {
     private final JwtTokenUtil jwtTokenUtil;
 
     private final ClientMapper clientMapper;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     public ClientFacade(ClientDbService clientDbService,JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper) {
@@ -111,6 +115,31 @@ public class ClientFacade {
                 .totalElements(pageClientEntities.getTotalElements())
                 .totalPages(pageClientEntities.getTotalPages())
                 .build();
+    }
+
+    public void updateClientPassword(UpdateClientPasswordRequest updateClientPasswordRequest){
+        IMarker marker = updateClientPasswordRequest.getMarker();
+        marker.info("processing update client password request ");
+
+        val clientEntityOpt = clientDbService.isClientPresent(updateClientPasswordRequest.getClientId());
+        if(!clientEntityOpt.isPresent()){
+            throw new NIPMiddleWareAPIException(NIP_124,marker);
+        }
+
+        if(!updateClientPasswordRequest.isNewPasswordAndConfirmPasswordEqual()){
+            throw new NIPMiddleWareAPIException(NIP_128 , marker);
+        }
+
+        val clientEntity = clientEntityOpt.get();
+        if(!bCryptPasswordEncoder.matches(updateClientPasswordRequest.getOldPassword(), clientEntity.getPassword())){
+            throw new NIPMiddleWareAPIException(NIP_129 , marker);
+        }
+
+        clientEntity.setPassword(bCryptPasswordEncoder.encode(updateClientPasswordRequest.getNewPassword()));
+
+        clientDbService.updateClientEntity(clientEntity);
+
+        marker.info("done processing update client password request ");
     }
 
 }
