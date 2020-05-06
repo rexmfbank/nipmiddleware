@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.controller;
 
+import com.globalaccelerex.nipmiddleware.facade.AdminFacade;
 import com.globalaccelerex.nipmiddleware.facade.ClientFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
@@ -22,9 +23,12 @@ public class AdminController {
 
     private final ClientFacade clientFacade;
 
+    private final AdminFacade adminFacade;
+
     @Autowired
-    public AdminController(ClientFacade clientFacade) {
+    public AdminController(ClientFacade clientFacade, AdminFacade adminFacade) {
         this.clientFacade = clientFacade;
+        this.adminFacade = adminFacade;
     }
 
     @PostMapping(CREATE_CLIENT)
@@ -35,7 +39,7 @@ public class AdminController {
                 build().toUri().toASCIIString(), createClientRequest.toString(), true);
         createClientRequest.setMarker(marker);
         try{
-            final val createClientResponse = clientFacade.createClient(createClientRequest);
+            final val createClientResponse = adminFacade.createClient(createClientRequest);
             marker.setMainResponse(createClientResponse.toString(), true);
             return new ResponseEntity(createClientResponse, HttpStatus.OK);
         }finally {
@@ -50,7 +54,7 @@ public class AdminController {
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                 build().toUri().toASCIIString(), clientId, false);
         try{
-            final val clientDetail = clientFacade.getClientDetail(clientId, marker);
+            final val clientDetail = adminFacade.getClientDetail(clientId, marker);
             marker.setMainResponse(clientDetail.toString(), false);
             return new ResponseEntity(clientDetail, HttpStatus.OK);
         }finally {
@@ -66,7 +70,7 @@ public class AdminController {
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                 build().toUri().toASCIIString(), getClientsRequest.toString(), false);
         try {
-            final val getClientsResponse = clientFacade.getClients(getClientsRequest);
+            final val getClientsResponse = adminFacade.getClients(getClientsRequest);
             marker.setMainResponse(getClientsResponse.toString(), false);
             return new ResponseEntity(getClientsResponse, HttpStatus.OK);
         } finally {
@@ -82,7 +86,7 @@ public class AdminController {
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                 build().toUri().toASCIIString(), updateClientRequest.toString(), false);
         try {
-            clientFacade.updateClient(updateClientRequest);
+            adminFacade.updateClient(updateClientRequest);
             marker.setMainResponse("", false);
             return new ResponseEntity(HttpStatus.OK);
         } finally {
@@ -90,5 +94,20 @@ public class AdminController {
         }
     }
 
+    @PostMapping(RESET_PASSWORD)
+    public ResponseEntity<?> resetPassword (@Valid @RequestBody ResetPasswordRequest resetPasswordRequest){
+        IMarker marker = Marker.fromString();
+        marker.info("<<<<<<<< reset Password  >>>>>>>>");
+        resetPasswordRequest.setMarker(marker);
+        marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                build().toUri().toASCIIString(), resetPasswordRequest.toString(), true);
+        try {
+            val resetPasswordResponse = adminFacade.resetPassword(resetPasswordRequest);
+            marker.setMainResponse(resetPasswordResponse.toString(), true);
+            return new ResponseEntity(HttpStatus.OK);
+        } finally {
+            marker.done();
+        }
+    }
 
 }
