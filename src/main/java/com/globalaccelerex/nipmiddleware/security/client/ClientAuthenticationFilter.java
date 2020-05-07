@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.security.outward;
+package com.globalaccelerex.nipmiddleware.security.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
@@ -24,7 +24,7 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_10
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_124;
 
 @Slf4j
-public class OutwardAuthenticationFilter extends GenericFilterBean {
+public class ClientAuthenticationFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
     private static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("Africa/Lagos");
@@ -35,7 +35,7 @@ public class OutwardAuthenticationFilter extends GenericFilterBean {
     }
 
 
-    public OutwardAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public ClientAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
@@ -89,11 +89,11 @@ public class OutwardAuthenticationFilter extends GenericFilterBean {
                                        HttpServletResponse response) throws IOException, AuthenticationException {
         String authorization = request.getHeader("Authorization");
 
-        final val outwardAuthenticationData = OutwardAuthenticationData.builder()
+        final val outwardAuthenticationData = ClientAuthenticationData.builder()
                 .authorization(authorization)
                 .build();
 
-        final val outwardAuthenticationToken = new OutwardAuthenticationToken(outwardAuthenticationData);
+        final val outwardAuthenticationToken = new ClientAuthenticationToken(outwardAuthenticationData);
         authenticationManager.authenticate(outwardAuthenticationToken);
     }
 }

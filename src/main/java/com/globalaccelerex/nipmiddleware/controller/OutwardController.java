@@ -23,15 +23,15 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 
 @Slf4j
 @RestController
-@RequestMapping(NIP_OUTWARD_API)
-public class NIPOutwardController extends APIController{
+@RequestMapping(OUTWARD_API)
+public class OutwardController extends APIController{
 
     private final NIPOutwardFacade nipOutwardFacade;
 
     private final SessionIdUtil sessionIdUtil;
 
     @Autowired
-    public NIPOutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil) {
+    public OutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil) {
         this.nipOutwardFacade = nipOutwardFacade;
         this.sessionIdUtil = sessionIdUtil;
     }
