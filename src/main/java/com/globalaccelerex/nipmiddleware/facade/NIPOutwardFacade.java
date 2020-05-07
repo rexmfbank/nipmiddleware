@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.facade;
 
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
+import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
@@ -238,9 +239,20 @@ public class NIPOutwardFacade {
         iMarker.setRequest(" TSQRequest from client payload ", tsqRequest.toString());
         TsqResponse tsqResponse = null;
         //check if transaction is pending before doing the webservice call
-        final val fundsTransferEntity = fundsTransferDbService
-                .findRecord(clientId, tsqRequest.getPaymentReference(),tsqRequest.getSessionId() ,iMarker);
-        final val sessionId = tsqRequest.getSessionId();
+        FundsTransferEntity fundsTransferEntity = null;
+
+        if(StringUtils.isBlank(tsqRequest.getSessionId())){
+            fundsTransferEntity = fundsTransferDbService.
+                    findRecord(clientId, tsqRequest.getPaymentReference(),iMarker);
+        }else {
+            fundsTransferEntity = fundsTransferDbService.
+                    findRecord(clientId, tsqRequest.getPaymentReference(),tsqRequest.getSessionId(),iMarker);
+        }
+        if(fundsTransferEntity == null){
+            final val errorResponse = new ErrorResponse(NIP_15);
+            throw new NIPMiddleWareAPIException(iMarker,errorResponse);
+        }
+        final val sessionId = fundsTransferEntity.getSessionId();
         final val originatorBankCode = fundsTransferEntity.getOriginatorInstitutionCode();
 
         if(fundsTransferEntity.isPending()){
@@ -264,10 +276,7 @@ public class NIPOutwardFacade {
 
             final val tsqSingleItemResponseVO = xmlUtil.unmarshal(tsqSingleItemResponseXmlString, TsqSingleItemResponseVO.class);
 
-
-
             tsqResponse =  nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
-
 
             fundsTransferDbService.updateFTResponseCode(sessionId, tsqSingleItemResponseVO.getResponseCode(),clientId);
             tsqResponse.setResponseCode(tsqSingleItemResponseVO.getResponseCode());
