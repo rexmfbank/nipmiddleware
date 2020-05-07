@@ -29,10 +29,14 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
         val soapActionURL = nipConfig.getSoapActionUrl() + NAME_ENQUIRY_OUTWARD;
         NameenquirysingleitemResponse nameenquirysingleitemResponse = new NameenquirysingleitemResponse();
         marker.info(" ====== Doing NameEnquiry ====== ");
+        marker.info("webServiceURL " + webServiceURL);
+        marker.info("soapActionURL " + soapActionURL);
+        marker.info("Encoded Request " + nameEnquirySingleItem.getRequest());
         try {
             val response = (JAXBElement<NameenquirysingleitemResponse>) getWebServiceTemplate()
                     .marshalSendAndReceive(webServiceURL, nameEnquirySingleItem,
                             message -> ((SoapMessage) message).setSoapAction(soapActionURL));
+            marker.info("Response From Nibss " + response);
             nameenquirysingleitemResponse = response.getValue();
         } catch (Exception ex) {
             marker.setResponse (ex.getMessage());
