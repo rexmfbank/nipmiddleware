@@ -5,10 +5,10 @@ import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.facade.NIPOutwardFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTPendingResponse;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTSingleCreditRequest;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.nameenquiry.NESingleRequest;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.tsq.TsqRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTPendingResponse;
+import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTSingleCreditRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqRequest;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -23,15 +23,15 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 
 @Slf4j
 @RestController
-@RequestMapping(NIP_OUTWARD_API)
-public class NIPOutwardController extends APIController{
+@RequestMapping(OUTWARD_API)
+public class OutwardController extends APIController{
 
     private final NIPOutwardFacade nipOutwardFacade;
 
     private final SessionIdUtil sessionIdUtil;
 
     @Autowired
-    public NIPOutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil) {
+    public OutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil) {
         this.nipOutwardFacade = nipOutwardFacade;
         this.sessionIdUtil = sessionIdUtil;
     }

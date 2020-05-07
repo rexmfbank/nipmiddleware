@@ -1,11 +1,10 @@
 package com.globalaccelerex.nipmiddleware.mapper;
 
-import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.fundstransfer.FTSingleCreditRequest;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.nameenquiry.NESingleRequest;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.nameenquiry.NESingleResponse;
-import com.globalaccelerex.nipmiddleware.payload.client.outward.tsq.TsqResponse;
+import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTSingleCreditRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleResponse;
+import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqResponse;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.fundtransfer.FTSingleCreditRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
@@ -17,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.function.Function;
 
 import static com.globalaccelerex.nipmiddleware.enums.ChannelCodesEnum.CC_1;

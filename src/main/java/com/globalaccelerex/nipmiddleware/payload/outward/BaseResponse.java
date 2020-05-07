@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.payload.client.outward;
+package com.globalaccelerex.nipmiddleware.payload.outward;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,6 +33,10 @@ public class BaseResponse {
         this.responseDescription = NIPResponseCodeEnum.getResponseDescription(responseCode).getDescription();
     }
 
+    public void setResponse(NIPResponseCodeEnum nipResponseCodeEnum){
+        this.responseCode = nipResponseCodeEnum.getCode();
+        this.responseDescription = nipResponseCodeEnum.getDescription();
+    }
 
 }
 
