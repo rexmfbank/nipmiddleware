@@ -119,6 +119,7 @@ public class ClientCallbackService {
 
              */
             val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(marker, txnStatusQuerySingleitem);
+            marker.info(" Received  Response from NIPOutwardWS TSQ " + StringUtils.defaultIfBlank(txnStatusQuerySingleItemResponse.getReturn()," Empty String"));
             val tsqSingleItemResponseXmlString = ssmUtil.decryptResponse(txnStatusQuerySingleItemResponse.getReturn());
             marker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);
 
