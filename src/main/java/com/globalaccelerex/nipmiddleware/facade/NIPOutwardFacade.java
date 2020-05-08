@@ -208,6 +208,7 @@ public class NIPOutwardFacade {
             //write a response to SQS to do Tsq
             writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
         }
+        iMarker.done();
     }
 
     private void writeToSQS(String clientId, QueueMode queueMode ,String sessionId , String originatorBankCode){
