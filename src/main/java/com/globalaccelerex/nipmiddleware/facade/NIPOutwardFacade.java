@@ -258,17 +258,15 @@ public class NIPOutwardFacade {
             iMarker.info(" Sending Request to NIPOutwardWS ");
 
             final val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(iMarker, txnstatusquerysingleitem);
-            iMarker.info(" Received  Response from NIPOutwardWS ");
+
+            iMarker.info(" Received  Response from NIPOutwardWS " + StringUtils.defaultIfBlank(txnStatusQuerySingleItemResponse.getReturn()," Empty String"));
 
             final val tsqSingleItemResponseXmlString = decryptString(txnStatusQuerySingleItemResponse.getReturn());
             iMarker.setResponse(" Clear  Response from NIPOutwardWS : TSQ "+ tsqSingleItemResponseXmlString);
 
             final val tsqSingleItemResponseVO = xmlUtil.unmarshal(tsqSingleItemResponseXmlString, TsqSingleItemResponseVO.class);
 
-
-
             tsqResponse =  nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
-
 
             fundsTransferDbService.updateFTResponseCode(sessionId, tsqSingleItemResponseVO.getResponseCode(),clientId);
             tsqResponse.setResponseCode(tsqSingleItemResponseVO.getResponseCode());
