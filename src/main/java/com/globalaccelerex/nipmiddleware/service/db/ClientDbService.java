@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +30,7 @@ public class ClientDbService {
     }
 
     public Optional<ClientEntity> isClientPresent(String clientId ){
-        return clientRepository.findByClientId(clientId);
+        return findClientByClientId(clientId);
 
     }
 
@@ -57,15 +56,15 @@ public class ClientDbService {
         clientCache.invalidate(clientEntity.getClientId());
     }
 
-    public ClientEntity findClientByClientId(String clientId ){
+    public Optional<ClientEntity> findClientByClientId(String clientId ){
         try{
-            return clientCache.getUnchecked(clientId);
+            return Optional.of(clientCache.getUnchecked(clientId));
         }catch (UncheckedExecutionException exception){
-            return null;
+            return Optional.empty();
         }
     }
 
-    private LoadingCache<String, ClientEntity> clientCache = CacheBuilder.newBuilder()
+    private final LoadingCache<String, ClientEntity> clientCache = CacheBuilder.newBuilder()
             .maximumSize(1000)
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .recordStats()

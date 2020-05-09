@@ -1,10 +1,12 @@
 package com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer;
 
 import com.globalaccelerex.nipmiddleware.annotation.Nuban;
+import com.globalaccelerex.nipmiddleware.entity.ClientEntity;
 import com.globalaccelerex.nipmiddleware.payload.outward.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
@@ -55,6 +57,21 @@ public class FTSingleCreditRequest extends BaseRequest {
     private String narration;//max 100 , optional
 
     private String transactionLocation;
+
+    public void updateCompulsoryFields(ClientEntity clientEntity){
+        if (StringUtils.isBlank(originatorAccountName)){
+            originatorAccountName= clientEntity.getAccountName();
+        }
+        if(StringUtils.isBlank(originatorBVN)){
+            originatorBVN = clientEntity.getBvn();
+        }
+        if(StringUtils.isBlank(originatorKYCLevel)){
+            originatorKYCLevel = clientEntity.getKycLevel();
+        }
+        if(StringUtils.isBlank(narration)){
+            narration = "Transaction of " + amount;
+        }
+    }
 
 }
 
