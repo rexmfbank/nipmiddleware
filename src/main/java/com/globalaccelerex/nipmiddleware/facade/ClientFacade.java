@@ -58,7 +58,8 @@ public class ClientFacade {
             clientEntity.setAccountName(neSingleResponse.getAccountName());
             clientEntity.setAccountNo(neSingleResponse.getAccountNo());
             clientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
-
+            clientEntity.setKycLevel(neSingleResponse.getKycLevel());
+            clientEntity.setBvn(neSingleResponse.getBankVerificationNo());
             clientDbService.saveClientEntity(clientEntity);
 
             final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
@@ -75,7 +76,6 @@ public class ClientFacade {
         val clientEntityOpt = clientDbService.isClientPresent(clientId);
         if(clientEntityOpt.isPresent()){
             final val clientDetail = clientMapper.mapClientDetail.apply(clientEntityOpt.get());
-
             marker.info("done processing get client request ");
             return clientDetail;
         }else{
@@ -111,6 +111,8 @@ public class ClientFacade {
                 updatedClientEntity.setAccountName(neSingleResponse.getAccountName());
                 updatedClientEntity.setAccountNo(neSingleResponse.getAccountNo());
                 updatedClientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
+                updatedClientEntity.setKycLevel(neSingleResponse.getKycLevel());
+                updatedClientEntity.setBvn(neSingleResponse.getBankVerificationNo());
             }else{
                 throw new NIPMiddleWareAPIException(NIP_105,marker);
             }
