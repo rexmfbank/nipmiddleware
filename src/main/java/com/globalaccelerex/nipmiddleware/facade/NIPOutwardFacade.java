@@ -9,11 +9,6 @@ import com.globalaccelerex.nipmiddleware.mapper.NIPOutwardMapper;
 import com.globalaccelerex.nipmiddleware.messaging.QueueMode;
 import com.globalaccelerex.nipmiddleware.messaging.QueuePayload;
 import com.globalaccelerex.nipmiddleware.messaging.SQSService;
-import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTSingleCreditRequest;
-import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
-import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleResponse;
-import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqRequest;
-import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqResponse;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.fundtransfer.FTSingleCreditRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.fundtransfer.FTSingleCreditResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
@@ -23,6 +18,12 @@ import com.globalaccelerex.nipmiddleware.payload.nip.outward.tsq.TsqSingleItemRe
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.FundtransfersingleitemDc;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.Nameenquirysingleitem;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.Txnstatusquerysingleitem;
+import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTSingleCreditRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleResponse;
+import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqResponse;
+import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.service.db.FundsTransferDbService;
 import com.globalaccelerex.nipmiddleware.service.ws.NIPOutwardWS;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
@@ -59,9 +60,12 @@ public class NIPOutwardFacade {
 
     private final SQSService sqsService;
 
+    private final ClientDbService clientDbService;
+
     @Autowired
     public NIPOutwardFacade(XmlUtil xmlUtil, NIPOutwardMapper nipOutwardMapper, NIPOutwardWS nipOutwardWS,
-                            SSMUtil ssmUtil, FundsTransferDbService fundsTransferDbService, NipConfig nipConfig, SQSService sqsService) {
+                            SSMUtil ssmUtil, FundsTransferDbService fundsTransferDbService, NipConfig nipConfig,
+                            SQSService sqsService, ClientDbService clientDbService) {
         this.xmlUtil = xmlUtil;
         this.nipOutwardMapper = nipOutwardMapper;
         this.nipOutwardWS = nipOutwardWS;
@@ -69,6 +73,7 @@ public class NIPOutwardFacade {
         this.fundsTransferDbService = fundsTransferDbService;
         this.nipConfig = nipConfig;
         this.sqsService = sqsService;
+        this.clientDbService = clientDbService;
     }
 
 
@@ -113,6 +118,9 @@ public class NIPOutwardFacade {
         val iMarker = ftSingleCreditRequest.getMarker();
         val clientId = ftSingleCreditRequest.getClientId();
         final val originatorBankCode = ftSingleCreditRequest.getOriginatorBankCode();
+        val clientEntity = clientDbService.findClientByClientId(ftSingleCreditRequest.getClientId()).get();
+        ftSingleCreditRequest.updateCompulsoryFields(clientEntity);
+
         iMarker.info("::::: Handling Async Method for Funds Transfer ::::::: ");
         NESingleResponse neSingleResponse = null;
         final val fundsTransferEntity = nipOutwardMapper.mapFundsTransferEntity.apply(ftSingleCreditRequest);
@@ -166,6 +174,7 @@ public class NIPOutwardFacade {
 
         try{
             // go ahead with the FT
+
             final val ftSingleCreditRequestVO = nipOutwardMapper.mapFTSingleCreditRequestVO.apply(ftSingleCreditRequest);
             ftSingleCreditRequestVO.setSessionId(sessionId);
             ftSingleCreditRequestVO.setNameEnquiryRef(StringUtils.defaultIfBlank(ftSingleCreditRequest.getNameEnquiryReference() ,neSingleResponse.getNameEnquiryReference()));
@@ -229,6 +238,22 @@ public class NIPOutwardFacade {
 
     public boolean confirmClientAndPaymentReference(FTSingleCreditRequest ftSingleCreditRequest){
         return fundsTransferDbService.confirmClientAndPaymentReference(ftSingleCreditRequest.getClientId(), ftSingleCreditRequest.getPaymentReference());
+    }
+
+    public String validateCompulsoryFields(FTSingleCreditRequest ftSingleCreditRequest){
+        val clientEntityOpt = clientDbService.findClientByClientId(ftSingleCreditRequest.getClientId());
+        val clientEntity = clientEntityOpt.get();
+        val stringBuilder = new StringBuilder();
+        if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorAccountName()) && StringUtils.isBlank(clientEntity.getAccountName())){
+            stringBuilder.append("Originator Account Name is required");
+        }
+        if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorBVN()) && StringUtils.isBlank(clientEntity.getBvn())){
+            stringBuilder.append("Originator BVN  is required");
+        }
+        if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorKYCLevel()) && StringUtils.isBlank(clientEntity.getKycLevel())){
+            stringBuilder.append("Originator KYC is required");
+        }
+        return stringBuilder.toString();
     }
 
     public TsqResponse doTsq(TsqRequest tsqRequest){

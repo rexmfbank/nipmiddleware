@@ -12,14 +12,21 @@ import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqRequest;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import javax.validation.Valid;
+
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_108;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_99;
 
 @Slf4j
 @RestController
@@ -77,9 +84,14 @@ public class OutwardController extends APIController{
             ftPendingResponse.setClientId(ftSingleCreditRequest.getClientId());
             if (result){
                 throw new NIPMiddleWareAPIException(NIP_108,marker);
-            }else{
-                nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
             }
+
+            val responseMsg = nipOutwardFacade.validateCompulsoryFields(ftSingleCreditRequest);
+            if(StringUtils.isBlank(responseMsg)){
+                throw new NIPMiddleWareAPIException(NIP_99,responseMsg , marker);
+            }
+
+            nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
             ftPendingResponse.setSessionId(sessionId);
             ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());
             marker.setMainResponse(ftPendingResponse.toString(), false);
