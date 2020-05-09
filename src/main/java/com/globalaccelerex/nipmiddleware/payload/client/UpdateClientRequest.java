@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.payload.client;
 
+import com.globalaccelerex.nipmiddleware.annotation.Nuban;
 import com.globalaccelerex.nipmiddleware.payload.outward.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,8 +35,8 @@ public class UpdateClientRequest extends BaseRequest {
     @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
     private String bankCode;
 
+    @Nuban
     @NotBlank(message = "Account No is required")
-    @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
     private String accountNo;
 
     @NotBlank(message = "Originator Bank Code is required")
