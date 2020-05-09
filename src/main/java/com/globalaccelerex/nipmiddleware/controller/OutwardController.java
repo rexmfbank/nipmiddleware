@@ -80,6 +80,7 @@ public class OutwardController extends APIController{
             final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
 
             final val result = nipOutwardFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
+
             final val ftPendingResponse = new FTPendingResponse();
             ftPendingResponse.setClientId(ftSingleCreditRequest.getClientId());
             if (result){
@@ -87,7 +88,7 @@ public class OutwardController extends APIController{
             }
 
             val responseMsg = nipOutwardFacade.validateCompulsoryFields(ftSingleCreditRequest);
-            if(StringUtils.isBlank(responseMsg)){
+            if(StringUtils.isNotBlank(responseMsg)){
                 throw new NIPMiddleWareAPIException(NIP_99,responseMsg , marker);
             }
 

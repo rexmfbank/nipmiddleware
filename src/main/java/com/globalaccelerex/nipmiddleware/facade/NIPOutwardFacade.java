@@ -245,13 +245,13 @@ public class NIPOutwardFacade {
         val clientEntity = clientEntityOpt.get();
         val stringBuilder = new StringBuilder();
         if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorAccountName()) && StringUtils.isBlank(clientEntity.getAccountName())){
-            stringBuilder.append("Originator Account Name is required");
+            stringBuilder.append("Originator Account Name is required ; ");
         }
         if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorBVN()) && StringUtils.isBlank(clientEntity.getBvn())){
-            stringBuilder.append("Originator BVN  is required");
+            stringBuilder.append("Originator BVN  is required ; ");
         }
         if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorKYCLevel()) && StringUtils.isBlank(clientEntity.getKycLevel())){
-            stringBuilder.append("Originator KYC is required");
+            stringBuilder.append("Originator KYC is required ; ");
         }
         return stringBuilder.toString();
     }
