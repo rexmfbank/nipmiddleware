@@ -88,7 +88,6 @@ public class NIPOutwardFacade {
         neSingleItem.setRequest(encryptedXmlString);
         iMarker.info(" Sending Request to NIPOutwardWS for NameEnquiry");
 
-        /*   */
 
         val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
         if(StringUtils.isEmpty(nameEnquirySingleItemResponse.getReturn())){
