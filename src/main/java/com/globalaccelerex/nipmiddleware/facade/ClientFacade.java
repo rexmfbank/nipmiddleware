@@ -52,6 +52,7 @@ public class ClientFacade {
         }
 
         val neSingleRequest = clientMapper.mapNESingleRequest.apply(createClientRequest);
+        neSingleRequest.setMarker(iMarker);
         val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
         if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
             final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
@@ -106,7 +107,9 @@ public class ClientFacade {
         }else{
             // Do NameEnquiry
             val neSingleRequest = clientMapper.mapNESingleRequest_1.apply(updateClientRequest);
+            neSingleRequest.setMarker(marker);
             val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+
             if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
                 updatedClientEntity.setAccountName(neSingleResponse.getAccountName());
                 updatedClientEntity.setAccountNo(neSingleResponse.getAccountNo());
