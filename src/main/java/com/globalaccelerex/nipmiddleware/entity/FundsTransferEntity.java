@@ -57,7 +57,7 @@ public class FundsTransferEntity {
 
     private String beneficiaryKYCLevel;
 
-
+    @NotBlank
     private String originatorAccountName;
 
     @NotBlank
@@ -66,13 +66,16 @@ public class FundsTransferEntity {
     @NotBlank
     private String originatorInstitutionCode;
 
+    @NotBlank
     private String originatorBVN;
 
+    @NotBlank
     private String originatorKYCLevel;
 
 
     private String transactionLocation;
 
+    @NotBlank
     private String narration;
 
     private String paymentReference;

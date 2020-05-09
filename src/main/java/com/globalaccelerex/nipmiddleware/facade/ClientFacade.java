@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.facade;
 
+import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.mapper.ClientMapper;
@@ -27,14 +28,18 @@ public class ClientFacade {
 
     private final ClientMapper clientMapper;
 
+    private final NIPOutwardFacade nipOutwardFacade;
+
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public ClientFacade(ClientDbService clientDbService,JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper) {
+    public ClientFacade(ClientDbService clientDbService, JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper,
+                        NIPOutwardFacade nipOutwardFacade) {
         this.clientDbService = clientDbService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.clientMapper = clientMapper;
+        this.nipOutwardFacade = nipOutwardFacade;
     }
 
     public CreateClientResponse createClient(CreateClientRequest createClientRequest){
@@ -45,13 +50,26 @@ public class ClientFacade {
         if(clientDbService.isClientPresent(clientId).isPresent()){
             throw new NIPMiddleWareAPIException(NIP_114,iMarker);
         }
-        final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
-        clientDbService.saveClientEntity(clientEntity);
 
-        final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
-        final val createClientResponse = clientMapper.mapCreateClientResponse.apply(createClientRequest);
-        createClientResponse.setSecretKey(jwtTokenStr);
-        return createClientResponse;
+        val neSingleRequest = clientMapper.mapNESingleRequest.apply(createClientRequest);
+        neSingleRequest.setMarker(iMarker);
+        val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+        if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
+            final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
+            clientEntity.setAccountName(neSingleResponse.getAccountName());
+            clientEntity.setAccountNo(neSingleResponse.getAccountNo());
+            clientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
+            clientEntity.setKycLevel(neSingleResponse.getKycLevel());
+            clientEntity.setBvn(neSingleResponse.getBankVerificationNo());
+            clientDbService.saveClientEntity(clientEntity);
+
+            final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
+            final val createClientResponse = clientMapper.mapCreateClientResponse.apply(createClientRequest);
+            createClientResponse.setSecretKey(jwtTokenStr);
+            return createClientResponse;
+        }else{
+            throw new NIPMiddleWareAPIException(NIP_105,iMarker);
+        }
     }
 
     public ClientDetail getClientDetail(String clientId , IMarker marker){
@@ -59,7 +77,6 @@ public class ClientFacade {
         val clientEntityOpt = clientDbService.isClientPresent(clientId);
         if(clientEntityOpt.isPresent()){
             final val clientDetail = clientMapper.mapClientDetail.apply(clientEntityOpt.get());
-
             marker.info("done processing get client request ");
             return clientDetail;
         }else{
@@ -82,10 +99,29 @@ public class ClientFacade {
             throw new NIPMiddleWareAPIException(NIP_114 , marker);
         }
 
+        val confirmAccountNo = StringUtils.equalsIgnoreCase(updateClientRequest.getAccountNo(), clientEntity.getAccountNo());
+        val confirmBankCode = StringUtils.equalsIgnoreCase(updateClientRequest.getBankCode(), clientEntity.getBankCode());
         val updatedClientEntity = clientMapper.updateClientEntity(clientEntity, updateClientRequest);
+        if(confirmAccountNo && confirmBankCode){
+            //Do Nothing
+        }else{
+            // Do NameEnquiry
+            val neSingleRequest = clientMapper.mapNESingleRequest_1.apply(updateClientRequest);
+            neSingleRequest.setMarker(marker);
+            val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+
+            if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
+                updatedClientEntity.setAccountName(neSingleResponse.getAccountName());
+                updatedClientEntity.setAccountNo(neSingleResponse.getAccountNo());
+                updatedClientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
+                updatedClientEntity.setKycLevel(neSingleResponse.getKycLevel());
+                updatedClientEntity.setBvn(neSingleResponse.getBankVerificationNo());
+            }else{
+                throw new NIPMiddleWareAPIException(NIP_105,marker);
+            }
+        }
 
         clientDbService.updateClientEntity(updatedClientEntity);
-
         marker.info("done processing update client request ");
     }
 

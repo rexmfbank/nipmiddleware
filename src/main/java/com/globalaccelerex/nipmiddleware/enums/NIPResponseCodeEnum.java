@@ -87,7 +87,7 @@ public enum NIPResponseCodeEnum {
 
     NIP_98("98"," Invalid Http Client Error ",FAILED),
 
-    NIP_99("99","Service Timeout Error " , PENDING),
+    NIP_99("99","Application Error " , FAILED),
 
     NIP_100("100","Application Error : One or More Fields is empty or has an incorrect value ",FAILED),
 
@@ -147,7 +147,7 @@ public enum NIPResponseCodeEnum {
     private final String description;
 
     @Getter
-    private PaymentStatusEnum paymentStatusEnum;
+    private final PaymentStatusEnum paymentStatusEnum;
 
 
     public static NIPResponseCodeEnum getResponseDescription(String code){
