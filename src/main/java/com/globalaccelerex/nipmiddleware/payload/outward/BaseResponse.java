@@ -38,5 +38,7 @@ public class BaseResponse {
         this.responseDescription = nipResponseCodeEnum.getDescription();
     }
 
+
+
 }
 

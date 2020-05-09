@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Data
 @ToString
@@ -29,5 +30,17 @@ public class CreateClientRequest extends BaseRequest {
     private String contactEmail;
 
     private String contactPhone;
+
+    @NotBlank(message = "NIP Bank Code is required")
+    @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
+    private String bankCode;
+
+    @NotBlank(message = "Account No is required")
+    @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
+    private String accountNo;
+
+    @NotBlank(message = "Originator Bank Code is required")
+    @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
+    private String originatorBankCode;
 
 }
