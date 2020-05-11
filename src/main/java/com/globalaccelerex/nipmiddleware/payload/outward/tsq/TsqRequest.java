@@ -8,7 +8,7 @@ import lombok.ToString;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-@ToString
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class TsqRequest extends BaseRequest {
 

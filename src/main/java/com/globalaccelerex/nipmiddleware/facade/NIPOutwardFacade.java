@@ -253,6 +253,19 @@ public class NIPOutwardFacade {
         if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorKYCLevel()) && StringUtils.isBlank(clientEntity.getKycLevel())){
             stringBuilder.append("Originator KYC is required ; ");
         }
+        if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorAccountNo()) && StringUtils.isBlank(clientEntity.getAccountNo())){
+            stringBuilder.append("Originator Account No is required ; ");
+        }
+        if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorBankCode()) && StringUtils.isBlank(clientEntity.getBankCode())){
+            stringBuilder.append("Originator Bank Code is required ; ");
+        }
+        if(ftSingleCreditRequest.getLatitude() == null && StringUtils.isBlank(clientEntity.getLatitude())){
+            stringBuilder.append("Latitude is required ; ");
+        }
+        if(ftSingleCreditRequest.getLongitude() == null && StringUtils.isBlank(clientEntity.getLongitude())){
+            stringBuilder.append("Longitude is required.  ");
+        }
+
         return stringBuilder.toString();
     }
 
