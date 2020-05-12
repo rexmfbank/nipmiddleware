@@ -22,13 +22,13 @@ public @interface Nuban {
 
     Class<? extends Payload>[] payload() default {};
 
-    boolean ignoreEmpty();
+    boolean ignoreIfEmpty();
 
     @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
     @Retention(RUNTIME)
     @Documented
     @interface List {
-        Nuban[] mode();
+        Nuban[] ignoreIfEmpty();
     }
 
 }

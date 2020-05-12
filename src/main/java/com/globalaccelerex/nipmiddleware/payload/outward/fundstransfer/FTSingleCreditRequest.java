@@ -22,14 +22,14 @@ public class FTSingleCreditRequest extends BaseRequest {
     @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
     private String destinationBankCode;
 
-    @Nuban(ignoreEmpty = false)
+    @Nuban(ignoreIfEmpty = false)
     @NotBlank(message = "destination account number is required")
     private String destinationAccountNo;
 
     @NotBlank(message = "payment reference is required")
     private String paymentReference;
 
-    @Nuban(ignoreEmpty = true)
+    @Nuban(ignoreIfEmpty = true)
     private String originatorAccountNo;
 
     @DecimalMin(value = "0.00", inclusive = false ,message = "Amount must be greater than zero")

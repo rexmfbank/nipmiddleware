@@ -21,7 +21,7 @@ public class NESingleRequest extends BaseRequest {
     @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
     private String destinationBankCode;
 
-    @Nuban(ignoreEmpty = false)
+    @Nuban(ignoreIfEmpty = false)
     @NotEmpty(message = "Account No is required")
     private String accountNo;
 

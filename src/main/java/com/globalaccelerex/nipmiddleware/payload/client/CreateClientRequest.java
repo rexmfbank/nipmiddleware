@@ -37,7 +37,7 @@ public class CreateClientRequest extends BaseRequest {
     @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
     private String bankCode;
 
-    @Nuban(ignoreEmpty = false)
+    @Nuban(ignoreIfEmpty = false)
     @NotBlank(message = "Account No is required")
     private String accountNo;
 

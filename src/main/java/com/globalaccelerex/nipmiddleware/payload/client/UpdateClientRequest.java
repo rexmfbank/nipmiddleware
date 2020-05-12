@@ -35,7 +35,7 @@ public class UpdateClientRequest extends BaseRequest {
     @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
     private String bankCode;
 
-    @Nuban(ignoreEmpty = true)
+    @Nuban(ignoreIfEmpty = true)
     private String accountNo;
 
     @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")

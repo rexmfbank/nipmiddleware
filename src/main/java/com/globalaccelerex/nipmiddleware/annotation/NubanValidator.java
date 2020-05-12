@@ -8,16 +8,16 @@ import javax.validation.ConstraintValidatorContext;
 
 public class NubanValidator implements ConstraintValidator<Nuban, String> {
 
-    private boolean  ignoreEmpty ;
+    private boolean  ignoreIfEmpty ;
 
     @Override
     public void initialize(Nuban constraintAnnotation) {
-        ignoreEmpty = constraintAnnotation.ignoreEmpty();
+        ignoreIfEmpty = constraintAnnotation.ignoreIfEmpty();
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if(ignoreEmpty && StringUtils.isBlank(value)){
+        if(ignoreIfEmpty && StringUtils.isBlank(value)){
             return true;
         }
         if(StringUtils.isBlank(value)) return false;
