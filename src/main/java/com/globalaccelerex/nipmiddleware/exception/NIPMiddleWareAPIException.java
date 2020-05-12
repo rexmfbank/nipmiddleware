@@ -1,7 +1,6 @@
 package com.globalaccelerex.nipmiddleware.exception;
 
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
-import com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +29,14 @@ public class NIPMiddleWareAPIException extends RuntimeException {
         errorResponse = ErrorResponse.builder()
                 .responseCode(nipResponseCodeEnum.getCode())
                 .responseMessage(nipResponseCodeEnum.getDescription())
+                .build();
+        setMarker(marker);
+    }
+
+    public NIPMiddleWareAPIException(NIPResponseCodeEnum nipResponseCodeEnum,String description ,IMarker marker){
+        errorResponse = ErrorResponse.builder()
+                .responseCode(nipResponseCodeEnum.getCode())
+                .responseMessage(nipResponseCodeEnum.getDescription() + " : " +description)
                 .build();
         setMarker(marker);
     }

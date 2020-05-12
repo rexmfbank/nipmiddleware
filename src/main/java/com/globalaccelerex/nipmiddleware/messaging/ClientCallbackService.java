@@ -68,8 +68,9 @@ public class ClientCallbackService {
         val sessionId = queuePayload.getSessionId();
         try{
             val fundsTransferEntity = fundsTransferDbService.findRecord(clientId, sessionId);
-            val clientEntity = clientDbService.findClientByClientId(clientId);
-            val callbackUrl = clientEntity.getCallbackUrl();
+            val clientEntityOpt = clientDbService.findClientByClientId(clientId);
+
+            val callbackUrl = clientEntityOpt.isPresent() ? clientEntityOpt.get().getCallbackUrl() : StringUtils.EMPTY;
 
             if(StringUtils.isNotBlank(callbackUrl)) {
                 val tsqResponse = nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
@@ -78,7 +79,7 @@ public class ClientCallbackService {
                 marker.setRequest(callbackUrl, OBJECT_MAPPER.writeValueAsString(tsqResponse));
                 final val tsqCallbackResponse = hTTPRestTemplate.getClient()
                         .postForObject(HTTPHelpers.buildURI(callbackUrl, ""), tsqResponse, String.class);
-                marker.setResponse(tsqCallbackResponse.toString());
+                marker.setResponse(tsqCallbackResponse);
             }
 
         }catch (Exception ex){
@@ -114,10 +115,7 @@ public class ClientCallbackService {
             final val txnStatusQuerySingleitem = new Txnstatusquerysingleitem();
             txnStatusQuerySingleitem.setRequest(encryptedTsqSingleItemRequestXmlString);
 
-            /*
-            ************************** SIMULATING RESPONSE FROM NIBSS **************************
 
-             */
             val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(marker, txnStatusQuerySingleitem);
             val tsqSingleItemResponseXmlString = ssmUtil.decryptResponse(txnStatusQuerySingleItemResponse.getReturn());
             marker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);
@@ -127,13 +125,13 @@ public class ClientCallbackService {
 
             val responseCode = tsqSingleItemResponseVO.getResponseCode();
 
-           // val responseCode = NIP_00.getCode();
-            //update db
             fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId );
 
             if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode())){
                 val clientEntity = clientDbService.findClientByClientId(clientId);
-                val callbackUrl = clientEntity.getCallbackUrl();
+                val clientEntityOpt = clientDbService.findClientByClientId(clientId);
+
+                val callbackUrl = clientEntityOpt.isPresent() ? clientEntityOpt.get().getCallbackUrl() : StringUtils.EMPTY;
 
                 if(StringUtils.isNotBlank(callbackUrl)) {
                     val tsqResponse = nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
@@ -142,7 +140,7 @@ public class ClientCallbackService {
                     marker.setRequest(callbackUrl, OBJECT_MAPPER.writeValueAsString(tsqResponse));
                     final val tsqCallbackResponse = hTTPRestTemplate.getClient()
                             .postForObject(HTTPHelpers.buildURI(callbackUrl, ""), tsqResponse, String.class);
-                    marker.setResponse(tsqCallbackResponse.toString());
+                    marker.setResponse(tsqCallbackResponse);
                 }
             }
         }catch (Exception ex){

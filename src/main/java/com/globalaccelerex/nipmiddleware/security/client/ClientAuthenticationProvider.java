@@ -1,6 +1,5 @@
 package com.globalaccelerex.nipmiddleware.security.client;
 
-import com.globalaccelerex.nipmiddleware.entity.ClientEntity;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
 import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlException;
 import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
@@ -15,7 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_124;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_125;
 
 @Slf4j
 @Component
@@ -47,19 +47,20 @@ public class ClientAuthenticationProvider implements AuthenticationProvider {
     private void validate(ClientAuthenticationData data) {
 
         // get client
-        ClientEntity client = clientDbService.findClientByClientId(data.getUsername());
-        if (client == null) {
+        val clientEntityOpt = clientDbService.findClientByClientId(data.getUsername());
+        if (!clientEntityOpt.isPresent()) {
             throw new AccessControlException(new ErrorResponse(NIP_124));
         }
 
+        val clientEntity = clientEntityOpt.get();
         /// validate password
-        if ( !bCryptPasswordEncoder.matches(StringUtils.defaultString(data.getPassword(),""), client.getPassword()) ) {
+        if ( !bCryptPasswordEncoder.matches(StringUtils.defaultString(data.getPassword(),""), clientEntity.getPassword()) ) {
             throw new AccessControlException(new ErrorResponse(NIP_125));
         }
 
 
         // save client in session
-        data.setClient(client);
+        data.setClient(clientEntity);
     }
 
 

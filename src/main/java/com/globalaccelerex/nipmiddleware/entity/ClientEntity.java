@@ -47,6 +47,20 @@ public class ClientEntity {
     @Column(name ="contact_phone")
     private String contactPhone;
 
+    @Column(nullable = false)
+    private String accountName;
+
+    @Column(nullable = false)
+    private String bvn;
+
+    @Column(nullable = false)
+    private String kycLevel;
+
+    @Column(nullable = false)
+    private String accountNo;
+
+    private String bankCode;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name ="created_at")

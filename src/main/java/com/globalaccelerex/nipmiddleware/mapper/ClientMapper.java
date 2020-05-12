@@ -5,6 +5,7 @@ import com.globalaccelerex.nipmiddleware.payload.client.ClientDetail;
 import com.globalaccelerex.nipmiddleware.payload.client.CreateClientRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.CreateClientResponse;
 import com.globalaccelerex.nipmiddleware.payload.client.UpdateClientRequest;
+import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,20 @@ public class ClientMapper {
         clientDetail.setResponse(NIP_00);
         return clientDetail;
     };
+
+    public Function<CreateClientRequest , NESingleRequest> mapNESingleRequest =  createClientRequest ->
+            NESingleRequest.builder()
+            .accountNo(createClientRequest.getAccountNo())
+            .destinationBankCode(createClientRequest.getBankCode())
+            .originatorBankCode(createClientRequest.getOriginatorBankCode())
+            .build();
+
+    public Function<UpdateClientRequest , NESingleRequest> mapNESingleRequest_1 = updateClientRequest -> NESingleRequest.builder()
+            .accountNo(updateClientRequest.getAccountNo())
+            .destinationBankCode(updateClientRequest.getBankCode())
+            .originatorBankCode(updateClientRequest.getOriginatorBankCode())
+            .build();
+
 
     public ClientEntity updateClientEntity(ClientEntity clientEntity , UpdateClientRequest updateClientRequest){
         if(updateClientRequest.getActive() != null){

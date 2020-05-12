@@ -12,7 +12,6 @@ import javax.validation.constraints.NotEmpty;
 @EqualsAndHashCode(callSuper = true)
 public class TsqRequest extends BaseRequest {
 
-    @NotEmpty(message = "SessionId is required")
     private String sessionId;
 
     @NotEmpty(message = "PaymentReference is required")

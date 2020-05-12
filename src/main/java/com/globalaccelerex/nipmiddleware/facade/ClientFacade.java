@@ -37,6 +37,85 @@ public class ClientFacade {
         this.clientMapper = clientMapper;
     }
 
+    public CreateClientResponse createClient(CreateClientRequest createClientRequest){
+        final val iMarker = createClientRequest.getMarker();
+        iMarker.info("::::::: Handling Create Client ::::::: ");
+        final val clientId = createClientRequest.getClientId();
+
+        if(clientDbService.isClientPresent(clientId).isPresent()){
+            throw new NIPMiddleWareAPIException(NIP_114,iMarker);
+        }
+        final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
+        clientDbService.saveClientEntity(clientEntity);
+
+        final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
+        final val createClientResponse = clientMapper.mapCreateClientResponse.apply(createClientRequest);
+        createClientResponse.setSecretKey(jwtTokenStr);
+        return createClientResponse;
+    }
+
+    public ClientDetail getClientDetail(String clientId , IMarker marker){
+        marker.info("processing get client  request ");
+        val clientEntityOpt = clientDbService.isClientPresent(clientId);
+        if(clientEntityOpt.isPresent()){
+            final val clientDetail = clientMapper.mapClientDetail.apply(clientEntityOpt.get());
+
+            marker.info("done processing get client request ");
+            return clientDetail;
+        }else{
+            throw new NIPMiddleWareAPIException(NIP_124,marker);
+        }
+    }
+
+    public void updateClient(UpdateClientRequest updateClientRequest){
+        IMarker marker = updateClientRequest.getMarker();
+        marker.info("processing update client  request ");
+        val clientEntityOpt = clientDbService.isClientPresent(updateClientRequest.getClientId());
+        if(!clientEntityOpt.isPresent()){
+            throw new NIPMiddleWareAPIException(NIP_124,marker);
+        }
+
+        val clientEntity = clientEntityOpt.get();
+        //check if name already exists
+        val clientEntityOpt_ = clientDbService.isClientNamePresent(updateClientRequest.getClientName());
+        if(clientEntityOpt_ .isPresent() && !StringUtils.equalsIgnoreCase(clientEntityOpt_.get().getClientId() ,updateClientRequest.getClientId())){
+            throw new NIPMiddleWareAPIException(NIP_114 , marker);
+        }
+
+        val updatedClientEntity = clientMapper.updateClientEntity(clientEntity, updateClientRequest);
+
+        clientDbService.updateClientEntity(updatedClientEntity);
+
+        marker.info("done processing update client request ");
+    }
+
+    public GetClientsResponse getClients(GetClientsRequest getClientsRequest){
+        IMarker marker = getClientsRequest.getMarker();
+        marker.info("processing get clients  request ");
+        val requestSize = getClientsRequest.getSize();
+        val pageIndex = getClientsRequest.getPageIndex();
+        val startWith = getClientsRequest.getStartWith();
+        val pageClientEntities = clientDbService.findClients(requestSize, startWith, pageIndex);
+
+        final val clientDetailList = pageClientEntities.getContent()
+                .stream()
+                .map(clientMapper.mapClientDetail)
+                .collect(Collectors.toList());
+
+        marker.info("done processing get clients  request ");
+        return GetClientsResponse.builder()
+                .clientDetailList(clientDetailList)
+                .hasContent(pageClientEntities.hasContent())
+                .hasNext(pageClientEntities.hasNext())
+                .hasPrevious(pageClientEntities.hasPrevious())
+                .isFirst(pageClientEntities.isFirst())
+                .isLast(pageClientEntities.isLast())
+                .numberOfElement(pageClientEntities.getNumberOfElements())
+                .size(pageClientEntities.getSize())
+                .totalElements(pageClientEntities.getTotalElements())
+                .totalPages(pageClientEntities.getTotalPages())
+                .build();
+    }
 
     public void updateClientPassword(UpdateClientPasswordRequest updateClientPasswordRequest){
         IMarker marker = updateClientPasswordRequest.getMarker();
@@ -62,6 +141,5 @@ public class ClientFacade {
 
         marker.info("done processing update client password request ");
     }
-
 
 }
