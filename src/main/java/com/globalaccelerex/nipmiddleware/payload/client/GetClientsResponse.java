@@ -2,14 +2,15 @@ package com.globalaccelerex.nipmiddleware.payload.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.globalaccelerex.nipmiddleware.annotation.IsAlphaNumeric;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
 @Data
 @Builder
+@ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetClientsResponse {

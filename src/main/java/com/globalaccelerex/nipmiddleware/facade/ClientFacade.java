@@ -54,6 +54,7 @@ public class ClientFacade {
         val neSingleRequest = clientMapper.mapNESingleRequest.apply(createClientRequest);
         neSingleRequest.setMarker(iMarker);
         val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+
         if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
             final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
             clientEntity.setAccountName(neSingleResponse.getAccountName());
@@ -99,12 +100,10 @@ public class ClientFacade {
             throw new NIPMiddleWareAPIException(NIP_114 , marker);
         }
 
-        val confirmAccountNo = StringUtils.equalsIgnoreCase(updateClientRequest.getAccountNo(), clientEntity.getAccountNo());
-        val confirmBankCode = StringUtils.equalsIgnoreCase(updateClientRequest.getBankCode(), clientEntity.getBankCode());
+        val confirmAccountNo = StringUtils.isNotBlank(updateClientRequest.getAccountNo());
+        val confirmBankCode = StringUtils.isNotBlank(updateClientRequest.getBankCode());
         val updatedClientEntity = clientMapper.updateClientEntity(clientEntity, updateClientRequest);
         if(confirmAccountNo && confirmBankCode){
-            //Do Nothing
-        }else{
             // Do NameEnquiry
             val neSingleRequest = clientMapper.mapNESingleRequest_1.apply(updateClientRequest);
             neSingleRequest.setMarker(marker);
@@ -120,7 +119,6 @@ public class ClientFacade {
                 throw new NIPMiddleWareAPIException(NIP_105,marker);
             }
         }
-
         clientDbService.updateClientEntity(updatedClientEntity);
         marker.info("done processing update client request ");
     }
