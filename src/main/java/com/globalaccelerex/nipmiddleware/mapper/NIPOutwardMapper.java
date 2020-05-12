@@ -66,48 +66,43 @@ public class NIPOutwardMapper {
                 .build();
     }
 
-    public Function<FTSingleCreditRequest , FTSingleCreditRequestVO> mapFTSingleCreditRequestVO = (FTSingleCreditRequest ftSingleCreditRequest) -> {
-        return FTSingleCreditRequestVO.builder()
-                .amount(ftSingleCreditRequest.getAmount().toPlainString())
-                .beneficiaryAccountName(ftSingleCreditRequest.getBeneficiaryAccountName())
-                .beneficiaryAccountNo(ftSingleCreditRequest.getDestinationAccountNo())
-                .beneficiaryBVN(ftSingleCreditRequest.getBeneficiaryBVN())
-                .beneficiaryKYCLevel(ftSingleCreditRequest.getBeneficiaryKYCLevel())
-                .channelCode(String.valueOf(CC_1.getCode()))
-                .destinationInstitutionCode(ftSingleCreditRequest.getDestinationBankCode())
-                .narration(StringUtils.substring(ftSingleCreditRequest.getNarration() ,0 ,100))
-                .originatorAccountName(ftSingleCreditRequest.getOriginatorAccountName())
-                .originatorAccountNo(ftSingleCreditRequest.getOriginatorAccountNo())
-                .originatorBVN(ftSingleCreditRequest.getOriginatorBVN())
-                .originatorKYCLevel(ftSingleCreditRequest.getOriginatorKYCLevel())
-                .paymentReference(ftSingleCreditRequest.getPaymentReference())
-                .transactionLocation(ftSingleCreditRequest.getTransactionLocation())
+    public Function<FTSingleCreditRequest , FTSingleCreditRequestVO> mapFTSingleCreditRequestVO = (FTSingleCreditRequest ftSingleCreditRequest) -> FTSingleCreditRequestVO.builder()
+            .amount(ftSingleCreditRequest.getAmount().toPlainString())
+            .beneficiaryAccountName(ftSingleCreditRequest.getBeneficiaryAccountName())
+            .beneficiaryAccountNo(ftSingleCreditRequest.getDestinationAccountNo())
+            .beneficiaryBVN(ftSingleCreditRequest.getBeneficiaryBVN())
+            .beneficiaryKYCLevel(ftSingleCreditRequest.getBeneficiaryKYCLevel())
+            .channelCode(String.valueOf(CC_1.getCode()))
+            .destinationInstitutionCode(ftSingleCreditRequest.getDestinationBankCode())
+            .narration(StringUtils.substring(ftSingleCreditRequest.getNarration() ,0 ,100))
+            .originatorAccountName(ftSingleCreditRequest.getOriginatorAccountName())
+            .originatorAccountNo(ftSingleCreditRequest.getOriginatorAccountNo())
+            .originatorBVN(ftSingleCreditRequest.getOriginatorBVN())
+            .originatorKYCLevel(ftSingleCreditRequest.getOriginatorKYCLevel())
+            .paymentReference(ftSingleCreditRequest.getPaymentReference())
+            .transactionLocation(ftSingleCreditRequest.getLongitude() + "," +ftSingleCreditRequest.getLatitude())
+            .build();
 
-                .build();
-    };
-
-    public Function<FTSingleCreditRequest, FundsTransferEntity> mapFundsTransferEntity = ftSingleCreditRequest -> {
-        final val fundsTransferEntity = FundsTransferEntity.builder()
-                .amount(ftSingleCreditRequest.getAmount())
-                .beneficiaryAccountName(ftSingleCreditRequest.getBeneficiaryAccountName())
-                .beneficiaryAccountNo(ftSingleCreditRequest.getDestinationAccountNo())
-                .beneficiaryBVN(ftSingleCreditRequest.getBeneficiaryBVN())
-                .beneficiaryKYCLevel(ftSingleCreditRequest.getBeneficiaryKYCLevel())
-                .clientId(ftSingleCreditRequest.getClientId())
-                .channelCode(String.valueOf(CC_1.getCode()))
-                .destinationInstitutionCode(ftSingleCreditRequest.getDestinationBankCode())
-                .nameEnquiryReference(ftSingleCreditRequest.getNameEnquiryReference())
-                .narration(ftSingleCreditRequest.getNarration())
-                .originatorAccountName(ftSingleCreditRequest.getOriginatorAccountName())
-                .originatorAccountNo(ftSingleCreditRequest.getOriginatorAccountNo())
-                .originatorBVN(ftSingleCreditRequest.getOriginatorBVN())
-                .originatorKYCLevel(ftSingleCreditRequest.getOriginatorKYCLevel())
-                .originatorInstitutionCode(ftSingleCreditRequest.getOriginatorBankCode())
-                .paymentReference(ftSingleCreditRequest.getPaymentReference())
-                .transactionLocation(ftSingleCreditRequest.getTransactionLocation())
-                .build();
-        return fundsTransferEntity;
-    };
+    public Function<FTSingleCreditRequest, FundsTransferEntity> mapFundsTransferEntity = ftSingleCreditRequest ->
+            FundsTransferEntity.builder()
+            .amount(ftSingleCreditRequest.getAmount())
+            .beneficiaryAccountName(ftSingleCreditRequest.getBeneficiaryAccountName())
+            .beneficiaryAccountNo(ftSingleCreditRequest.getDestinationAccountNo())
+            .beneficiaryBVN(ftSingleCreditRequest.getBeneficiaryBVN())
+            .beneficiaryKYCLevel(ftSingleCreditRequest.getBeneficiaryKYCLevel())
+            .clientId(ftSingleCreditRequest.getClientId())
+            .channelCode(String.valueOf(CC_1.getCode()))
+            .destinationInstitutionCode(ftSingleCreditRequest.getDestinationBankCode())
+            .nameEnquiryReference(ftSingleCreditRequest.getNameEnquiryReference())
+            .narration(ftSingleCreditRequest.getNarration())
+            .originatorAccountName(ftSingleCreditRequest.getOriginatorAccountName())
+            .originatorAccountNo(ftSingleCreditRequest.getOriginatorAccountNo())
+            .originatorBVN(ftSingleCreditRequest.getOriginatorBVN())
+            .originatorKYCLevel(ftSingleCreditRequest.getOriginatorKYCLevel())
+            .originatorInstitutionCode(ftSingleCreditRequest.getOriginatorBankCode())
+            .paymentReference(ftSingleCreditRequest.getPaymentReference())
+            .transactionLocation(ftSingleCreditRequest.getLongitude() + "," +ftSingleCreditRequest.getLatitude())
+            .build();
 
     public Function<FundsTransferEntity , TsqResponse> mapTsqResponse = fundsTransferEntity -> {
         final val tsqResponse = TsqResponse.builder()

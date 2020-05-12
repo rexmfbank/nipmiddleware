@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
@@ -32,11 +33,11 @@ public class AdminController {
         IMarker marker = Marker.fromString();
         marker.info("<<<<<<<< createClient  >>>>>>>>");
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                build().toUri().toASCIIString(), createClientRequest.toString(), true);
+                build().toUri().toASCIIString(), createClientRequest.toString(), false);
         createClientRequest.setMarker(marker);
         try{
             final val createClientResponse = clientFacade.createClient(createClientRequest);
-            marker.setMainResponse(createClientResponse.toString(), true);
+            marker.setMainResponse(createClientResponse.toString(), false);
             return new ResponseEntity(createClientResponse, HttpStatus.OK);
         }finally {
             marker.done();

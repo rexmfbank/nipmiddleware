@@ -8,6 +8,7 @@ import com.globalaccelerex.nipmiddleware.payload.client.UpdateClientRequest;
 import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,17 +30,31 @@ public class ClientMapper {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public Function<CreateClientRequest, ClientEntity> mapClientEntity = createClientRequest ->
-            ClientEntity.builder()
-                    .active(true)
-                    .businessDesc(createClientRequest.getBusinessDesc())
-                    .callbackUrl(createClientRequest.getCallbackUrl())
-                    .clientId(createClientRequest.getClientId())
-                    .clientName(createClientRequest.getClientName())
-                    .contactEmail(createClientRequest.getContactEmail())
-                    .contactPhone(createClientRequest.getContactPhone())
-                    .password(bCryptPasswordEncoder.encode(createClientRequest.getClientPassword()))
-                    .build();
+    public Function<CreateClientRequest, ClientEntity> mapClientEntity = createClientRequest -> {
+        val clientEntity = ClientEntity.builder()
+                .active(true)
+                .businessDesc(createClientRequest.getBusinessDesc())
+                .callbackUrl(createClientRequest.getCallbackUrl())
+                .clientId(createClientRequest.getClientId())
+                .clientName(createClientRequest.getClientName())
+                .contactEmail(createClientRequest.getContactEmail())
+                .contactPhone(createClientRequest.getContactPhone())
+                .password(bCryptPasswordEncoder.encode(createClientRequest.getClientPassword()))
+                .longitude(String.valueOf(createClientRequest.getLongitude()))
+                .build();
+        if(createClientRequest.getLatitude() == null){
+            clientEntity.setLatitude(StringUtils.EMPTY);
+        }else{
+            clientEntity.setLatitude(String.valueOf(createClientRequest.getLatitude()));
+        }
+        if(createClientRequest.getLongitude() == null){
+            clientEntity.setLongitude(StringUtils.EMPTY);
+        }else{
+            clientEntity.setLongitude(String.valueOf(createClientRequest.getLongitude()));
+        }
+        return clientEntity;
+    };
+
 
     public Function<CreateClientRequest , CreateClientResponse> mapCreateClientResponse = createClientRequest -> {
         final val createClientResponse = new CreateClientResponse(NIP_00);
@@ -49,6 +64,17 @@ public class ClientMapper {
         createClientResponse.setContactPhone(createClientRequest.getContactPhone());
         createClientResponse.setBusinessDesc(createClientRequest.getBusinessDesc());
         createClientResponse.setCallbackUrl(createClientRequest.getCallbackUrl());
+
+        if(createClientRequest.getLatitude() == null){
+            createClientResponse.setLatitude(StringUtils.EMPTY);
+        }else{
+            createClientResponse.setLatitude(String.valueOf(createClientRequest.getLatitude()));
+        }
+        if(createClientRequest.getLongitude() == null){
+            createClientResponse.setLongitude(StringUtils.EMPTY);
+        }else{
+            createClientResponse.setLongitude(String.valueOf(createClientRequest.getLongitude()));
+        }
         return createClientResponse;
     };
 
@@ -61,6 +87,13 @@ public class ClientMapper {
         clientDetail.setClientName(clientEntity.getClientName());
         clientDetail.setContactEmail(clientEntity.getContactEmail());
         clientDetail.setContactPhone(clientEntity.getContactPhone());
+        clientDetail.setLatitude(clientEntity.getLatitude());
+        clientDetail.setLongitude(clientEntity.getLongitude());
+        clientDetail.setBankCode(clientEntity.getBankCode());
+        clientDetail.setAccountNo(clientEntity.getAccountNo());
+        clientDetail.setAccountName(clientEntity.getAccountName());
+        clientDetail.setBvn(clientEntity.getBvn());
+        clientDetail.setKycLevel(clientEntity.getKycLevel());
         clientDetail.setResponse(NIP_00);
         return clientDetail;
     };
@@ -83,11 +116,30 @@ public class ClientMapper {
         if(updateClientRequest.getActive() != null){
             clientEntity.setActive(updateClientRequest.getActive());
         }
-        clientEntity.setBusinessDesc(updateClientRequest.getBusinessDesc());
-        clientEntity.setCallbackUrl(updateClientRequest.getCallbackUrl());
-        clientEntity.setClientName(updateClientRequest.getClientName());
-        clientEntity.setContactEmail(updateClientRequest.getContactEmail());
-        clientEntity.setContactPhone(updateClientRequest.getContactPhone());
+        if(StringUtils.isNotBlank(updateClientRequest.getBusinessDesc())){
+            clientEntity.setBusinessDesc(updateClientRequest.getBusinessDesc());
+        }
+        if(StringUtils.isNotBlank(updateClientRequest.getCallbackUrl())){
+            clientEntity.setCallbackUrl(updateClientRequest.getCallbackUrl());
+        }
+
+        if(StringUtils.isNotBlank(updateClientRequest.getClientName())){
+            clientEntity.setClientName(updateClientRequest.getClientName());
+        }
+
+        if(StringUtils.isNotBlank(updateClientRequest.getContactEmail())){
+            clientEntity.setContactEmail(updateClientRequest.getContactEmail());
+        }
+        if(StringUtils.isNotBlank(updateClientRequest.getContactPhone())){
+            clientEntity.setContactPhone(updateClientRequest.getContactPhone());
+        }
+        if(updateClientRequest.getLatitude() != null){
+            clientEntity.setLatitude(String.valueOf(updateClientRequest.getLatitude()));
+        }
+        if(updateClientRequest.getLongitude() != null){
+            clientEntity.setLongitude(String.valueOf(updateClientRequest.getLongitude()));
+        }
+
         return clientEntity;
 
     }

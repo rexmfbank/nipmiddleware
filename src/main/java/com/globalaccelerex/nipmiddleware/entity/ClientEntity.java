@@ -8,8 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Data
@@ -60,6 +58,10 @@ public class ClientEntity {
     private String accountNo;
 
     private String bankCode;
+
+    private String latitude ;
+
+    private String longitude;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
