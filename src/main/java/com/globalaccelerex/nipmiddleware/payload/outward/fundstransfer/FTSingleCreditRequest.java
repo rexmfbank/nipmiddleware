@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -54,12 +55,12 @@ public class FTSingleCreditRequest extends BaseRequest {
 
     private String narration;//max 100 , optional
 
-    @DecimalMin(value = "-90", inclusive = true ,message = "Latitude can not be less than -90")
-    @DecimalMin(value = "90", inclusive = true ,message = "Latitude can not be greater than 90")
+    @DecimalMin(value = "-90",message = "Latitude can not be less than -90")
+    @DecimalMax(value = "90",message = "Latitude can not be greater than 90")
     private Double latitude ;
 
-    @DecimalMin(value = "-180", inclusive = true ,message = "Longitude can not be less than -180")
-    @DecimalMin(value = "180", inclusive = true ,message = "Longitude can not be greater than 180")
+    @DecimalMin(value = "-180", message = "Longitude can not be less than -180")
+    @DecimalMax(value = "180", message = "Longitude can not be greater than 180")
     private Double longitude ;
 
     public void updateCompulsoryFields(ClientEntity clientEntity){

@@ -7,10 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.validator.constraints.URL;
 
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 @Data
 @ToString(callSuper = true)
@@ -41,11 +38,11 @@ public class UpdateClientRequest extends BaseRequest {
     @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
     private String originatorBankCode;
 
-    @DecimalMin(value = "-90", inclusive = true ,message = "Latitude can not be less than -90")
-    @DecimalMin(value = "90", inclusive = true ,message = "Latitude can not be greater than 90")
+    @DecimalMin(value = "-90",message = "Latitude can not be less than -90")
+    @DecimalMax(value = "90" ,message = "Latitude can not be greater than 90")
     private Double latitude ;
 
-    @DecimalMin(value = "-180", inclusive = true ,message = "Longitude can not be less than -180")
-    @DecimalMin(value = "180", inclusive = true ,message = "Longitude can not be greater than 180")
+    @DecimalMin(value = "-180" ,message = "Longitude can not be less than -180")
+    @DecimalMax(value = "180" ,message = "Longitude can not be greater than 180")
     private Double longitude ;
 }
