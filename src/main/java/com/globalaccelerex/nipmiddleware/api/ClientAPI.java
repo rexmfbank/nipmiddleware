@@ -26,5 +26,7 @@ public interface ClientAPI {
 
     String UPDATE_PASSWORD = "/updatePassword";
 
+    String RESET_PASSWORD = "/resetPassword";
+
 
 }

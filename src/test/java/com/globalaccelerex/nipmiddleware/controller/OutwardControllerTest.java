@@ -18,6 +18,7 @@ public class OutwardControllerTest extends AbstractControllerTest {
 
     private AuthHeaderUtil authHeaderUtil;
 
+
     @Test
     public void testFTWithAmountEqualToZeroMustFail() {
         authHeaderUtil = new AuthHeaderUtil();
