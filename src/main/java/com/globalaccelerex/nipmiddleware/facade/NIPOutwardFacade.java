@@ -27,6 +27,7 @@ import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.service.db.FundsTransferDbService;
 import com.globalaccelerex.nipmiddleware.service.ws.NIPOutwardWS;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
+import com.globalaccelerex.nipmiddleware.util.TxnUtil;
 import com.globalaccelerex.nipmiddleware.util.XmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -41,6 +42,7 @@ import static com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum.PENDING;
 import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.CALLBACK;
 import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.TSQ;
 import static com.globalaccelerex.nipmiddleware.messaging.SQSService.TSQ_WAIT_DURATION_IN_SECONDS;
+import static com.globalaccelerex.nipmiddleware.util.TxnUtil.FLAG;
 
 @Slf4j
 @Service
@@ -95,9 +97,10 @@ public class NIPOutwardFacade {
 
 
         val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
-        if(StringUtils.isEmpty(nameEnquirySingleItemResponse.getReturn())){
+        if(StringUtils.isBlank(nameEnquirySingleItemResponse.getReturn())){
             iMarker.info(" Empty  Response from NIPOutwardWS ");
-            final val errorResponse = new ErrorResponse(NIP_01);
+            TxnUtil.txnFlag.put(FLAG,false);
+            final val errorResponse = new ErrorResponse(NIP_106);
             throw new NIPMiddleWareAPIException(iMarker,errorResponse);
         }
         iMarker.info(" Received  Response from NIPOutwardWS for NameEnquiry");
@@ -137,7 +140,7 @@ public class NIPOutwardFacade {
                 neSingleResponse = doNameEnquiry(neSingleRequest);
 
                 fundsTransferEntity.setNameEnquiryReference(neSingleResponse.getNameEnquiryReference());
-                if(StringUtils.isNotEmpty(ftSingleCreditRequest.getBeneficiaryBVN()) && !StringUtils.equalsIgnoreCase(ftSingleCreditRequest.getBeneficiaryBVN(),neSingleResponse.getBankVerificationNo())){
+                if(StringUtils.isNotBlank(ftSingleCreditRequest.getBeneficiaryBVN()) && !StringUtils.equalsIgnoreCase(ftSingleCreditRequest.getBeneficiaryBVN(),neSingleResponse.getBankVerificationNo())){
                     //the supplied BVN and the NIBSS BVN are not the same
                     //update the db
                     fundsTransferEntity.setResponseCode(NIP_104.getCode());
@@ -147,7 +150,7 @@ public class NIPOutwardFacade {
                     writeToSQS(clientId,CALLBACK, sessionId,originatorBankCode);
                     return;
                 }
-                if(StringUtils.isEmpty(neSingleResponse.getAccountName()) || (!NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode()))){
+                if(StringUtils.isBlank(neSingleResponse.getAccountName()) || (!NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode()))){
                     //discontinue FT since we don't have a response as regards the beneficiary account name
                     //update the db
                     fundsTransferEntity.setResponseCode(NIP_105.getCode());
@@ -155,6 +158,7 @@ public class NIPOutwardFacade {
                     fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
                     //write a response to SQS to do client callback
                     writeToSQS(clientId,CALLBACK, sessionId,originatorBankCode);
+
                     return;
                 }
                 ftSingleCreditRequest.setBeneficiaryBVN(neSingleResponse.getBankVerificationNo());
@@ -196,9 +200,10 @@ public class NIPOutwardFacade {
 
             final val fundTransferSingleItemDcResponse = nipOutwardWS.fundsTransfer(iMarker, fundTransferSingleItemDc);
             iMarker.info(" Received  Response from NIPOutwardWS >>>>> " + fundTransferSingleItemDcResponse.getReturn());
-            if(StringUtils.isEmpty(fundTransferSingleItemDcResponse.getReturn())){
+            if(StringUtils.isBlank(fundTransferSingleItemDcResponse.getReturn())){
                 //update db
                 iMarker.info(" Received  No Response from NIPOutwardWS  " );
+                TxnUtil.txnFlag.put(FLAG,false);
                 fundsTransferDbService.updateFTResponseCode(sessionId, NIP_106.getCode(),clientId);
                 //write a response to SQS to do Tsq
                 writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
@@ -309,16 +314,23 @@ public class NIPOutwardFacade {
             final val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(iMarker, txnstatusquerysingleitem);
             iMarker.info(" Received  Response from NIPOutwardWS ");
 
-            final val tsqSingleItemResponseXmlString = decryptString(txnStatusQuerySingleItemResponse.getReturn());
-            iMarker.setResponse(" Clear  Response from NIPOutwardWS : TSQ "+ tsqSingleItemResponseXmlString);
+            if(StringUtils.isBlank(txnStatusQuerySingleItemResponse.getReturn())){
+                iMarker.info(" Empty  Response from NIPOutwardWS ");
+                TxnUtil.txnFlag.put(FLAG,false);
+                final val errorResponse = new ErrorResponse(NIP_106);
+                throw new NIPMiddleWareAPIException(iMarker,errorResponse);
 
-            final val tsqSingleItemResponseVO = xmlUtil.unmarshal(tsqSingleItemResponseXmlString, TsqSingleItemResponseVO.class);
+            }else {
+                final val tsqSingleItemResponseXmlString = decryptString(txnStatusQuerySingleItemResponse.getReturn());
+                iMarker.setResponse(" Clear  Response from NIPOutwardWS : TSQ "+ tsqSingleItemResponseXmlString);
 
-            tsqResponse =  nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
+                final val tsqSingleItemResponseVO = xmlUtil.unmarshal(tsqSingleItemResponseXmlString, TsqSingleItemResponseVO.class);
 
-            fundsTransferDbService.updateFTResponseCode(sessionId, tsqSingleItemResponseVO.getResponseCode(),clientId);
-            tsqResponse.setResponseCode(tsqSingleItemResponseVO.getResponseCode());
+                tsqResponse =  nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
 
+                fundsTransferDbService.updateFTResponseCode(sessionId, tsqSingleItemResponseVO.getResponseCode(),clientId);
+                tsqResponse.setResponseCode(tsqSingleItemResponseVO.getResponseCode());
+            }
         }else{
             //convert entity to tsqresponse
             tsqResponse =  nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);

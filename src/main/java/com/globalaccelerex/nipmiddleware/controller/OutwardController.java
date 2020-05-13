@@ -10,6 +10,7 @@ import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTSingleC
 import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqRequest;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
+import com.globalaccelerex.nipmiddleware.util.TxnUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -25,8 +26,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_108;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_99;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
+import static com.globalaccelerex.nipmiddleware.util.TxnUtil.FLAG;
+import static com.globalaccelerex.nipmiddleware.util.TxnUtil.TXN_SUSPENDED_MSG;
 
 @Slf4j
 @RestController
@@ -57,6 +59,10 @@ public class OutwardController extends APIController{
             neSingleRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), neSingleRequest.toString(), false);
+
+            if(!TxnUtil.txnFlag.get(FLAG)){
+                throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
+            }
             final val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
             marker.setMainResponse(neSingleResponse.toString(), false);
             return new ResponseEntity(neSingleResponse, HttpStatus.OK);
@@ -77,6 +83,11 @@ public class OutwardController extends APIController{
             ftSingleCreditRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
+
+            if(!TxnUtil.txnFlag.get(FLAG)){
+                throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
+            }
+
             final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
 
             final val result = nipOutwardFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
@@ -115,6 +126,11 @@ public class OutwardController extends APIController{
             tsqRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), tsqRequest.toString(), false);
+
+            if(!TxnUtil.txnFlag.get(FLAG)){
+                throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
+            }
+
             final val tsqResponse = nipOutwardFacade.doTsq(tsqRequest);
             marker.setMainResponse(tsqResponse.toString(), false);
             return new ResponseEntity(tsqResponse, HttpStatus.OK);
