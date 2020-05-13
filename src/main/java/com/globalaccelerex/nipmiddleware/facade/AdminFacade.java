@@ -134,8 +134,6 @@ public class AdminFacade {
         val resetPasswordResponse = new ResetPasswordResponse(NIP_00);
         resetPasswordResponse.setPassword(newPassword);
         resetPasswordResponse.setClientId(resetPasswordRequest.getClientId());
-
-
         marker.info("done resetting password  request ");
         return resetPasswordResponse;
     }

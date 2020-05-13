@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
@@ -100,11 +101,11 @@ public class AdminController {
         marker.info("<<<<<<<< reset Password  >>>>>>>>");
         resetPasswordRequest.setMarker(marker);
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                build().toUri().toASCIIString(), resetPasswordRequest.toString(), true);
+                build().toUri().toASCIIString(), resetPasswordRequest.toString(), false);
         try {
             val resetPasswordResponse = adminFacade.resetPassword(resetPasswordRequest);
             marker.setMainResponse(resetPasswordResponse.toString(), true);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(resetPasswordResponse,HttpStatus.OK);
         } finally {
             marker.done();
         }
