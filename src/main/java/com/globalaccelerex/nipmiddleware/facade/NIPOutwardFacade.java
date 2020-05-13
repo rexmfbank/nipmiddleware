@@ -312,6 +312,7 @@ public class NIPOutwardFacade {
             iMarker.info(" Sending Request to NIPOutwardWS ");
 
             final val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(iMarker, txnstatusquerysingleitem);
+
             iMarker.info(" Received  Response from NIPOutwardWS ");
 
             if(StringUtils.isBlank(txnStatusQuerySingleItemResponse.getReturn())){
