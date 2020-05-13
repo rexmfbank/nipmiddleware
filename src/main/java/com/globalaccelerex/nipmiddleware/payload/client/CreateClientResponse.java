@@ -9,7 +9,7 @@ import lombok.ToString;
 import javax.validation.constraints.NotNull;
 
 @Data
-@ToString
+@ToString(callSuper = true , exclude = "secretKey")
 @EqualsAndHashCode(callSuper = true)
 public class CreateClientResponse extends BaseResponse {
 
@@ -32,4 +32,8 @@ public class CreateClientResponse extends BaseResponse {
     private String businessDesc;
 
     private String callbackUrl;
+
+    private String latitude ;
+
+    private String longitude ;
 }

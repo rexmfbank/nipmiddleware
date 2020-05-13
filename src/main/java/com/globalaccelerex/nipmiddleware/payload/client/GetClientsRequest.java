@@ -3,13 +3,12 @@ package com.globalaccelerex.nipmiddleware.payload.client;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import lombok.Data;
-
 import lombok.ToString;
 
 import javax.validation.constraints.Min;
 
 @Data
-@ToString
+@ToString(callSuper = true)
 public class GetClientsRequest  {
 
     @JsonIgnore

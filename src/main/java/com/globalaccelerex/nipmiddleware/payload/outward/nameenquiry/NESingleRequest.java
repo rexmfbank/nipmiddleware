@@ -5,14 +5,15 @@ import com.globalaccelerex.nipmiddleware.payload.outward.BaseRequest;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Data
 @Builder
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class NESingleRequest extends BaseRequest {
 
@@ -20,7 +21,7 @@ public class NESingleRequest extends BaseRequest {
     @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
     private String destinationBankCode;
 
-    @Nuban
+    @Nuban(ignoreIfEmpty = false)
     @NotEmpty(message = "Account No is required")
     private String accountNo;
 

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-@ToString
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class TsqResponse extends BaseResponse {
 
