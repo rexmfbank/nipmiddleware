@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.facade;
 
+import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.mapper.ClientMapper;
@@ -28,14 +29,17 @@ public class AdminFacade {
 
     private final ClientMapper clientMapper;
 
+    private final NIPOutwardFacade nipOutwardFacade;
+
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public AdminFacade(ClientDbService clientDbService, JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper) {
+    public AdminFacade(ClientDbService clientDbService, JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper, NIPOutwardFacade nipOutwardFacade) {
         this.clientDbService = clientDbService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.clientMapper = clientMapper;
+        this.nipOutwardFacade = nipOutwardFacade;
     }
 
     public CreateClientResponse createClient(CreateClientRequest createClientRequest){
@@ -46,13 +50,26 @@ public class AdminFacade {
         if(clientDbService.isClientPresent(clientId).isPresent()){
             throw new NIPMiddleWareAPIException(NIP_114,iMarker);
         }
-        final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
-        clientDbService.saveClientEntity(clientEntity);
+        val neSingleRequest = clientMapper.mapNESingleRequest.apply(createClientRequest);
 
-        final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
-        final val createClientResponse = clientMapper.mapCreateClientResponse.apply(createClientRequest);
-        createClientResponse.setSecretKey(jwtTokenStr);
-        return createClientResponse;
+        val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+
+        if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
+            final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
+            clientEntity.setAccountName(neSingleResponse.getAccountName());
+            clientEntity.setAccountNo(neSingleResponse.getAccountNo());
+            clientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
+            clientEntity.setKycLevel(neSingleResponse.getKycLevel());
+            clientEntity.setBvn(neSingleResponse.getBankVerificationNo());
+            clientDbService.saveClientEntity(clientEntity);
+
+            final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
+            final val createClientResponse = clientMapper.mapCreateClientResponse.apply(createClientRequest);
+            createClientResponse.setSecretKey(jwtTokenStr);
+            return createClientResponse;
+        }else{
+            throw new NIPMiddleWareAPIException(NIP_105,iMarker);
+        }
     }
 
     public ClientDetail getClientDetail(String clientId , IMarker marker){
@@ -82,8 +99,28 @@ public class AdminFacade {
         if(clientEntityOpt_ .isPresent() && !StringUtils.equalsIgnoreCase(clientEntityOpt_.get().getClientId() ,updateClientRequest.getClientId())){
             throw new NIPMiddleWareAPIException(NIP_114 , marker);
         }
+        val accountNo = updateClientRequest.getAccountNo();
+        val bankCode = updateClientRequest.getBankCode();
+        val originatorBankCode = updateClientRequest.getOriginatorBankCode();
 
         val updatedClientEntity = clientMapper.updateClientEntity(clientEntity, updateClientRequest);
+
+        if(StringUtils.isNoneBlank(accountNo,bankCode,originatorBankCode)){
+            // Do NameEnquiry
+            val neSingleRequest = clientMapper.mapNESingleRequest_1.apply(updateClientRequest);
+
+            val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+
+            if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
+                updatedClientEntity.setAccountName(neSingleResponse.getAccountName());
+                updatedClientEntity.setAccountNo(neSingleResponse.getAccountNo());
+                updatedClientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
+                updatedClientEntity.setKycLevel(neSingleResponse.getKycLevel());
+                updatedClientEntity.setBvn(neSingleResponse.getBankVerificationNo());
+            }else{
+                throw new NIPMiddleWareAPIException(NIP_105,marker);
+            }
+        }
 
         clientDbService.updateClientEntity(updatedClientEntity);
 
