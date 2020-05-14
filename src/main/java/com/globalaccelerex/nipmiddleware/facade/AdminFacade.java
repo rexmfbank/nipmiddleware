@@ -51,7 +51,7 @@ public class AdminFacade {
             throw new NIPMiddleWareAPIException(NIP_114,iMarker);
         }
         val neSingleRequest = clientMapper.mapNESingleRequest.apply(createClientRequest);
-
+        neSingleRequest.setMarker(createClientRequest.getMarker());
         val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
 
         if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
@@ -108,7 +108,7 @@ public class AdminFacade {
         if(StringUtils.isNoneBlank(accountNo,bankCode,originatorBankCode)){
             // Do NameEnquiry
             val neSingleRequest = clientMapper.mapNESingleRequest_1.apply(updateClientRequest);
-
+            neSingleRequest.setMarker(updateClientRequest.getMarker());
             val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
 
             if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
