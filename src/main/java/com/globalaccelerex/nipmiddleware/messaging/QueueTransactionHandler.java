@@ -1,26 +1,28 @@
 package com.globalaccelerex.nipmiddleware.messaging;
 
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
-import com.globalaccelerex.nipmiddleware.util.TxnUtil;
+import com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.globalaccelerex.nipmiddleware.util.TxnUtil.FLAG;
 
 @Service
 public class QueueTransactionHandler {
 
     private final ClientCallbackService clientCallbackService;
 
+    private final ServiceStatusUtil serviceStatusUtil;
+
     @Autowired
-    public QueueTransactionHandler(ClientCallbackService clientCallbackService) {
+    public QueueTransactionHandler(ClientCallbackService clientCallbackService, ServiceStatusUtil serviceStatusUtil) {
         this.clientCallbackService = clientCallbackService;
+        this.serviceStatusUtil = serviceStatusUtil;
     }
 
     public QueuePayload handlePayload(IMarker marker,QueuePayload queuePayload){
         switch (queuePayload.getMode()) {
             case TSQ:
-                    if(TxnUtil.txnFlag.get(FLAG)){
+                    if(serviceStatusUtil.isServiceUp()){
                         return clientCallbackService.handleTsq(marker, queuePayload);
                     }else{
                         return queuePayload;
