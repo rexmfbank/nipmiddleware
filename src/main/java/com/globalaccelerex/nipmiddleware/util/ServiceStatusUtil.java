@@ -14,6 +14,8 @@ public class ServiceStatusUtil {
 
     public static String DOWN_STATUS = "DOWN";
 
+    public static String CALL_NIBSS_API ="CALL_NIBSS_API";
+
     public static String TXN_SUSPENDED_MSG ="Transactions To NIBSS are temporarily suspended";
 
     private final ServiceStatusDbService serviceStatusDbService;
@@ -23,11 +25,11 @@ public class ServiceStatusUtil {
         this.serviceStatusDbService = serviceStatusDbService;
     }
 
-    public void changeStatus(String status){
-        serviceStatusDbService.updateServiceStatus(status);
+    public void changeStatus(String name , String value){
+        serviceStatusDbService.updateServiceStatus(name, value);
     }
 
-    public boolean isServiceUp(){
-        return StringUtils.equalsIgnoreCase(serviceStatusDbService.findStatus().getStatus(),UP_STATUS);
+    public boolean isNibssStatusUp(){
+        return StringUtils.equalsIgnoreCase(serviceStatusDbService.findStatus(CALL_NIBSS_API).getValue(),UP_STATUS);
     }
 }

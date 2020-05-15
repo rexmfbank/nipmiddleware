@@ -22,11 +22,7 @@ public class QueueTransactionHandler {
     public QueuePayload handlePayload(IMarker marker,QueuePayload queuePayload){
         switch (queuePayload.getMode()) {
             case TSQ:
-                    if(serviceStatusUtil.isServiceUp()){
-                        return clientCallbackService.handleTsq(marker, queuePayload);
-                    }else{
-                        return queuePayload;
-                    }
+                return clientCallbackService.handleTsq(marker, queuePayload);
             case CALLBACK:
                 return clientCallbackService.handleCallback(marker, queuePayload);
             default:

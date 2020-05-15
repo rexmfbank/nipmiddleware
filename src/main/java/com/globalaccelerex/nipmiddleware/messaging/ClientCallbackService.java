@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.TimeZone;
 
 import static com.globalaccelerex.nipmiddleware.messaging.SQSService.DEFAULT_MAX_WAIT_IN_SECONDS;
+import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.CALL_NIBSS_API;
 import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.DOWN_STATUS;
 
 
@@ -123,7 +124,7 @@ public class ClientCallbackService {
             val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(marker, txnStatusQuerySingleitem);
             if(StringUtils.isBlank(txnStatusQuerySingleItemResponse.getReturn())){
                 marker.info(" Empty  Response from NIPOutwardWS For TSQ ");
-                serviceStatusUtil.changeStatus(DOWN_STATUS);
+                serviceStatusUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
             }else {
                 val tsqSingleItemResponseXmlString = ssmUtil.decryptResponse(txnStatusQuerySingleItemResponse.getReturn());
                 marker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);

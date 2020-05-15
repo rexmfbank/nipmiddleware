@@ -62,7 +62,7 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), neSingleRequest.toString(), false);
 
-            if(!serviceStatusUtil.isServiceUp()){
+            if(!serviceStatusUtil.isNibssStatusUp()){
                 throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
             }
             final val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
@@ -86,7 +86,7 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
 
-            if(!serviceStatusUtil.isServiceUp()){
+            if(!serviceStatusUtil.isNibssStatusUp()){
                 throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
             }
 
@@ -129,7 +129,7 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), tsqRequest.toString(), false);
 
-            if(!serviceStatusUtil.isServiceUp()){
+            if(!serviceStatusUtil.isNibssStatusUp()){
                 throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
             }
 

@@ -22,7 +22,10 @@ public class ServiceStatusEntity {
     private Integer id;
 
     @Column(nullable = false)
-    private String status;
+    private String name;
+
+    @Column(nullable = false)
+    private String value;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)

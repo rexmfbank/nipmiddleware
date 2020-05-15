@@ -21,24 +21,24 @@ public class ServiceStatusDbService {
         this.serviceStatusRepository = serviceStatusRepository;
     }
 
-    public void updateServiceStatus(String status){
-        val serviceStatusEntity = findStatus();
-        serviceStatusEntity.setStatus(status);
+    public void updateServiceStatus(String name, String value){
+        val serviceStatusEntity = findStatus(name);
+        serviceStatusEntity.setValue(value);
         serviceStatusRepository.save(serviceStatusEntity);
         serviceStatusCache.invalidate(serviceStatusEntity.getId());
     }
-    public ServiceStatusEntity findStatus(){
-        return serviceStatusCache.getUnchecked(1);
+    public ServiceStatusEntity findStatus(String name){
+        return serviceStatusCache.getUnchecked(name);
     }
 
-    private final LoadingCache<Integer, ServiceStatusEntity> serviceStatusCache = CacheBuilder.newBuilder()
+    private final LoadingCache<String, ServiceStatusEntity> serviceStatusCache = CacheBuilder.newBuilder()
             .maximumSize(1000)
             .expireAfterWrite(5,TimeUnit.MINUTES)
             .recordStats()
-            .build(new CacheLoader<Integer, ServiceStatusEntity>() {
+            .build(new CacheLoader<String, ServiceStatusEntity>() {
         @Override
-        public ServiceStatusEntity load(Integer id) {
-            return serviceStatusRepository.findById(id).get();
+        public ServiceStatusEntity load(String name) {
+            return serviceStatusRepository.findFirstByName(name);
         }
     });
 }

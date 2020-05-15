@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
-import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.DOWN_STATUS;
-import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.UP_STATUS;
+import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.*;
 
 @Slf4j
 @RestController
@@ -35,7 +34,7 @@ public class ServiceStatusController {
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                 build().toUri().toASCIIString(), "Updating Service Status to UP", false);
         try{
-            serviceStatusUtil.changeStatus(UP_STATUS);
+            serviceStatusUtil.changeStatus(CALL_NIBSS_API,UP_STATUS);
             marker.setMainResponse("Completed Updating Service Status to UP", false);
             return new ResponseEntity( HttpStatus.OK);
         }finally {
@@ -50,7 +49,7 @@ public class ServiceStatusController {
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                 build().toUri().toASCIIString(), "Updating Service Status to DOWN", false);
         try{
-            serviceStatusUtil.changeStatus(DOWN_STATUS);
+            serviceStatusUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
             marker.setMainResponse("Completed Updating Service Status to DOWN", false);
             return new ResponseEntity( HttpStatus.OK);
         }finally {

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ServiceStatusRepository extends PagingAndSortingRepository<ServiceStatusEntity,Integer> {
 
-
+    ServiceStatusEntity findFirstByName(String name);
 }

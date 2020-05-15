@@ -42,6 +42,7 @@ import static com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum.PENDING;
 import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.CALLBACK;
 import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.TSQ;
 import static com.globalaccelerex.nipmiddleware.messaging.SQSService.TSQ_WAIT_DURATION_IN_SECONDS;
+import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.CALL_NIBSS_API;
 import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.DOWN_STATUS;
 
 
@@ -103,7 +104,7 @@ public class NIPOutwardFacade {
         val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
         if(StringUtils.isBlank(nameEnquirySingleItemResponse.getReturn())){
             iMarker.info(" Empty  Response from NIPOutwardWS ");
-            serviceStatusUtil.changeStatus(DOWN_STATUS);
+            serviceStatusUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
             final val errorResponse = new ErrorResponse(NIP_106);
             throw new NIPMiddleWareAPIException(iMarker,errorResponse);
         }
@@ -207,7 +208,7 @@ public class NIPOutwardFacade {
             if(StringUtils.isBlank(fundTransferSingleItemDcResponse.getReturn())){
                 //update db
                 iMarker.info(" Received  No Response from NIPOutwardWS  " );
-                serviceStatusUtil.changeStatus(DOWN_STATUS);
+                serviceStatusUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
                 fundsTransferDbService.updateFTResponseCode(sessionId, NIP_106.getCode(),clientId);
                 //write a response to SQS to do Tsq
                 writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
@@ -321,7 +322,7 @@ public class NIPOutwardFacade {
 
             if(StringUtils.isBlank(txnStatusQuerySingleItemResponse.getReturn())){
                 iMarker.info(" Empty  Response from NIPOutwardWS ");
-                serviceStatusUtil.changeStatus(DOWN_STATUS);
+                serviceStatusUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
                 final val errorResponse = new ErrorResponse(NIP_106);
                 throw new NIPMiddleWareAPIException(iMarker,errorResponse);
 
