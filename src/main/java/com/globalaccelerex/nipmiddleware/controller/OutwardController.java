@@ -45,7 +45,7 @@ public class OutwardController extends APIController{
 
     @PostMapping(NAME_ENQUIRY)
     public ResponseEntity<?> doNameEnquiry(@Valid @RequestBody NESingleRequest neSingleRequest){
-        IMarker marker = Marker.fromString();
+        IMarker marker = Marker.fromString(neSingleRequest.getAccountNo());
         marker.info("<<<<<<<< doNameEnquiry >>>>>>>>");
         try {
 
@@ -67,7 +67,7 @@ public class OutwardController extends APIController{
 
     @PostMapping(FUNDS_TRANSFER)
     public ResponseEntity<?> doFundsTransfer(@Valid @RequestBody FTSingleCreditRequest ftSingleCreditRequest){
-        IMarker marker = Marker.fromString();
+        IMarker marker = Marker.fromString(ftSingleCreditRequest.getPaymentReference());
         marker.info("<<<<<<<< doFundsTransfer >>>>>>>>");
         try {
             ResponseEntity entity = validateClient(marker,ftSingleCreditRequest.getClientId());
@@ -104,7 +104,7 @@ public class OutwardController extends APIController{
 
     @PostMapping(TSQ)
     public ResponseEntity<?> doTsq(@Valid @RequestBody TsqRequest tsqRequest){
-        IMarker marker = Marker.fromString();
+        IMarker marker = Marker.fromString(tsqRequest.getPaymentReference());
         marker.info("<<<<<<<< doTsq >>>>>>>>");
         try{
             ResponseEntity entity = validateClient(marker,tsqRequest.getClientId());
