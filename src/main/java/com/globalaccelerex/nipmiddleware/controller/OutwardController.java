@@ -9,8 +9,8 @@ import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTPending
 import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTSingleCreditRequest;
 import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqRequest;
-import com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
+import com.globalaccelerex.nipmiddleware.util.SystemSettingUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +27,7 @@ import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
-import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.TXN_SUSPENDED_MSG;
+import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.TXN_SUSPENDED_MSG;
 
 @Slf4j
 @RestController
@@ -38,13 +38,13 @@ public class OutwardController extends APIController{
 
     private final SessionIdUtil sessionIdUtil;
 
-    private final ServiceStatusUtil serviceStatusUtil;
+    private final SystemSettingUtil systemSettingUtil;
 
     @Autowired
-    public OutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil, ServiceStatusUtil serviceStatusUtil) {
+    public OutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil, SystemSettingUtil systemSettingUtil) {
         this.nipOutwardFacade = nipOutwardFacade;
         this.sessionIdUtil = sessionIdUtil;
-        this.serviceStatusUtil = serviceStatusUtil;
+        this.systemSettingUtil = systemSettingUtil;
     }
 
     @PostMapping(NAME_ENQUIRY)
@@ -62,7 +62,7 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), neSingleRequest.toString(), false);
 
-            if(!serviceStatusUtil.isNibssStatusUp()){
+            if(systemSettingUtil.isNibssStatusDown()){
                 throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
             }
             final val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
@@ -86,7 +86,7 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
 
-            if(!serviceStatusUtil.isNibssStatusUp()){
+            if(systemSettingUtil.isNibssStatusDown()){
                 throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
             }
 
@@ -129,7 +129,7 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), tsqRequest.toString(), false);
 
-            if(!serviceStatusUtil.isNibssStatusUp()){
+            if(systemSettingUtil.isNibssStatusDown()){
                 throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
             }
 

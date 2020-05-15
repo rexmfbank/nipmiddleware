@@ -12,4 +12,4 @@ INSERT INTO `funds_transfer_entity` (`id`, `amount`, `beneficiary_account_name`,
 (12, '34.80', 'DAMBATTA MARYAM LAMI', '5050104057', '22141742438', '3', '1', '2020-04-28 17:59:48', '999070', '2020-04-28 18:00:50', '999157200428175946138330695215', 'Testing 102', 'Ayodeji Ilori', '0036722182', NULL, '999157', NULL, '22777114697', 'SUCCESS', '00', '999157200428175946337533604952', NULL, 'nip01');
 
 
-insert into `service_status` (`id`, `name`, `value`, `last_updated_at`) values (1, 'CALL_NIBSS_API', 'UP', '2020-05-15 20:20:57');
+insert into `system_setting` (`id`, `name`, `value`, `last_updated_at`) values (1, 'CALL_NIBSS_API', 'UP', '2020-05-15 20:20:57');

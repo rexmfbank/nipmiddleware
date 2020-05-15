@@ -13,7 +13,7 @@ import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.service.db.FundsTransferDbService;
 import com.globalaccelerex.nipmiddleware.service.ws.NIPOutwardWS;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
-import com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil;
+import com.globalaccelerex.nipmiddleware.util.SystemSettingUtil;
 import com.globalaccelerex.nipmiddleware.util.XmlUtil;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -23,8 +23,8 @@ import org.springframework.stereotype.Service;
 import java.util.TimeZone;
 
 import static com.globalaccelerex.nipmiddleware.messaging.SQSService.DEFAULT_MAX_WAIT_IN_SECONDS;
-import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.CALL_NIBSS_API;
-import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.DOWN_STATUS;
+import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.CALL_NIBSS_API;
+import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.DOWN_STATUS;
 
 
 @Service
@@ -42,7 +42,7 @@ public class ClientCallbackService {
 
     private final FundsTransferDbService fundsTransferDbService;
 
-    private final ServiceStatusUtil serviceStatusUtil;
+    private final SystemSettingUtil systemSettingUtil;
 
     private final ClientDbService clientDbService;
 
@@ -58,14 +58,14 @@ public class ClientCallbackService {
     @Autowired
     public ClientCallbackService(XmlUtil xmlUtil, NIPOutwardMapper nipOutwardMapper, NIPOutwardWS nipOutwardWS,
                                  HTTPRestTemplate hTTPRestTemplate, SSMUtil ssmUtil, FundsTransferDbService fundsTransferDbService,
-                                 ServiceStatusUtil serviceStatusUtil, ClientDbService clientDbService) {
+                                 SystemSettingUtil systemSettingUtil, ClientDbService clientDbService) {
         this.xmlUtil = xmlUtil;
         this.nipOutwardMapper = nipOutwardMapper;
         this.nipOutwardWS = nipOutwardWS;
         this.hTTPRestTemplate = hTTPRestTemplate;
         this.ssmUtil = ssmUtil;
         this.fundsTransferDbService = fundsTransferDbService;
-        this.serviceStatusUtil = serviceStatusUtil;
+        this.systemSettingUtil = systemSettingUtil;
         this.clientDbService = clientDbService;
     }
 
@@ -124,7 +124,7 @@ public class ClientCallbackService {
             val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(marker, txnStatusQuerySingleitem);
             if(StringUtils.isBlank(txnStatusQuerySingleItemResponse.getReturn())){
                 marker.info(" Empty  Response from NIPOutwardWS For TSQ ");
-                serviceStatusUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
+                systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
             }else {
                 val tsqSingleItemResponseXmlString = ssmUtil.decryptResponse(txnStatusQuerySingleItemResponse.getReturn());
                 marker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);

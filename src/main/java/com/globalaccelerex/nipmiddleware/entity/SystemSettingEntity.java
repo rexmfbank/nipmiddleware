@@ -10,12 +10,12 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@Table(name="service_status")
+@Table(name="system_setting")
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServiceStatusEntity {
+public class SystemSettingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

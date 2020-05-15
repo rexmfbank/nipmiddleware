@@ -2,7 +2,7 @@ package com.globalaccelerex.nipmiddleware.controller;
 
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
-import com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil;
+import com.globalaccelerex.nipmiddleware.util.SystemSettingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
-import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.*;
+import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.*;
 
 @Slf4j
 @RestController
 @RequestMapping(ADMIN_API)
-public class ServiceStatusController {
+public class SystemSettingController {
 
-    private final ServiceStatusUtil serviceStatusUtil;
+    private final SystemSettingUtil systemSettingUtil;
 
     @Autowired
-    public ServiceStatusController(ServiceStatusUtil serviceStatusUtil) {
-        this.serviceStatusUtil = serviceStatusUtil;
+    public SystemSettingController(SystemSettingUtil systemSettingUtil) {
+        this.systemSettingUtil = systemSettingUtil;
     }
 
     @PostMapping(UP)
@@ -34,7 +34,7 @@ public class ServiceStatusController {
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                 build().toUri().toASCIIString(), "Updating Service Status to UP", false);
         try{
-            serviceStatusUtil.changeStatus(CALL_NIBSS_API,UP_STATUS);
+            systemSettingUtil.changeStatus(CALL_NIBSS_API,UP_STATUS);
             marker.setMainResponse("Completed Updating Service Status to UP", false);
             return new ResponseEntity( HttpStatus.OK);
         }finally {
@@ -49,7 +49,7 @@ public class ServiceStatusController {
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                 build().toUri().toASCIIString(), "Updating Service Status to DOWN", false);
         try{
-            serviceStatusUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
+            systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
             marker.setMainResponse("Completed Updating Service Status to DOWN", false);
             return new ResponseEntity( HttpStatus.OK);
         }finally {

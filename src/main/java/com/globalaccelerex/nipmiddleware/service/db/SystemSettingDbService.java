@@ -1,7 +1,7 @@
 package com.globalaccelerex.nipmiddleware.service.db;
 
-import com.globalaccelerex.nipmiddleware.entity.ServiceStatusEntity;
-import com.globalaccelerex.nipmiddleware.repository.ServiceStatusRepository;
+import com.globalaccelerex.nipmiddleware.entity.SystemSettingEntity;
+import com.globalaccelerex.nipmiddleware.repository.SystemSettingRepository;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -12,33 +12,33 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class ServiceStatusDbService {
+public class SystemSettingDbService {
 
-    private final ServiceStatusRepository serviceStatusRepository;
+    private final SystemSettingRepository systemSettingRepository;
 
     @Autowired
-    public ServiceStatusDbService(ServiceStatusRepository serviceStatusRepository) {
-        this.serviceStatusRepository = serviceStatusRepository;
+    public SystemSettingDbService(SystemSettingRepository systemSettingRepository) {
+        this.systemSettingRepository = systemSettingRepository;
     }
 
     public void updateServiceStatus(String name, String value){
         val serviceStatusEntity = findStatus(name);
         serviceStatusEntity.setValue(value);
-        serviceStatusRepository.save(serviceStatusEntity);
+        systemSettingRepository.save(serviceStatusEntity);
         serviceStatusCache.invalidate(serviceStatusEntity.getId());
     }
-    public ServiceStatusEntity findStatus(String name){
+    public SystemSettingEntity findStatus(String name){
         return serviceStatusCache.getUnchecked(name);
     }
 
-    private final LoadingCache<String, ServiceStatusEntity> serviceStatusCache = CacheBuilder.newBuilder()
+    private final LoadingCache<String, SystemSettingEntity> serviceStatusCache = CacheBuilder.newBuilder()
             .maximumSize(1000)
             .expireAfterWrite(5,TimeUnit.MINUTES)
             .recordStats()
-            .build(new CacheLoader<String, ServiceStatusEntity>() {
+            .build(new CacheLoader<String, SystemSettingEntity>() {
         @Override
-        public ServiceStatusEntity load(String name) {
-            return serviceStatusRepository.findFirstByName(name);
+        public SystemSettingEntity load(String name) {
+            return systemSettingRepository.findFirstByName(name);
         }
     });
 }

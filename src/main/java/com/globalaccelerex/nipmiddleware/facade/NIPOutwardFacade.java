@@ -27,7 +27,7 @@ import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.service.db.FundsTransferDbService;
 import com.globalaccelerex.nipmiddleware.service.ws.NIPOutwardWS;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
-import com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil;
+import com.globalaccelerex.nipmiddleware.util.SystemSettingUtil;
 import com.globalaccelerex.nipmiddleware.util.XmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -42,8 +42,8 @@ import static com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum.PENDING;
 import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.CALLBACK;
 import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.TSQ;
 import static com.globalaccelerex.nipmiddleware.messaging.SQSService.TSQ_WAIT_DURATION_IN_SECONDS;
-import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.CALL_NIBSS_API;
-import static com.globalaccelerex.nipmiddleware.util.ServiceStatusUtil.DOWN_STATUS;
+import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.CALL_NIBSS_API;
+import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.DOWN_STATUS;
 
 
 @Slf4j
@@ -66,12 +66,12 @@ public class NIPOutwardFacade {
 
     private final ClientDbService clientDbService;
 
-    private final ServiceStatusUtil serviceStatusUtil;
+    private final SystemSettingUtil systemSettingUtil;
 
     @Autowired
     public NIPOutwardFacade(XmlUtil xmlUtil, NIPOutwardMapper nipOutwardMapper, NIPOutwardWS nipOutwardWS,
                             SSMUtil ssmUtil, FundsTransferDbService fundsTransferDbService, NipConfig nipConfig,
-                            SQSService sqsService, ClientDbService clientDbService, ServiceStatusUtil serviceStatusUtil) {
+                            SQSService sqsService, ClientDbService clientDbService, SystemSettingUtil systemSettingUtil) {
         this.xmlUtil = xmlUtil;
         this.nipOutwardMapper = nipOutwardMapper;
         this.nipOutwardWS = nipOutwardWS;
@@ -80,7 +80,7 @@ public class NIPOutwardFacade {
         this.nipConfig = nipConfig;
         this.sqsService = sqsService;
         this.clientDbService = clientDbService;
-        this.serviceStatusUtil = serviceStatusUtil;
+        this.systemSettingUtil = systemSettingUtil;
     }
 
 
@@ -104,7 +104,7 @@ public class NIPOutwardFacade {
         val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
         if(StringUtils.isBlank(nameEnquirySingleItemResponse.getReturn())){
             iMarker.info(" Empty  Response from NIPOutwardWS ");
-            serviceStatusUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
+            systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
             final val errorResponse = new ErrorResponse(NIP_106);
             throw new NIPMiddleWareAPIException(iMarker,errorResponse);
         }
@@ -208,7 +208,7 @@ public class NIPOutwardFacade {
             if(StringUtils.isBlank(fundTransferSingleItemDcResponse.getReturn())){
                 //update db
                 iMarker.info(" Received  No Response from NIPOutwardWS  " );
-                serviceStatusUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
+                systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
                 fundsTransferDbService.updateFTResponseCode(sessionId, NIP_106.getCode(),clientId);
                 //write a response to SQS to do Tsq
                 writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
@@ -322,7 +322,7 @@ public class NIPOutwardFacade {
 
             if(StringUtils.isBlank(txnStatusQuerySingleItemResponse.getReturn())){
                 iMarker.info(" Empty  Response from NIPOutwardWS ");
-                serviceStatusUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
+                systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
                 final val errorResponse = new ErrorResponse(NIP_106);
                 throw new NIPMiddleWareAPIException(iMarker,errorResponse);
 
