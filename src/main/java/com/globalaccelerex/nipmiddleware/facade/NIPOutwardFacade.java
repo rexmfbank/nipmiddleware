@@ -133,32 +133,21 @@ public class NIPOutwardFacade {
 
             if(StringUtils.isEmpty(ftSingleCreditRequest.getNameEnquiryReference())){
                 //we need to do a nameEnquiry
-
                 neSingleResponse = doNameEnquiry(neSingleRequest);
 
                 fundsTransferEntity.setNameEnquiryReference(neSingleResponse.getNameEnquiryReference());
-                if(StringUtils.isNotEmpty(ftSingleCreditRequest.getBeneficiaryBVN()) && !StringUtils.equalsIgnoreCase(ftSingleCreditRequest.getBeneficiaryBVN(),neSingleResponse.getBankVerificationNo())){
-                    //the supplied BVN and the NIBSS BVN are not the same
+                if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
+                    ftSingleCreditRequest.setBeneficiaryBVN(neSingleResponse.getBankVerificationNo());
+                    ftSingleCreditRequest.setBeneficiaryKYCLevel(neSingleResponse.getKycLevel());
+                }else {
                     //update the db
-                    fundsTransferEntity.setResponseCode(NIP_104.getCode());
-                    fundsTransferEntity.setPaymentStatusEnum(FAILED);
+                    fundsTransferEntity.setResponseCode(neSingleResponse.getResponseCode());
+                    fundsTransferEntity.setPaymentStatusEnum(NIPResponseCodeEnum.getPaymentStatusEnum(neSingleResponse.getResponseCode()));
                     fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
                     //write a response to SQS to do client callback
                     writeToSQS(clientId,CALLBACK, sessionId,originatorBankCode);
                     return;
                 }
-                if(StringUtils.isEmpty(neSingleResponse.getAccountName()) || (!NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode()))){
-                    //discontinue FT since we don't have a response as regards the beneficiary account name
-                    //update the db
-                    fundsTransferEntity.setResponseCode(NIP_105.getCode());
-                    fundsTransferEntity.setPaymentStatusEnum(FAILED);
-                    fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
-                    //write a response to SQS to do client callback
-                    writeToSQS(clientId,CALLBACK, sessionId,originatorBankCode);
-                    return;
-                }
-                ftSingleCreditRequest.setBeneficiaryBVN(neSingleResponse.getBankVerificationNo());
-                ftSingleCreditRequest.setBeneficiaryKYCLevel(neSingleResponse.getKycLevel());
             }
         }catch (Exception exception){
 

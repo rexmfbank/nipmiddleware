@@ -2,6 +2,7 @@ package com.globalaccelerex.nipmiddleware.service.db;
 
 import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
+import com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.repository.FundsTransferRepository;
@@ -11,13 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_15;
-import static com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum.FAILED;
-import static com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum.SUCCESS;
 
 @Service
 public class FundsTransferDbService {
 
     private final FundsTransferRepository fundsTransferRepository;
+
 
     @Autowired
     public FundsTransferDbService(FundsTransferRepository fundsTransferRepository) {
@@ -54,15 +54,17 @@ public class FundsTransferDbService {
     }
 
     public FundsTransferEntity updateFTResponseCode(String sessionId , String responseCode , String clientId){
-        final val fundsTransferEntity = fundsTransferRepository.findBySessionIdAndClientId(sessionId,clientId).orElse(new FundsTransferEntity());
-        if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode())){
+        final val fundsTransferEntity = fundsTransferRepository.findBySessionIdAndClientId(sessionId,clientId).get();
+
+        //only allow updates on db if status is initially PENDING
+        if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode()) &&
+                PaymentStatusEnum.isPending(fundsTransferEntity.getPaymentStatusEnum())){
+
             fundsTransferEntity.setResponseCode(responseCode);
             fundsTransferEntity.setPaymentStatusEnum(NIPResponseCodeEnum.getPaymentStatusEnum(responseCode));
             return fundsTransferRepository.save(fundsTransferEntity);
         }
-        else {
-            return new FundsTransferEntity();
-        }
+        return fundsTransferEntity;
     }
 
     public void saveFundsTransferEntity(FundsTransferEntity fundsTransferEntity){
