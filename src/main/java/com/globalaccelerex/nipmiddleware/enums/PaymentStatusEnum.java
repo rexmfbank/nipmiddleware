@@ -4,6 +4,10 @@ public enum PaymentStatusEnum {
 
     SUCCESS , //payment was successful
     PENDING , //awaiting response , requires tsq
-    FAILED  , //Transaction Not successful
-    ACTIVE    //Initial Name Enquiry
+    FAILED  ; //Transaction Not successful
+
+
+    public static boolean isPending(PaymentStatusEnum paymentStatusEnum){
+        return PENDING.compareTo(paymentStatusEnum)==0;
+    }
 }

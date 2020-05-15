@@ -35,7 +35,7 @@ public enum NIPResponseCodeEnum {
 
     NIP_14("14","Invalid Batch Number",FAILED),
 
-    NIP_15("15","Invalid Session or Record ID",FAILED),
+    NIP_15("15","Invalid Session or Record ID",PENDING),
 
     NIP_16("16","Unknown Bank Code",FAILED),
 
@@ -45,7 +45,7 @@ public enum NIPResponseCodeEnum {
 
     NIP_21("21","No action taken" , PENDING),
 
-    NIP_25("25","Unable to locate record",FAILED),
+    NIP_25("25","Unable to locate record",PENDING),
 
     NIP_26("26","Duplicate record",FAILED),
 

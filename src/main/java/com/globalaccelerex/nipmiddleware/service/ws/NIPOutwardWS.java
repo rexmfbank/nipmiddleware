@@ -1,6 +1,5 @@
 package com.globalaccelerex.nipmiddleware.service.ws;
 
-import com.globalaccelerex.nipmiddleware.config.AppConfig;
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
@@ -29,9 +28,7 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
         val soapActionURL = nipConfig.getSoapActionUrl() + NAME_ENQUIRY_OUTWARD;
         NameenquirysingleitemResponse nameenquirysingleitemResponse = new NameenquirysingleitemResponse();
         marker.info(" ====== Doing NameEnquiry ====== ");
-        marker.info("webServiceURL " + webServiceURL);
-        marker.info("soapActionURL " + soapActionURL);
-        marker.info("Encoded Request " + nameEnquirySingleItem.getRequest());
+
         try {
             val response = (JAXBElement<NameenquirysingleitemResponse>) getWebServiceTemplate()
                     .marshalSendAndReceive(webServiceURL, nameEnquirySingleItem,
