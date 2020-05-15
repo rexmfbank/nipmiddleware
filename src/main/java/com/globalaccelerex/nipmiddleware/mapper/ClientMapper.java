@@ -22,6 +22,7 @@ public class ClientMapper {
 
     private final JwtTokenUtil jwtTokenUtil;
 
+
     @Autowired
     private  BCryptPasswordEncoder bCryptPasswordEncoder;
 

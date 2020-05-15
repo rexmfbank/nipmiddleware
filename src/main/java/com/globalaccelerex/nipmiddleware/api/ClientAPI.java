@@ -28,5 +28,9 @@ public interface ClientAPI {
 
     String RESET_PASSWORD = "/resetPassword";
 
+    String DOWN = "/status/down";
+
+    String UP = "/status/up";
+
 
 }

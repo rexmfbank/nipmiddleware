@@ -1,0 +1,59 @@
+package com.globalaccelerex.nipmiddleware.controller;
+
+import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
+import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
+import com.globalaccelerex.nipmiddleware.util.SystemSettingUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
+import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.*;
+
+@Slf4j
+@RestController
+@RequestMapping(ADMIN_API)
+public class SystemSettingController {
+
+    private final SystemSettingUtil systemSettingUtil;
+
+    @Autowired
+    public SystemSettingController(SystemSettingUtil systemSettingUtil) {
+        this.systemSettingUtil = systemSettingUtil;
+    }
+
+    @PostMapping(UP)
+    public ResponseEntity<?> allowTransactions(){
+        IMarker marker = Marker.fromString();
+        marker.info("<<<<<<<< Allow Transactions To NIBSS  >>>>>>>>");
+        marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                build().toUri().toASCIIString(), "Updating Service Status to UP", false);
+        try{
+            systemSettingUtil.changeStatus(CALL_NIBSS_API,UP_STATUS);
+            marker.setMainResponse("Completed Updating Service Status to UP", false);
+            return new ResponseEntity( HttpStatus.OK);
+        }finally {
+            marker.done();
+        }
+    }
+
+    @PostMapping(DOWN)
+    public ResponseEntity<?> rejectTransactions(){
+        IMarker marker = Marker.fromString();
+        marker.info("<<<<<<<< Reject Transactions To NIBSS  >>>>>>>>");
+        marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                build().toUri().toASCIIString(), "Updating Service Status to DOWN", false);
+        try{
+            systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
+            marker.setMainResponse("Completed Updating Service Status to DOWN", false);
+            return new ResponseEntity( HttpStatus.OK);
+        }finally {
+            marker.done();
+        }
+    }
+}
