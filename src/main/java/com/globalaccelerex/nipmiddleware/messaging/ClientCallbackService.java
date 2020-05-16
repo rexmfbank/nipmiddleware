@@ -44,7 +44,8 @@ public class ClientCallbackService {
 
     private final ClientDbService clientDbService;
 
-    private final SQSService sqsService;
+    @Autowired
+    private SQSService sqsService;
 
     public static final int DEFAULT_QUEUE_WAIT_PERIOD = 30;
 
@@ -58,7 +59,7 @@ public class ClientCallbackService {
     @Autowired
     public ClientCallbackService(XmlUtil xmlUtil, NIPOutwardMapper nipOutwardMapper, NIPOutwardWS nipOutwardWS,
                                  HTTPRestTemplate hTTPRestTemplate, SSMUtil ssmUtil, FundsTransferDbService fundsTransferDbService,
-                                 ClientDbService clientDbService, SQSService sqsService) {
+                                 ClientDbService clientDbService) {
         this.xmlUtil = xmlUtil;
         this.nipOutwardMapper = nipOutwardMapper;
         this.nipOutwardWS = nipOutwardWS;
@@ -66,7 +67,6 @@ public class ClientCallbackService {
         this.ssmUtil = ssmUtil;
         this.fundsTransferDbService = fundsTransferDbService;
         this.clientDbService = clientDbService;
-        this.sqsService = sqsService;
     }
 
     public QueuePayload handleCallback(IMarker marker, QueuePayload queuePayload){
