@@ -74,7 +74,7 @@ public class ClientCallbackService {
         val clientId = queuePayload.getClientId();
         val sessionId = queuePayload.getSessionId();
         try{
-            val fundsTransferEntity = fundsTransferDbService.findRecord(clientId, sessionId);
+            val fundsTransferEntity = fundsTransferDbService.findRecordByClientIdAndSessionId(clientId, sessionId ,marker);
             val clientEntityOpt = clientDbService.findClientByClientId(clientId);
 
             val callbackUrl = clientEntityOpt.isPresent() ? clientEntityOpt.get().getCallbackUrl() : StringUtils.EMPTY;
@@ -87,8 +87,6 @@ public class ClientCallbackService {
                 final val tsqCallbackResponse = hTTPRestTemplate.getClient()
                         .postForObject(HTTPHelpers.buildURI(callbackUrl, ""), tsqResponse, String.class);
                 marker.setResponse(tsqCallbackResponse);
-
-
             }
 
             queuePayload.setReQueue(false);
@@ -137,10 +135,9 @@ public class ClientCallbackService {
 
             val responseCode = tsqSingleItemResponseVO.getResponseCode();
 
-            fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId );
+            fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId,marker );
 
             if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode())){
-                val clientEntity = clientDbService.findClientByClientId(clientId);
                 val clientEntityOpt = clientDbService.findClientByClientId(clientId);
 
                 val callbackUrl = clientEntityOpt.isPresent() ? clientEntityOpt.get().getCallbackUrl() : StringUtils.EMPTY;

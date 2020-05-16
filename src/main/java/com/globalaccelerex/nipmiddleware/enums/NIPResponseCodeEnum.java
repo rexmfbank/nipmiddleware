@@ -135,7 +135,8 @@ public enum NIPResponseCodeEnum {
     NIP_126("126","Authentication Error :  Invalid authentication", FAILED),
     NIP_127("127","Authentication Error :  Client Id does not match authenticated value", FAILED),
     NIP_128("128","Application Error :  New Password and Confirm Password are not the same ", FAILED),
-    NIP_129("129","Application Error :  Password does not match ", FAILED)
+    NIP_129("129","Application Error :  Password does not match ", FAILED) ,
+    NIP_130("130","Application Error :  Record Not Found in Database ", PENDING)
     ;
 
 
@@ -150,7 +151,7 @@ public enum NIPResponseCodeEnum {
     private final PaymentStatusEnum paymentStatusEnum;
 
 
-    public static NIPResponseCodeEnum getResponseDescription(String code){
+    public static NIPResponseCodeEnum getResponseCodeEnum(String code){
         return Stream.of(NIPResponseCodeEnum.values())
                 .filter(nipResponseCodeEnum -> nipResponseCodeEnum.getCode().equalsIgnoreCase(code))
                 .findFirst()

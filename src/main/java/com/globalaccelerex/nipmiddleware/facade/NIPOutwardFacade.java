@@ -188,7 +188,7 @@ public class NIPOutwardFacade {
             if(StringUtils.isEmpty(fundTransferSingleItemDcResponse.getReturn())){
                 //update db
                 iMarker.info(" Received  No Response from NIPOutwardWS  " );
-                fundsTransferDbService.updateFTResponseCode(sessionId, NIP_106.getCode(),clientId);
+                fundsTransferDbService.updateFTResponseCode(sessionId, NIP_106.getCode(),clientId,iMarker);
                 //write a response to SQS to do Tsq
                 writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
                 return;
@@ -202,7 +202,7 @@ public class NIPOutwardFacade {
             writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
         }catch(Exception exception){
             iMarker.info(exception.getMessage(),exception);
-            fundsTransferDbService.updateFTResponseCode(sessionId, NIP_107.getCode(),clientId);
+            fundsTransferDbService.updateFTResponseCode(sessionId, NIP_107.getCode(),clientId,iMarker);
             //write a response to SQS to do Tsq
             writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
         }
@@ -306,7 +306,7 @@ public class NIPOutwardFacade {
 
             tsqResponse =  nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
 
-            fundsTransferDbService.updateFTResponseCode(sessionId, tsqSingleItemResponseVO.getResponseCode(),clientId);
+            fundsTransferDbService.updateFTResponseCode(sessionId, tsqSingleItemResponseVO.getResponseCode(),clientId,iMarker);
             tsqResponse.setResponseCode(tsqSingleItemResponseVO.getResponseCode());
 
         }else{
