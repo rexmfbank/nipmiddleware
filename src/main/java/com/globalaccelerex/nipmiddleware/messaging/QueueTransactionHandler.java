@@ -7,12 +7,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class QueueTransactionHandler {
 
-    private final ClientCallbackService clientCallbackService;
-
     @Autowired
-    public QueueTransactionHandler(ClientCallbackService clientCallbackService) {
-        this.clientCallbackService = clientCallbackService;
-    }
+    private ClientCallbackService clientCallbackService;
+
 
     public QueuePayload handlePayload(IMarker marker,QueuePayload queuePayload){
         switch (queuePayload.getMode()) {
