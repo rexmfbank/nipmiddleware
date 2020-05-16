@@ -90,7 +90,7 @@ public class ClientCallbackService {
 
 
             }
-            
+
             queuePayload.setReQueue(false);
         }catch (Exception ex){
             marker.info("Error occurred while doing callback  ", ex);
