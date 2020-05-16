@@ -136,7 +136,7 @@ public enum NIPResponseCodeEnum {
     NIP_127("127","Authentication Error :  Client Id does not match authenticated value", FAILED),
     NIP_128("128","Application Error :  New Password and Confirm Password are not the same ", FAILED),
     NIP_129("129","Application Error :  Password does not match ", FAILED) ,
-    NIP_130("130","Application Error :  Record Not Found in Database ", FAILED)
+    NIP_130("130","Application Error :  Record Not Found in Database ", PENDING)
     ;
 
 
