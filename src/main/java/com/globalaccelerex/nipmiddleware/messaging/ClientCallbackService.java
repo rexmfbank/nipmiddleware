@@ -79,7 +79,7 @@ public class ClientCallbackService {
 
             val callbackUrl = clientEntityOpt.isPresent() ? clientEntityOpt.get().getCallbackUrl() : StringUtils.EMPTY;
 
-            if(StringUtils.isNotBlank(callbackUrl)) {
+            if(StringUtils.isNotBlank(callbackUrl) && !PaymentStatusEnum.isPending(fundsTransferEntity.getPaymentStatusEnum())) {
                 val tsqResponse = nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
                 tsqResponse.setClientId(clientId);
 
@@ -87,8 +87,11 @@ public class ClientCallbackService {
                 final val tsqCallbackResponse = hTTPRestTemplate.getClient()
                         .postForObject(HTTPHelpers.buildURI(callbackUrl, ""), tsqResponse, String.class);
                 marker.setResponse(tsqCallbackResponse);
-            }
 
+
+            }
+            
+            queuePayload.setReQueue(false);
         }catch (Exception ex){
             marker.info("Error occurred while doing callback  ", ex);
             queuePayload.setReQueue(true);
