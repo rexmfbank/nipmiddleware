@@ -3,10 +3,7 @@ package com.globalaccelerex.nipmiddleware.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
-import com.globalaccelerex.nipmiddleware.model.Response;
 import lombok.val;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.actuate.autoconfigure.web.servlet.ManagementErrorEndpoint;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.validation.BindException;
@@ -21,7 +18,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_100;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_96;
 
 
 @ControllerAdvice
@@ -32,7 +30,7 @@ public class GenericExceptionHandler {
     @ExceptionHandler(NIPMiddleWareAPIException.class)
     public ErrorResponse handleNIPMiddleWareException(NIPMiddleWareAPIException exception){
         final val marker = exception.getMarker();
-        marker.info("NIPMiddleWareAPI Exception: =>" + printStackTrace(exception));
+        marker.info("NIPMiddleWareAPI Exception: =>" ,exception);
         marker.setMainResponse(exception.getErrorResponse().toString(), false);
         marker.done();
         return exception.getErrorResponse();

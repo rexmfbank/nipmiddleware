@@ -2,15 +2,13 @@ package com.globalaccelerex.nipmiddleware.exception;
 
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class NIPMiddleWareAPIException extends RuntimeException {
 
     private IMarker marker;
