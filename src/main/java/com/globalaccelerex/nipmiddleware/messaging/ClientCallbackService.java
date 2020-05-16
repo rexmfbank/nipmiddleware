@@ -70,6 +70,7 @@ public class ClientCallbackService {
     }
 
     public QueuePayload handleCallback(IMarker marker, QueuePayload queuePayload){
+        marker.info("processing callback for "+queuePayload.toString());
         val clientId = queuePayload.getClientId();
         val sessionId = queuePayload.getSessionId();
         try{
@@ -100,11 +101,12 @@ public class ClientCallbackService {
                 queuePayload.setWaitDuration(0);
             }
         }
-
+        marker.info("done processing callback for "+queuePayload.toString());
         return queuePayload;
     }
 
     public QueuePayload handleTsq(IMarker marker, QueuePayload queuePayload){
+        marker.info("processing tsq callback for "+queuePayload.toString());
         FundsTransferEntity fundsTransferEntity = null;
         val clientId = queuePayload.getClientId();
         val sessionId = queuePayload.getSessionId();
@@ -177,6 +179,7 @@ public class ClientCallbackService {
                 queuePayload.setWaitDuration(0);
             }
         }
+        marker.info("done processing tsq callback for "+queuePayload.toString());
         return queuePayload;
     }
 
