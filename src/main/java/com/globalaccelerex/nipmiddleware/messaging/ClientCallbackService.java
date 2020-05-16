@@ -2,6 +2,7 @@ package com.globalaccelerex.nipmiddleware.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
+import com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum;
 import com.globalaccelerex.nipmiddleware.http.HTTPHelpers;
 import com.globalaccelerex.nipmiddleware.http.HTTPRestTemplate;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
@@ -21,7 +22,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.TimeZone;
 
+import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.CALLBACK;
 import static com.globalaccelerex.nipmiddleware.messaging.SQSService.DEFAULT_MAX_WAIT_IN_SECONDS;
+import static com.globalaccelerex.nipmiddleware.messaging.SQSService.TSQ_WAIT_DURATION_IN_SECONDS;
 
 
 @Service
@@ -41,6 +44,8 @@ public class ClientCallbackService {
 
     private final ClientDbService clientDbService;
 
+    private final SQSService sqsService;
+
     public static final int DEFAULT_QUEUE_WAIT_PERIOD = 30;
 
     private static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("Africa/Lagos");
@@ -53,7 +58,7 @@ public class ClientCallbackService {
     @Autowired
     public ClientCallbackService(XmlUtil xmlUtil, NIPOutwardMapper nipOutwardMapper, NIPOutwardWS nipOutwardWS,
                                  HTTPRestTemplate hTTPRestTemplate, SSMUtil ssmUtil, FundsTransferDbService fundsTransferDbService,
-                                 ClientDbService clientDbService) {
+                                 ClientDbService clientDbService, SQSService sqsService) {
         this.xmlUtil = xmlUtil;
         this.nipOutwardMapper = nipOutwardMapper;
         this.nipOutwardWS = nipOutwardWS;
@@ -61,6 +66,7 @@ public class ClientCallbackService {
         this.ssmUtil = ssmUtil;
         this.fundsTransferDbService = fundsTransferDbService;
         this.clientDbService = clientDbService;
+        this.sqsService = sqsService;
     }
 
     public QueuePayload handleCallback(IMarker marker, QueuePayload queuePayload){
@@ -134,16 +140,32 @@ public class ClientCallbackService {
 
                 val callbackUrl = clientEntityOpt.isPresent() ? clientEntityOpt.get().getCallbackUrl() : StringUtils.EMPTY;
 
-                if(StringUtils.isNotBlank(callbackUrl)) {
-                    val tsqResponse = nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
-                    tsqResponse.setClientId(clientId);
+                if(StringUtils.isNotBlank(callbackUrl) && !PaymentStatusEnum.isPending(fundsTransferEntity.getPaymentStatusEnum())) {
+                    try{
+                        val tsqResponse = nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
+                        tsqResponse.setClientId(clientId);
 
-                    marker.setRequest(callbackUrl, OBJECT_MAPPER.writeValueAsString(tsqResponse));
-                    final val tsqCallbackResponse = hTTPRestTemplate.getClient()
-                            .postForObject(HTTPHelpers.buildURI(callbackUrl, ""), tsqResponse, String.class);
-                    marker.setResponse(tsqCallbackResponse);
+                        marker.setRequest(callbackUrl, OBJECT_MAPPER.writeValueAsString(tsqResponse));
+                        final val tsqCallbackResponse = hTTPRestTemplate.getClient()
+                                .postForObject(HTTPHelpers.buildURI(callbackUrl, ""), tsqResponse, String.class);
+                        marker.setResponse(tsqCallbackResponse);
+                    }catch (Exception ex){
+                        marker.info(ex.getMessage(),ex);
+                        val ftQueuePayload = QueuePayload.builder()
+                                .clientId(clientId)
+                                .mode(CALLBACK)
+                                .originatorBankCode(originatorBankCode)
+                                .reQueue(true)
+                                .sessionId(sessionId)
+                                .waitDuration(TSQ_WAIT_DURATION_IN_SECONDS)
+                                .build();
+                        sqsService.send(ftQueuePayload, TSQ_WAIT_DURATION_IN_SECONDS);
+                    }
+
                 }
             }
+
+            queuePayload.setReQueue(false);
         }catch (Exception ex){
             marker.info("Error occurred while handling FT  ", ex);
             queuePayload.setReQueue(true);
