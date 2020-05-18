@@ -25,7 +25,7 @@ public class SystemSettingDbService {
         val serviceStatusEntity = findStatus(name);
         serviceStatusEntity.setValue(value);
         systemSettingRepository.save(serviceStatusEntity);
-        serviceStatusCache.invalidate(serviceStatusEntity.getId());
+        serviceStatusCache.invalidate(serviceStatusEntity.getName());
     }
     public SystemSettingEntity findStatus(String name){
         return serviceStatusCache.getUnchecked(name);

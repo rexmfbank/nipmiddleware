@@ -35,7 +35,7 @@ public enum NIPResponseCodeEnum {
 
     NIP_14("14","Invalid Batch Number",FAILED),
 
-    NIP_15("15","Invalid Session or Record ID",FAILED),
+    NIP_15("15","Invalid Session or Record ID",PENDING),
 
     NIP_16("16","Unknown Bank Code",FAILED),
 
@@ -45,7 +45,7 @@ public enum NIPResponseCodeEnum {
 
     NIP_21("21","No action taken" , PENDING),
 
-    NIP_25("25","Unable to locate record",FAILED),
+    NIP_25("25","Unable to locate record",PENDING),
 
     NIP_26("26","Duplicate record",FAILED),
 
@@ -83,7 +83,8 @@ public enum NIPResponseCodeEnum {
 
     NIP_96("96","System malfunction",FAILED),
 
-    NIP_97("97","Timeout waiting for response from destination" , PENDING),
+    NIP_97("97","Timeout waiting for response from destination" , FAILED),
+
 
     NIP_98("98"," Invalid Http Client Error ",FAILED),
 
@@ -135,7 +136,8 @@ public enum NIPResponseCodeEnum {
     NIP_126("126","Authentication Error :  Invalid authentication", FAILED),
     NIP_127("127","Authentication Error :  Client Id does not match authenticated value", FAILED),
     NIP_128("128","Application Error :  New Password and Confirm Password are not the same ", FAILED),
-    NIP_129("129","Application Error :  Password does not match ", FAILED)
+    NIP_129("129","Application Error :  Password does not match ", FAILED) ,
+    NIP_130("130","Application Error :  Record Not Found in Database ", PENDING)
     ;
 
 
@@ -150,7 +152,7 @@ public enum NIPResponseCodeEnum {
     private final PaymentStatusEnum paymentStatusEnum;
 
 
-    public static NIPResponseCodeEnum getResponseDescription(String code){
+    public static NIPResponseCodeEnum getResponseCodeEnum(String code){
         return Stream.of(NIPResponseCodeEnum.values())
                 .filter(nipResponseCodeEnum -> nipResponseCodeEnum.getCode().equalsIgnoreCase(code))
                 .findFirst()

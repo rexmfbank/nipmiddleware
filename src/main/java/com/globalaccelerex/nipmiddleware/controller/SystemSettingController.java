@@ -28,7 +28,7 @@ public class SystemSettingController {
     }
 
     @PostMapping(UP)
-    public ResponseEntity<?> allowTransactions(){
+    public ResponseEntity allowTransactions(){
         IMarker marker = Marker.fromString();
         marker.info("<<<<<<<< Allow Transactions To NIBSS  >>>>>>>>");
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
@@ -43,7 +43,7 @@ public class SystemSettingController {
     }
 
     @PostMapping(DOWN)
-    public ResponseEntity<?> rejectTransactions(){
+    public ResponseEntity rejectTransactions(){
         IMarker marker = Marker.fromString();
         marker.info("<<<<<<<< Reject Transactions To NIBSS  >>>>>>>>");
         marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().

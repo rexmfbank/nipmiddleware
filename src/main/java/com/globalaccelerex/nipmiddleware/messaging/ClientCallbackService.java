@@ -2,6 +2,7 @@ package com.globalaccelerex.nipmiddleware.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
+import com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum;
 import com.globalaccelerex.nipmiddleware.http.HTTPHelpers;
 import com.globalaccelerex.nipmiddleware.http.HTTPRestTemplate;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
@@ -22,9 +23,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.TimeZone;
 
+import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.CALLBACK;
 import static com.globalaccelerex.nipmiddleware.messaging.SQSService.DEFAULT_MAX_WAIT_IN_SECONDS;
+import static com.globalaccelerex.nipmiddleware.messaging.SQSService.TSQ_WAIT_DURATION_IN_SECONDS;
 import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.CALL_NIBSS_API;
 import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.DOWN_STATUS;
+
 
 
 @Service
@@ -45,6 +49,9 @@ public class ClientCallbackService {
     private final SystemSettingUtil systemSettingUtil;
 
     private final ClientDbService clientDbService;
+
+    @Autowired
+    private SQSService sqsService;
 
     public static final int DEFAULT_QUEUE_WAIT_PERIOD = 30;
 
@@ -70,15 +77,16 @@ public class ClientCallbackService {
     }
 
     public QueuePayload handleCallback(IMarker marker, QueuePayload queuePayload){
+        marker.info("processing callback for "+queuePayload.toString());
         val clientId = queuePayload.getClientId();
         val sessionId = queuePayload.getSessionId();
         try{
-            val fundsTransferEntity = fundsTransferDbService.findRecord(clientId, sessionId);
+            val fundsTransferEntity = fundsTransferDbService.findRecordByClientIdAndSessionId(clientId, sessionId ,marker);
             val clientEntityOpt = clientDbService.findClientByClientId(clientId);
 
             val callbackUrl = clientEntityOpt.isPresent() ? clientEntityOpt.get().getCallbackUrl() : StringUtils.EMPTY;
 
-            if(StringUtils.isNotBlank(callbackUrl)) {
+            if(StringUtils.isNotBlank(callbackUrl) && !PaymentStatusEnum.isPending(fundsTransferEntity.getPaymentStatusEnum())) {
                 val tsqResponse = nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
                 tsqResponse.setClientId(clientId);
 
@@ -88,6 +96,7 @@ public class ClientCallbackService {
                 marker.setResponse(tsqCallbackResponse);
             }
 
+            queuePayload.setReQueue(false);
         }catch (Exception ex){
             marker.info("Error occurred while doing callback  ", ex);
             queuePayload.setReQueue(true);
@@ -100,11 +109,12 @@ public class ClientCallbackService {
                 queuePayload.setWaitDuration(0);
             }
         }
-
+        marker.info("done processing callback for "+queuePayload.toString());
         return queuePayload;
     }
 
     public QueuePayload handleTsq(IMarker marker, QueuePayload queuePayload){
+        marker.info("processing tsq callback for "+queuePayload.toString());
         FundsTransferEntity fundsTransferEntity = null;
         val clientId = queuePayload.getClientId();
         val sessionId = queuePayload.getSessionId();
@@ -122,6 +132,7 @@ public class ClientCallbackService {
             txnStatusQuerySingleitem.setRequest(encryptedTsqSingleItemRequestXmlString);
 
             val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(marker, txnStatusQuerySingleitem);
+
             if(StringUtils.isBlank(txnStatusQuerySingleItemResponse.getReturn())){
                 marker.info(" Empty  Response from NIPOutwardWS For TSQ ");
                 systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
@@ -134,14 +145,15 @@ public class ClientCallbackService {
 
                 val responseCode = tsqSingleItemResponseVO.getResponseCode();
 
-                fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId );
+            fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId,marker );
 
-                if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode())){
+            if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode())){
                     val clientEntityOpt = clientDbService.findClientByClientId(clientId);
 
                     val callbackUrl = clientEntityOpt.isPresent() ? clientEntityOpt.get().getCallbackUrl() : StringUtils.EMPTY;
 
-                    if(StringUtils.isNotBlank(callbackUrl)) {
+                if(StringUtils.isNotBlank(callbackUrl) && !PaymentStatusEnum.isPending(fundsTransferEntity.getPaymentStatusEnum())) {
+                    try {
                         val tsqResponse = nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
                         tsqResponse.setClientId(clientId);
 
@@ -149,9 +161,22 @@ public class ClientCallbackService {
                         final val tsqCallbackResponse = hTTPRestTemplate.getClient()
                                 .postForObject(HTTPHelpers.buildURI(callbackUrl, ""), tsqResponse, String.class);
                         marker.setResponse(tsqCallbackResponse);
+                    } catch (Exception ex) {
+                        marker.info(ex.getMessage(), ex);
+                        val ftQueuePayload = QueuePayload.builder()
+                                .clientId(clientId)
+                                .mode(CALLBACK)
+                                .originatorBankCode(originatorBankCode)
+                                .reQueue(true)
+                                .sessionId(sessionId)
+                                .waitDuration(TSQ_WAIT_DURATION_IN_SECONDS)
+                                .build();
+                        sqsService.send(ftQueuePayload, TSQ_WAIT_DURATION_IN_SECONDS);
                     }
                 }
+                }
             }
+            queuePayload.setReQueue(false);
         }catch (Exception ex){
             marker.info("Error occurred while handling FT  ", ex);
             queuePayload.setReQueue(true);
@@ -163,6 +188,7 @@ public class ClientCallbackService {
                 queuePayload.setWaitDuration(0);
             }
         }
+        marker.info("done processing tsq callback for "+queuePayload.toString());
         return queuePayload;
     }
 
