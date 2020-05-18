@@ -255,7 +255,7 @@ public class NIPOutwardFacade {
         if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorAccountNo()) && StringUtils.isBlank(clientEntity.getAccountNo())){
             stringBuilder.append("Originator Account No is required ; ");
         }
-        if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorBankCode()) && StringUtils.isBlank(clientEntity.getBankCode())){
+        if(StringUtils.isBlank(ftSingleCreditRequest.getOriginatorBankCode()) && StringUtils.isBlank(clientEntity.getOriginatorBankCode())){
             stringBuilder.append("Originator Bank Code is required ; ");
         }
         if(ftSingleCreditRequest.getLatitude() == null && StringUtils.isBlank(clientEntity.getLatitude())){

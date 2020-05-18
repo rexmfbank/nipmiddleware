@@ -59,6 +59,7 @@ public class AdminFacade {
             clientEntity.setAccountName(neSingleResponse.getAccountName());
             clientEntity.setAccountNo(neSingleResponse.getAccountNo());
             clientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
+            clientEntity.setOriginatorBankCode(createClientRequest.getOriginatorBankCode());
             clientEntity.setKycLevel(neSingleResponse.getKycLevel());
             clientEntity.setBvn(neSingleResponse.getBankVerificationNo());
             clientDbService.saveClientEntity(clientEntity);
@@ -115,13 +116,13 @@ public class AdminFacade {
                 updatedClientEntity.setAccountName(neSingleResponse.getAccountName());
                 updatedClientEntity.setAccountNo(neSingleResponse.getAccountNo());
                 updatedClientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
+                updatedClientEntity.setOriginatorBankCode(originatorBankCode);
                 updatedClientEntity.setKycLevel(neSingleResponse.getKycLevel());
                 updatedClientEntity.setBvn(neSingleResponse.getBankVerificationNo());
             }else{
                 throw new NIPMiddleWareAPIException(NIP_105,marker);
             }
         }
-
         clientDbService.updateClientEntity(updatedClientEntity);
 
         marker.info("done processing update client request ");
