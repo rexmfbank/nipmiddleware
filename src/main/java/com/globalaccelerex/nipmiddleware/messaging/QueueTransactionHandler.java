@@ -4,14 +4,18 @@ import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class QueueTransactionHandler {
 
-    @Autowired
     private ClientCallbackService clientCallbackService;
 
+    @Autowired
+    public void setClientCallbackService(ClientCallbackService clientCallbackService) {
+        this.clientCallbackService = clientCallbackService;
+    }
 
-    public QueuePayload handlePayload(IMarker marker,QueuePayload queuePayload){
+    public QueuePayload handlePayload(IMarker marker, QueuePayload queuePayload){
         switch (queuePayload.getMode()) {
             case TSQ:
                 return clientCallbackService.handleTsq(marker, queuePayload);

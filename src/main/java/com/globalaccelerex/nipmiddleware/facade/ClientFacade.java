@@ -1,20 +1,16 @@
 package com.globalaccelerex.nipmiddleware.facade;
 
-import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.mapper.ClientMapper;
-import com.globalaccelerex.nipmiddleware.payload.client.*;
+import com.globalaccelerex.nipmiddleware.payload.client.UpdateClientPasswordRequest;
 import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 
@@ -28,128 +24,16 @@ public class ClientFacade {
 
     private final ClientMapper clientMapper;
 
-    private final NIPOutwardFacade nipOutwardFacade;
-
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public ClientFacade(ClientDbService clientDbService, JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper,
-                        NIPOutwardFacade nipOutwardFacade) {
+    public ClientFacade(ClientDbService clientDbService,JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper) {
         this.clientDbService = clientDbService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.clientMapper = clientMapper;
-        this.nipOutwardFacade = nipOutwardFacade;
     }
 
-    public CreateClientResponse createClient(CreateClientRequest createClientRequest){
-        final val iMarker = createClientRequest.getMarker();
-        iMarker.info("::::::: Handling Create Client ::::::: ");
-        final val clientId = createClientRequest.getClientId();
-
-        if(clientDbService.isClientPresent(clientId).isPresent()){
-            throw new NIPMiddleWareAPIException(NIP_114,iMarker);
-        }
-
-        val neSingleRequest = clientMapper.mapNESingleRequest.apply(createClientRequest);
-        neSingleRequest.setMarker(iMarker);
-        val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
-
-        if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
-            final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
-            clientEntity.setAccountName(neSingleResponse.getAccountName());
-            clientEntity.setAccountNo(neSingleResponse.getAccountNo());
-            clientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
-            clientEntity.setKycLevel(neSingleResponse.getKycLevel());
-            clientEntity.setBvn(neSingleResponse.getBankVerificationNo());
-            clientDbService.saveClientEntity(clientEntity);
-
-            final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
-            final val createClientResponse = clientMapper.mapCreateClientResponse.apply(createClientRequest);
-            createClientResponse.setSecretKey(jwtTokenStr);
-            return createClientResponse;
-        }else{
-            throw new NIPMiddleWareAPIException(NIP_105,iMarker);
-        }
-    }
-
-    public ClientDetail getClientDetail(String clientId , IMarker marker){
-        marker.info("processing get client  request ");
-        val clientEntityOpt = clientDbService.isClientPresent(clientId);
-        if(clientEntityOpt.isPresent()){
-            final val clientDetail = clientMapper.mapClientDetail.apply(clientEntityOpt.get());
-            marker.info("done processing get client request ");
-            return clientDetail;
-        }else{
-            throw new NIPMiddleWareAPIException(NIP_124,marker);
-        }
-    }
-
-    public void updateClient(UpdateClientRequest updateClientRequest){
-        IMarker marker = updateClientRequest.getMarker();
-        marker.info("processing update client  request ");
-        val clientEntityOpt = clientDbService.isClientPresent(updateClientRequest.getClientId());
-        if(!clientEntityOpt.isPresent()){
-            throw new NIPMiddleWareAPIException(NIP_124,marker);
-        }
-
-        val clientEntity = clientEntityOpt.get();
-        //check if name already exists
-        val clientEntityOpt_ = clientDbService.isClientNamePresent(updateClientRequest.getClientName());
-        if(clientEntityOpt_ .isPresent() && !StringUtils.equalsIgnoreCase(clientEntityOpt_.get().getClientId() ,updateClientRequest.getClientId())){
-            throw new NIPMiddleWareAPIException(NIP_114 , marker);
-        }
-
-        val confirmAccountNo = StringUtils.isNotBlank(updateClientRequest.getAccountNo());
-        val confirmBankCode = StringUtils.isNotBlank(updateClientRequest.getBankCode());
-        val updatedClientEntity = clientMapper.updateClientEntity(clientEntity, updateClientRequest);
-        if(confirmAccountNo && confirmBankCode){
-            // Do NameEnquiry
-            val neSingleRequest = clientMapper.mapNESingleRequest_1.apply(updateClientRequest);
-            neSingleRequest.setMarker(marker);
-            val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
-
-            if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
-                updatedClientEntity.setAccountName(neSingleResponse.getAccountName());
-                updatedClientEntity.setAccountNo(neSingleResponse.getAccountNo());
-                updatedClientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
-                updatedClientEntity.setKycLevel(neSingleResponse.getKycLevel());
-                updatedClientEntity.setBvn(neSingleResponse.getBankVerificationNo());
-            }else{
-                throw new NIPMiddleWareAPIException(NIP_105,marker);
-            }
-        }
-        clientDbService.updateClientEntity(updatedClientEntity);
-        marker.info("done processing update client request ");
-    }
-
-    public GetClientsResponse getClients(GetClientsRequest getClientsRequest){
-        IMarker marker = getClientsRequest.getMarker();
-        marker.info("processing get clients  request ");
-        val requestSize = getClientsRequest.getSize();
-        val pageIndex = getClientsRequest.getPageIndex();
-        val startWith = getClientsRequest.getStartWith();
-        val pageClientEntities = clientDbService.findClients(requestSize, startWith, pageIndex);
-
-        final val clientDetailList = pageClientEntities.getContent()
-                .stream()
-                .map(clientMapper.mapClientDetail)
-                .collect(Collectors.toList());
-
-        marker.info("done processing get clients  request ");
-        return GetClientsResponse.builder()
-                .clientDetailList(clientDetailList)
-                .hasContent(pageClientEntities.hasContent())
-                .hasNext(pageClientEntities.hasNext())
-                .hasPrevious(pageClientEntities.hasPrevious())
-                .isFirst(pageClientEntities.isFirst())
-                .isLast(pageClientEntities.isLast())
-                .numberOfElement(pageClientEntities.getNumberOfElements())
-                .size(pageClientEntities.getSize())
-                .totalElements(pageClientEntities.getTotalElements())
-                .totalPages(pageClientEntities.getTotalPages())
-                .build();
-    }
 
     public void updateClientPassword(UpdateClientPasswordRequest updateClientPasswordRequest){
         IMarker marker = updateClientPasswordRequest.getMarker();
