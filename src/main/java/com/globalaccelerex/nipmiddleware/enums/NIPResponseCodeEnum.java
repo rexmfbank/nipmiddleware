@@ -85,6 +85,7 @@ public enum NIPResponseCodeEnum {
 
     NIP_97("97","Timeout waiting for response from destination" , FAILED),
 
+
     NIP_98("98"," Invalid Http Client Error ",FAILED),
 
     NIP_99("99","Application Error " , FAILED),
