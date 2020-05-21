@@ -10,6 +10,7 @@ import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTSingleC
 import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqRequest;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
+import com.globalaccelerex.nipmiddleware.util.SystemSettingUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -25,8 +26,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_108;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_99;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
+import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.TXN_SUSPENDED_MSG;
 
 @Slf4j
 @RestController
@@ -37,10 +38,13 @@ public class OutwardController extends APIController{
 
     private final SessionIdUtil sessionIdUtil;
 
+    private final SystemSettingUtil systemSettingUtil;
+
     @Autowired
-    public OutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil) {
+    public OutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil, SystemSettingUtil systemSettingUtil) {
         this.nipOutwardFacade = nipOutwardFacade;
         this.sessionIdUtil = sessionIdUtil;
+        this.systemSettingUtil = systemSettingUtil;
     }
 
     @PostMapping(NAME_ENQUIRY)
@@ -57,6 +61,10 @@ public class OutwardController extends APIController{
             neSingleRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), neSingleRequest.toString(), false);
+
+            if(systemSettingUtil.isNibssStatusDown()){
+                throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
+            }
             final val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
             marker.setMainResponse(neSingleResponse.toString(), false);
             return new ResponseEntity(neSingleResponse, HttpStatus.OK);
@@ -77,7 +85,12 @@ public class OutwardController extends APIController{
             ftSingleCreditRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
-            final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
+
+            if(systemSettingUtil.isNibssStatusDown()){
+                throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
+            }
+
+
 
             final val result = nipOutwardFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
 
@@ -92,6 +105,7 @@ public class OutwardController extends APIController{
                 throw new NIPMiddleWareAPIException(NIP_99,responseMsg , marker);
             }
 
+            final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
             nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
             ftPendingResponse.setSessionId(sessionId);
             ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());
@@ -115,6 +129,11 @@ public class OutwardController extends APIController{
             tsqRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), tsqRequest.toString(), false);
+
+            if(systemSettingUtil.isNibssStatusDown()){
+                throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
+            }
+
             final val tsqResponse = nipOutwardFacade.doTsq(tsqRequest);
             marker.setMainResponse(tsqResponse.toString(), false);
             return new ResponseEntity(tsqResponse, HttpStatus.OK);
@@ -122,4 +141,6 @@ public class OutwardController extends APIController{
             marker.done();
         }
     }
+
+
 }

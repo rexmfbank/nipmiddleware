@@ -59,6 +59,8 @@ public class ClientEntity {
 
     private String bankCode;
 
+    private String originatorBankCode;
+
     private String latitude ;
 
     private String longitude;

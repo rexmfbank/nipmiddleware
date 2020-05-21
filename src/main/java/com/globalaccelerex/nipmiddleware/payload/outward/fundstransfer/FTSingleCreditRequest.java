@@ -80,8 +80,9 @@ public class FTSingleCreditRequest extends BaseRequest {
             originatorAccountNo = clientEntity.getAccountNo();
         }
         if(StringUtils.isBlank(originatorBankCode)){
-            originatorBankCode = clientEntity.getBankCode();
+            originatorBankCode = clientEntity.getOriginatorBankCode();
         }
+
         if(latitude == null && StringUtils.isNotBlank(clientEntity.getLatitude())){
             latitude = Double.valueOf(clientEntity.getLatitude());
         }

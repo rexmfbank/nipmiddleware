@@ -14,6 +14,7 @@ import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.service.db.FundsTransferDbService;
 import com.globalaccelerex.nipmiddleware.service.ws.NIPOutwardWS;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
+import com.globalaccelerex.nipmiddleware.util.SystemSettingUtil;
 import com.globalaccelerex.nipmiddleware.util.XmlUtil;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,9 @@ import java.util.TimeZone;
 import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.CALLBACK;
 import static com.globalaccelerex.nipmiddleware.messaging.SQSService.DEFAULT_MAX_WAIT_IN_SECONDS;
 import static com.globalaccelerex.nipmiddleware.messaging.SQSService.TSQ_WAIT_DURATION_IN_SECONDS;
+import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.CALL_NIBSS_API;
+import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.DOWN_STATUS;
+
 
 
 @Service
@@ -41,6 +45,8 @@ public class ClientCallbackService {
     private final SSMUtil ssmUtil;
 
     private final FundsTransferDbService fundsTransferDbService;
+
+    private final SystemSettingUtil systemSettingUtil;
 
     private final ClientDbService clientDbService;
 
@@ -59,13 +65,14 @@ public class ClientCallbackService {
     @Autowired
     public ClientCallbackService(XmlUtil xmlUtil, NIPOutwardMapper nipOutwardMapper, NIPOutwardWS nipOutwardWS,
                                  HTTPRestTemplate hTTPRestTemplate, SSMUtil ssmUtil, FundsTransferDbService fundsTransferDbService,
-                                 ClientDbService clientDbService) {
+                                 SystemSettingUtil systemSettingUtil, ClientDbService clientDbService) {
         this.xmlUtil = xmlUtil;
         this.nipOutwardMapper = nipOutwardMapper;
         this.nipOutwardWS = nipOutwardWS;
         this.hTTPRestTemplate = hTTPRestTemplate;
         this.ssmUtil = ssmUtil;
         this.fundsTransferDbService = fundsTransferDbService;
+        this.systemSettingUtil = systemSettingUtil;
         this.clientDbService = clientDbService;
     }
 
@@ -124,26 +131,29 @@ public class ClientCallbackService {
             final val txnStatusQuerySingleitem = new Txnstatusquerysingleitem();
             txnStatusQuerySingleitem.setRequest(encryptedTsqSingleItemRequestXmlString);
 
-
             val txnStatusQuerySingleItemResponse = nipOutwardWS.txnStatus(marker, txnStatusQuerySingleitem);
-            marker.info(" Received  Response from NIPOutwardWS TSQ " + StringUtils.defaultIfBlank(txnStatusQuerySingleItemResponse.getReturn()," Empty String"));
-            val tsqSingleItemResponseXmlString = ssmUtil.decryptResponse(txnStatusQuerySingleItemResponse.getReturn());
-            marker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);
 
-            val tsqSingleItemResponseVO = xmlUtil.unmarshal(tsqSingleItemResponseXmlString, TsqSingleItemResponseVO.class);
-            marker.info(" TsqSingleItemResponseVO " + tsqSingleItemResponseVO.toString());
+            if(StringUtils.isBlank(txnStatusQuerySingleItemResponse.getReturn())){
+                marker.info(" Empty  Response from NIPOutwardWS For TSQ ");
+                systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
+            }else {
+                val tsqSingleItemResponseXmlString = ssmUtil.decryptResponse(txnStatusQuerySingleItemResponse.getReturn());
+                marker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);
 
-            val responseCode = tsqSingleItemResponseVO.getResponseCode();
+                val tsqSingleItemResponseVO = xmlUtil.unmarshal(tsqSingleItemResponseXmlString, TsqSingleItemResponseVO.class);
+                marker.info(" TsqSingleItemResponseVO " + tsqSingleItemResponseVO.toString());
+
+                val responseCode = tsqSingleItemResponseVO.getResponseCode();
 
             fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId,marker );
 
             if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode())){
-                val clientEntityOpt = clientDbService.findClientByClientId(clientId);
+                    val clientEntityOpt = clientDbService.findClientByClientId(clientId);
 
-                val callbackUrl = clientEntityOpt.isPresent() ? clientEntityOpt.get().getCallbackUrl() : StringUtils.EMPTY;
+                    val callbackUrl = clientEntityOpt.isPresent() ? clientEntityOpt.get().getCallbackUrl() : StringUtils.EMPTY;
 
                 if(StringUtils.isNotBlank(callbackUrl) && !PaymentStatusEnum.isPending(fundsTransferEntity.getPaymentStatusEnum())) {
-                    try{
+                    try {
                         val tsqResponse = nipOutwardMapper.mapTsqResponse.apply(fundsTransferEntity);
                         tsqResponse.setClientId(clientId);
 
@@ -151,8 +161,8 @@ public class ClientCallbackService {
                         final val tsqCallbackResponse = hTTPRestTemplate.getClient()
                                 .postForObject(HTTPHelpers.buildURI(callbackUrl, ""), tsqResponse, String.class);
                         marker.setResponse(tsqCallbackResponse);
-                    }catch (Exception ex){
-                        marker.info(ex.getMessage(),ex);
+                    } catch (Exception ex) {
+                        marker.info(ex.getMessage(), ex);
                         val ftQueuePayload = QueuePayload.builder()
                                 .clientId(clientId)
                                 .mode(CALLBACK)
@@ -163,10 +173,9 @@ public class ClientCallbackService {
                                 .build();
                         sqsService.send(ftQueuePayload, TSQ_WAIT_DURATION_IN_SECONDS);
                     }
-
+                }
                 }
             }
-
             queuePayload.setReQueue(false);
         }catch (Exception ex){
             marker.info("Error occurred while handling FT  ", ex);
