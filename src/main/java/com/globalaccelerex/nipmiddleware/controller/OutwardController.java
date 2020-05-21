@@ -90,7 +90,7 @@ public class OutwardController extends APIController{
                 throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
             }
 
-            final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
+
 
             final val result = nipOutwardFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
 
@@ -105,6 +105,7 @@ public class OutwardController extends APIController{
                 throw new NIPMiddleWareAPIException(NIP_99,responseMsg , marker);
             }
 
+            final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
             nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
             ftPendingResponse.setSessionId(sessionId);
             ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());

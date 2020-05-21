@@ -264,8 +264,13 @@ public class NIPOutwardFacade {
         if(ftSingleCreditRequest.getLongitude() == null && StringUtils.isBlank(clientEntity.getLongitude())){
             stringBuilder.append("Longitude is required.  ");
         }
-
-        return stringBuilder.toString();
+        val errorMsg = stringBuilder.toString();
+        //check error message is blank
+        //ensure that OriginatorBankCode is present so as to generate sessionId
+        if( StringUtils.isBlank(errorMsg) && StringUtils.isBlank(ftSingleCreditRequest.getOriginatorBankCode())){
+            ftSingleCreditRequest.setOriginatorBankCode(clientEntity.getOriginatorBankCode());
+        }
+        return errorMsg;
     }
 
     public TsqResponse doTsq(TsqRequest tsqRequest){
