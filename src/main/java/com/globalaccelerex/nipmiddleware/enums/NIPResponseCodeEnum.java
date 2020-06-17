@@ -91,63 +91,6 @@ public enum NIPResponseCodeEnum {
 
     NIP_103("103","Unknown Response Code  , Kindly contact the administrator" , PENDING);
 
-
-//    NIP_98("98"," Invalid Http Client Error ",FAILED),
-//
-//    NIP_99("99","Application Error " , FAILED),
-//
-//    NIP_100("100","Application Error : One or More Fields is empty or has an incorrect value ",FAILED),
-//
-//    NIP_101("101","Application Error : A database constraint has been violated ",FAILED),
-//
-//    NIP_102("102","Application Error : Invalid Json Payload ",FAILED),
-//
-//    NIP_103("103","Unknown Response Code  , Kindly contact the administrator" , PENDING),
-//
-//    NIP_104("104","Application Error : Incorrect Destination Account BVN",FAILED),
-//
-//    NIP_105("105","Application Error : Name Enquiry on Destination Account Failed",FAILED),
-//
-//    NIP_106("106","Application Error : No response from NIBSS" , PENDING),
-//
-//    NIP_107("107","Application Error : Transaction could not be completed", PENDING),
-//
-//    NIP_108("108","Application Error :  Payment Reference Already Exists", FAILED),
-//
-//    NIP_109("109","Authorization  Error :  Unauthorised access to resource", FAILED),
-//
-//    NIP_110("110","Authentication Error :  Invalid signature sent", FAILED),
-//
-//    NIP_111("111","Authentication Error :  Access token not sent in request", FAILED),
-//
-//    NIP_113("113","Authorization Error :  Could not connect to resource", FAILED),
-//
-//    NIP_114("114","Application  Error :  Client Details already exist in the database", FAILED),
-//
-//    NIP_115("115","Authentication  Error :  Client ID not sent ", FAILED),
-//
-//    NIP_116("116","Authentication  Error :  Invalid Client ID  ", FAILED),
-//
-//    NIP_117("117","Authentication Error :  User token not sent in request", FAILED),
-//
-//    NIP_118("118","Authentication Error :  User token has expired", FAILED),
-//
-//    NIP_119("119","Authentication Error :  Invalid Token sent in the request", FAILED),
-//    NIP_120("120","Authentication Error :  Access forbidden to User", FAILED),
-//    NIP_121("121","Authentication Error :  Invalid Authorization Sent", FAILED),
-//    NIP_122("122","Authentication Error :  Invalid Authentication details found", FAILED),
-//    NIP_123("123","Authentication Error :  Invalid Authorization Sent; username or password not found", FAILED),
-//    NIP_124("124","Application Error :  Client not found", FAILED),
-//    NIP_125("125","Authentication Error :  Invalid Client Secret Key", FAILED),
-//    NIP_126("126","Authentication Error :  Invalid authentication", FAILED),
-//    NIP_127("127","Authentication Error :  Client Id does not match authenticated value", FAILED),
-//    NIP_128("128","Application Error :  New Password and Confirm Password are not the same ", FAILED),
-//    NIP_129("129","Application Error :  Password does not match ", FAILED) ,
-//    NIP_130("130","Application Error :  Record Not Found in Database ", PENDING)
-//    ;
-
-
-
     @Getter
     private final String code;
 
