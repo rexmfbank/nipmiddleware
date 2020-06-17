@@ -13,6 +13,7 @@ import org.springframework.ws.soap.SoapMessage;
 import javax.xml.bind.JAXBElement;
 
 import static com.globalaccelerex.nipmiddleware.api.NipAPI.*;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.WEB_SERVICE_ERROR_MSG;
 
 
 @Service
@@ -33,11 +34,12 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
             val response = (JAXBElement<NameenquirysingleitemResponse>) getWebServiceTemplate()
                     .marshalSendAndReceive(webServiceURL, nameEnquirySingleItem,
                             message -> ((SoapMessage) message).setSoapAction(soapActionURL));
-            marker.info("Response From Nibss " + response);
             nameenquirysingleitemResponse = response.getValue();
         } catch (Exception ex) {
             marker.setResponse (ex.getMessage());
-            throw new NIPMiddleWareAPIException("Error",ex.getMessage(),marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+             nipMiddleWareAPIException.buildFailureStatusException(WEB_SERVICE_ERROR_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
         marker.info("done with Name Enquiry");
         return nameenquirysingleitemResponse;
@@ -56,7 +58,9 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
             fundTransferSingleItemDcResponse = response.getValue();
         } catch (Exception ex) {
             marker.setResponse (ex.getMessage());
-            throw new NIPMiddleWareAPIException("Error",ex.getMessage(),marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(WEB_SERVICE_ERROR_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
         marker.info("done with FundsTransfer DC");
         return fundTransferSingleItemDcResponse;
@@ -75,7 +79,9 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
             txnStatusQuerySingleItemResponse = response.getValue();
         }catch (Exception ex) {
             marker.setResponse (ex.getMessage());
-            throw new NIPMiddleWareAPIException("Error",ex.getMessage(),marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(WEB_SERVICE_ERROR_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
         marker.info("done with  TSQ");
         return txnStatusQuerySingleItemResponse;

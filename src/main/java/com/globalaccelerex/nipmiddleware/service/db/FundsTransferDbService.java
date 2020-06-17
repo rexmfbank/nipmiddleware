@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_130;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.RECORD_NOT_FOUND_MSG;
 
 @Service
 public class FundsTransferDbService {
@@ -37,7 +37,9 @@ public class FundsTransferDbService {
         if(fundsTransferEntityOpt.isPresent()){
             return fundsTransferEntityOpt.get();
         }else{
-            throw new NIPMiddleWareAPIException(NIP_130,iMarker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildPendingStatusException(RECORD_NOT_FOUND_MSG,iMarker);
+            throw nipMiddleWareAPIException;
         }
     }
 
@@ -46,7 +48,9 @@ public class FundsTransferDbService {
         if(fundsTransferEntityOpt.isPresent()){
             return fundsTransferEntityOpt.get();
         }else{
-            throw new NIPMiddleWareAPIException(NIP_130,iMarker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildPendingStatusException(RECORD_NOT_FOUND_MSG,iMarker);
+            throw nipMiddleWareAPIException;
         }
     }
 
@@ -56,30 +60,37 @@ public class FundsTransferDbService {
         if(fundsTransferEntityOpt.isPresent()){
             return fundsTransferEntityOpt.get();
         }else{
-            throw new NIPMiddleWareAPIException(NIP_130,iMarker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildPendingStatusException(RECORD_NOT_FOUND_MSG,iMarker);
+            throw nipMiddleWareAPIException;
         }
     }
 
-    public FundsTransferEntity updateFTResponseCode(String sessionId , String responseCode , String clientId, IMarker iMarker){
+    public FundsTransferEntity updateFTResponseCode(String sessionId , String responseCode , String clientId,String description, IMarker iMarker){
         final val fundsTransferEntityOpt = fundsTransferRepository.findBySessionIdAndClientId(sessionId,clientId);
         if(!fundsTransferEntityOpt.isPresent()){
-            throw new NIPMiddleWareAPIException(NIP_130,iMarker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildPendingStatusException(RECORD_NOT_FOUND_MSG,iMarker);
+            throw nipMiddleWareAPIException;
         }
         val fundsTransferEntity = fundsTransferEntityOpt.get();
         //only allow updates on db if status is initially PENDING
         if (StringUtils.isNotBlank(responseCode) &&  PaymentStatusEnum.isPending(fundsTransferEntity.getPaymentStatusEnum())){
             val nipResponseCodeEnum = NIPResponseCodeEnum.getResponseCodeEnum(responseCode);
             if((nipResponseCodeEnum.equals(NIPResponseCodeEnum.NIP_15) || nipResponseCodeEnum.equals(NIPResponseCodeEnum.NIP_25))){
+
                 val currentTimeMillis = System.currentTimeMillis();
                 val createdAtMillis = fundsTransferEntity.getCreatedAt().getTime();
                 val timeDiffMillis = currentTimeMillis - createdAtMillis;
                 if(timeDiffMillis > FIVE_MINS_MILLIS && timeDiffMillis < TWENTY_FOUR_HOURS_MILLIS){
                     iMarker.info("forcing failure after error code 15 and 25 for more than 5 mins less than 24 hours ");
                     fundsTransferEntity.setResponseCode(responseCode);
+                    fundsTransferEntity.setResponseDescription(nipResponseCodeEnum.getDescription());
                     fundsTransferEntity.setPaymentStatusEnum(PaymentStatusEnum.FAILED);
                 }//no need for else since the status will still be left as pending
             }else{
                 fundsTransferEntity.setResponseCode(responseCode);
+                fundsTransferEntity.setResponseDescription(StringUtils.defaultIfBlank(description,nipResponseCodeEnum.getDescription()));
                 fundsTransferEntity.setPaymentStatusEnum(NIPResponseCodeEnum.getPaymentStatusEnum(responseCode));
             }
             return fundsTransferRepository.save(fundsTransferEntity);

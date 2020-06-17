@@ -9,7 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.*;
 
 @Slf4j
 public class APIController {
@@ -19,7 +20,7 @@ public class APIController {
         if (auth == null || auth.getPrincipal() == null){
             return null;
         }
-        if (!ClientAuthenticationData.class.isInstance(auth.getPrincipal())) {
+        if (!(auth.getPrincipal() instanceof ClientAuthenticationData)) {
             return null;
         }
         return (ClientAuthenticationData) auth.getPrincipal();
@@ -29,16 +30,28 @@ public class APIController {
         ClientAuthenticationData token = getPrincipal();
         if (token == null) {
             marker.setMainResponse("Invalid authentication", false);
-            return new ResponseEntity(new ErrorResponse(NIP_126), HttpStatus.UNAUTHORIZED);
+
+            return new ResponseEntity(ErrorResponse.builder()
+                    .responseCode(NIP_201.getCode())
+                    .responseMessage(INVALID_AUTHENTICATION_MSG)
+                    .build(), HttpStatus.UNAUTHORIZED);
         }
         if (token.getClient() == null) {
             marker.setMainResponse("Client not found", false);
-            return new ResponseEntity(new ErrorResponse(NIP_124), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(ErrorResponse.builder()
+                    .responseCode(NIP_201.getCode())
+                    .responseMessage(CLIENT_NOT_FOUND_MSG)
+                    .build(), HttpStatus.UNAUTHORIZED);
+
         }
 
         if (!clientId.equalsIgnoreCase(token.getClient().getClientId())) {
             marker.setMainResponse("Unauthorised access", false);
-            return new ResponseEntity(new ErrorResponse(NIP_127), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(ErrorResponse.builder()
+                    .responseCode(NIP_201.getCode())
+                    .responseMessage(CLIENT_ID_NOT_MATCHING_MSG)
+                    .build(), HttpStatus.UNAUTHORIZED);
+
         }
         return null;
     }

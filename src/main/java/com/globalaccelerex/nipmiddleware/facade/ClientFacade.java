@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.*;
 
 @Slf4j
 @Service
@@ -41,16 +41,22 @@ public class ClientFacade {
 
         val clientEntityOpt = clientDbService.isClientPresent(updateClientPasswordRequest.getClientId());
         if(!clientEntityOpt.isPresent()){
-            throw new NIPMiddleWareAPIException(NIP_124,marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_NOT_FOUND_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
 
         if(!updateClientPasswordRequest.isNewPasswordAndConfirmPasswordEqual()){
-            throw new NIPMiddleWareAPIException(NIP_128 , marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(NEW_AND_CONFIRM_PASSWORD_NOT_SAME_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
 
         val clientEntity = clientEntityOpt.get();
         if(!bCryptPasswordEncoder.matches(updateClientPasswordRequest.getOldPassword(), clientEntity.getPassword())){
-            throw new NIPMiddleWareAPIException(NIP_129 , marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(PASSWORD_MATCH_ERROR_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
 
         clientEntity.setPassword(bCryptPasswordEncoder.encode(updateClientPasswordRequest.getNewPassword()));

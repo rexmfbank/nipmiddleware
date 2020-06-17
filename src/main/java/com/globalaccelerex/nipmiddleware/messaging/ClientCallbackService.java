@@ -145,7 +145,7 @@ public class ClientCallbackService {
 
                 val responseCode = tsqSingleItemResponseVO.getResponseCode();
 
-            fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId,marker );
+            fundsTransferEntity = fundsTransferDbService.updateFTResponseCode(sessionId,responseCode,clientId,StringUtils.EMPTY,marker );
 
             if (StringUtils.isNotBlank(fundsTransferEntity.getResponseCode())){
                     val clientEntityOpt = clientDbService.findClientByClientId(clientId);

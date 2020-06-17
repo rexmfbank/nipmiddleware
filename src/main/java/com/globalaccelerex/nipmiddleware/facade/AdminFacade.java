@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.*;
 
 @Slf4j
 @Service
@@ -48,7 +49,9 @@ public class AdminFacade {
         final val clientId = createClientRequest.getClientId();
 
         if(clientDbService.isClientPresent(clientId).isPresent()){
-            throw new NIPMiddleWareAPIException(NIP_114,iMarker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_DETAILS_EXIST_IN_DB_MSG,iMarker);
+            throw nipMiddleWareAPIException;
         }
         val neSingleRequest = clientMapper.mapNESingleRequest.apply(createClientRequest);
         neSingleRequest.setMarker(createClientRequest.getMarker());
@@ -69,7 +72,9 @@ public class AdminFacade {
             createClientResponse.setSecretKey(jwtTokenStr);
             return createClientResponse;
         }else{
-            throw new NIPMiddleWareAPIException(NIP_105,iMarker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(NAME_ENQUIRY_FAILED_MSG,iMarker);
+            throw nipMiddleWareAPIException;
         }
     }
 
@@ -82,7 +87,9 @@ public class AdminFacade {
             marker.info("done processing get client request ");
             return clientDetail;
         }else{
-            throw new NIPMiddleWareAPIException(NIP_124,marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_NOT_FOUND_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
     }
 
@@ -91,14 +98,18 @@ public class AdminFacade {
         marker.info("processing update client  request ");
         val clientEntityOpt = clientDbService.isClientPresent(updateClientRequest.getClientId());
         if(!clientEntityOpt.isPresent()){
-            throw new NIPMiddleWareAPIException(NIP_124,marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_NOT_FOUND_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
 
         val clientEntity = clientEntityOpt.get();
         //check if name already exists
         val clientEntityOpt_ = clientDbService.isClientNamePresent(updateClientRequest.getClientName());
         if(clientEntityOpt_ .isPresent() && !StringUtils.equalsIgnoreCase(clientEntityOpt_.get().getClientId() ,updateClientRequest.getClientId())){
-            throw new NIPMiddleWareAPIException(NIP_114 , marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_DETAILS_EXIST_IN_DB_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
         val accountNo = updateClientRequest.getAccountNo();
         val bankCode = updateClientRequest.getBankCode();
@@ -120,7 +131,9 @@ public class AdminFacade {
                 updatedClientEntity.setKycLevel(neSingleResponse.getKycLevel());
                 updatedClientEntity.setBvn(neSingleResponse.getBankVerificationNo());
             }else{
-                throw new NIPMiddleWareAPIException(NIP_105,marker);
+                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+                nipMiddleWareAPIException.buildFailureStatusException(NAME_ENQUIRY_FAILED_MSG,marker);
+                throw nipMiddleWareAPIException;
             }
         }
         clientDbService.updateClientEntity(updatedClientEntity);
@@ -161,7 +174,9 @@ public class AdminFacade {
         marker.info("processing reset password  request ");
         val clientEntityOpt = clientDbService.isClientPresent(resetPasswordRequest.getClientId());
         if(!clientEntityOpt.isPresent()){
-            throw new NIPMiddleWareAPIException(NIP_124,marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_NOT_FOUND_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
 
         val clientEntity = clientEntityOpt.get();

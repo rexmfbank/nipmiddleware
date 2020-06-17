@@ -13,14 +13,16 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 import java.util.TimeZone;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_102;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_114;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.CONNECTION_ERROR_MSG;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.ERROR_OCCURRED_MSG;
+
 
 @Slf4j
 public class AccessControlHttpClient {
@@ -57,11 +59,11 @@ public class AccessControlHttpClient {
             response = ex.getMessage();
             throw ex;
         } catch (ResourceAccessException ex) {
-            val httpException = new AccessControlException(new ErrorResponse(NIP_114));
+            val httpException = new AccessControlException(new ErrorResponse(CONNECTION_ERROR_MSG ,NIP_201.getCode()));
             response = httpException.getMessage() + "=> Server Response " + ex.getMessage();
             throw httpException;
         } catch (IOException | URISyntaxException | RestClientException ex) {
-            final AccessControlException httpException = new AccessControlException( new ErrorResponse(NIP_102));
+            final AccessControlException httpException = new AccessControlException( new ErrorResponse(ERROR_OCCURRED_MSG,NIP_201.getCode()));
             response = httpException.getMessage() + "=> Server Response " + ex.getMessage();
             throw httpException;
         } finally {
@@ -88,11 +90,11 @@ public class AccessControlHttpClient {
 
             throw ex;
         } catch (ResourceAccessException ex) {
-            val httpException = new AccessControlException( new ErrorResponse(NIP_114));
+            val httpException = new AccessControlException( new ErrorResponse(ERROR_OCCURRED_MSG , NIP_201.getCode()));
             response = httpException.getMessage() + "=> Server Response " + ex.getMessage();
             throw httpException;
         } catch (IOException | URISyntaxException | RestClientException ex) {
-            val httpException = new AccessControlException( new ErrorResponse(NIP_102));
+            val httpException = new AccessControlException( new ErrorResponse(ERROR_OCCURRED_MSG , NIP_201.getCode()));
             response = httpException.getMessage() + "=> Server Response " + ex.getMessage();
             throw httpException;
         } finally {
@@ -104,11 +106,7 @@ public class AccessControlHttpClient {
         HttpHeaders headers = new HttpHeaders();
         String auth = config.getUsername() + ":" + config.getPassword();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        try{
-            headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString(auth.getBytes("utf-8")));
-        }catch (UnsupportedEncodingException ex) {
-            log.debug("Error encoding auth details", ex);
-        }
+        headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8)));
         if (additionalHeaderAttribute != null){
             additionalHeaderAttribute.forEach((k,v)-> headers.set(k, v) );
         }

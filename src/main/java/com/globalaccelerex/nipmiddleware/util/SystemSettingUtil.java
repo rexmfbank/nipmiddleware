@@ -16,7 +16,7 @@ public class SystemSettingUtil {
 
     public static String CALL_NIBSS_API ="CALL_NIBSS_API";
 
-    public static String TXN_SUSPENDED_MSG ="Transactions To NIBSS are temporarily suspended";
+
 
     private final SystemSettingDbService systemSettingDbService;
 
