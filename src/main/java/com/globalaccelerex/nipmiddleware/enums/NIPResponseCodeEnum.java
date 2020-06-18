@@ -85,6 +85,8 @@ public enum NIPResponseCodeEnum {
 
     NIP_97("97","Timeout waiting for response from destination" , FAILED),
 
+    NIP_130("130" , "Application Error :  Record Not Found in Database" , PENDING),
+
     NIP_201("201","",FAILED),
 
     NIP_202("202","",PENDING),

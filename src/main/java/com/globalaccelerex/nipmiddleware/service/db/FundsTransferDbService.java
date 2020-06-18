@@ -11,7 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.RECORD_NOT_FOUND_MSG;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_130;
+
 
 @Service
 public class FundsTransferDbService {
@@ -38,7 +39,7 @@ public class FundsTransferDbService {
             return fundsTransferEntityOpt.get();
         }else{
             val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-            nipMiddleWareAPIException.buildPendingStatusException(RECORD_NOT_FOUND_MSG,iMarker);
+            nipMiddleWareAPIException.buildExceptionFromEnum(NIP_130,iMarker);
             throw nipMiddleWareAPIException;
         }
     }
@@ -49,7 +50,7 @@ public class FundsTransferDbService {
             return fundsTransferEntityOpt.get();
         }else{
             val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-            nipMiddleWareAPIException.buildPendingStatusException(RECORD_NOT_FOUND_MSG,iMarker);
+            nipMiddleWareAPIException.buildExceptionFromEnum(NIP_130,iMarker);
             throw nipMiddleWareAPIException;
         }
     }
@@ -61,7 +62,7 @@ public class FundsTransferDbService {
             return fundsTransferEntityOpt.get();
         }else{
             val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-            nipMiddleWareAPIException.buildPendingStatusException(RECORD_NOT_FOUND_MSG,iMarker);
+            nipMiddleWareAPIException.buildExceptionFromEnum(NIP_130,iMarker);
             throw nipMiddleWareAPIException;
         }
     }
@@ -70,7 +71,7 @@ public class FundsTransferDbService {
         final val fundsTransferEntityOpt = fundsTransferRepository.findBySessionIdAndClientId(sessionId,clientId);
         if(!fundsTransferEntityOpt.isPresent()){
             val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-            nipMiddleWareAPIException.buildPendingStatusException(RECORD_NOT_FOUND_MSG,iMarker);
+            nipMiddleWareAPIException.buildExceptionFromEnum(NIP_130,iMarker);
             throw nipMiddleWareAPIException;
         }
         val fundsTransferEntity = fundsTransferEntityOpt.get();
