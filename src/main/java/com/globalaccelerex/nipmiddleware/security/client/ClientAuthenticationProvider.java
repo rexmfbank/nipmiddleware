@@ -14,8 +14,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_124;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_125;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.CLIENT_NOT_FOUND_MSG;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.INVALID_CLIENT_SECRET_KEY_MSG;
+
 
 @Slf4j
 @Component
@@ -49,13 +51,13 @@ public class ClientAuthenticationProvider implements AuthenticationProvider {
         // get client
         val clientEntityOpt = clientDbService.findClientByClientId(data.getUsername());
         if (!clientEntityOpt.isPresent()) {
-            throw new AccessControlException(new ErrorResponse(NIP_124));
+            throw new AccessControlException(new ErrorResponse(CLIENT_NOT_FOUND_MSG,NIP_201.getCode()));
         }
 
         val clientEntity = clientEntityOpt.get();
         /// validate password
         if ( !bCryptPasswordEncoder.matches(StringUtils.defaultString(data.getPassword(),""), clientEntity.getPassword()) ) {
-            throw new AccessControlException(new ErrorResponse(NIP_125));
+            throw new AccessControlException(new ErrorResponse(INVALID_CLIENT_SECRET_KEY_MSG,NIP_201.getCode()));
         }
 
 

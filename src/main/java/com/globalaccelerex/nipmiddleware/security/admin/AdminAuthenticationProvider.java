@@ -23,7 +23,8 @@ import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static com.globalaccelerex.nipmiddleware.api.AccessControlAPI.VALIDATE_TOKEN_API;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.*;
 
 @Slf4j
 @Component
@@ -45,7 +46,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
     }
 
     private void validate(AdminAuthenticationToken authenticationToken) {
-        if (!AdminAuthenticationData.class.isInstance(authenticationToken.getPrincipal())) {
+        if (!(authenticationToken.getPrincipal() instanceof AdminAuthenticationData)) {
             throw new AuthenticationCredentialsNotFoundException("Unable to authenticate invalid principal");
         }
         val authenticationData = (AdminAuthenticationData) authenticationToken.getPrincipal();
@@ -55,26 +56,26 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
 
     private void validateSignature(AdminAuthenticationData data) {
         if (!data.isValidSignature()) {
-            val errorResponse = new ErrorResponse(NIP_110);
+            val errorResponse = new ErrorResponse(INVALID_SIGNATURE_MSG ,NIP_201.getCode());
             throw new AccessControlException(errorResponse);
         }
     }
     private void validateAccessToken(AdminAuthenticationData authenticationData) {
         try{
             if(StringUtils.isBlank(authenticationData.getAccessToken())){
-                final val errorResponse = new ErrorResponse(NIP_111);
+                final val errorResponse = new ErrorResponse(ACCESS_TOKEN_NOT_SENT_MSG,NIP_201.getCode());
                 throw new AccessControlException(errorResponse);
             }
 
             final val accessControlResponse = cache.getUnchecked(authenticationData.getAccessToken());
             if(StringUtils.isNotBlank(accessControlResponse.getAllowedServices()) && !accessControlResponse.getAllowedServices().contains(ALLOWED_SERVICE)){
-                throw new AccessControlException(new ErrorResponse(NIP_120));
+                throw new AccessControlException(new ErrorResponse(USER_ACCESS_FORBIDDEN_MSG,NIP_201.getCode()));
             }
             if (StringUtils.isNotBlank(accessControlResponse.getAccessSecret())) {
                 authenticationData.setAccessSecret(accessControlResponse.getAccessSecret());
             }
         }catch (UncheckedExecutionException exception) {
-            if (AccessControlException.class.isInstance(exception.getCause())) {
+            if (exception.getCause() instanceof AccessControlException) {
                 throw (AccessControlException) exception.getCause();
             }
         }
@@ -85,7 +86,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         return authentication.equals(AdminAuthenticationToken.class);
     }
 
-    private LoadingCache<String, AccessControlResponse> cache = CacheBuilder.newBuilder()
+    private final LoadingCache<String, AccessControlResponse> cache = CacheBuilder.newBuilder()
             .maximumSize(1000)
             .expireAfterWrite(1, TimeUnit.HOURS)
             .recordStats()

@@ -26,8 +26,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
-import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.TXN_SUSPENDED_MSG;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.PAYMENT_REFERENCE_EXISTS_MSG;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.TXN_SUSPENDED_MSG;
+
 
 @Slf4j
 @RestController
@@ -63,7 +64,9 @@ public class OutwardController extends APIController{
                     build().toUri().toASCIIString(), neSingleRequest.toString(), false);
 
             if(systemSettingUtil.isNibssStatusDown()){
-                throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
+                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+                nipMiddleWareAPIException.buildFailureStatusException(TXN_SUSPENDED_MSG,marker);
+                throw nipMiddleWareAPIException;
             }
             final val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
             marker.setMainResponse(neSingleResponse.toString(), false);
@@ -87,22 +90,26 @@ public class OutwardController extends APIController{
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
 
             if(systemSettingUtil.isNibssStatusDown()){
-                throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
+                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+                nipMiddleWareAPIException.buildFailureStatusException(TXN_SUSPENDED_MSG,marker);
+                throw nipMiddleWareAPIException;
             }
-
-
 
             final val result = nipOutwardFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
 
             final val ftPendingResponse = new FTPendingResponse();
             ftPendingResponse.setClientId(ftSingleCreditRequest.getClientId());
             if (result){
-                throw new NIPMiddleWareAPIException(NIP_108,marker);
+                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+                nipMiddleWareAPIException.buildFailureStatusException(PAYMENT_REFERENCE_EXISTS_MSG,marker);
+                throw nipMiddleWareAPIException;
             }
 
             val responseMsg = nipOutwardFacade.validateCompulsoryFields(ftSingleCreditRequest);
             if(StringUtils.isNotBlank(responseMsg)){
-                throw new NIPMiddleWareAPIException(NIP_99,responseMsg , marker);
+                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+                nipMiddleWareAPIException.buildFailureStatusException(responseMsg,marker);
+                throw nipMiddleWareAPIException;
             }
 
             final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
@@ -131,7 +138,9 @@ public class OutwardController extends APIController{
                     build().toUri().toASCIIString(), tsqRequest.toString(), false);
 
             if(systemSettingUtil.isNibssStatusDown()){
-                throw new NIPMiddleWareAPIException(NIP_96,TXN_SUSPENDED_MSG, marker);
+                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+                nipMiddleWareAPIException.buildFailureStatusException(TXN_SUSPENDED_MSG,marker);
+                throw nipMiddleWareAPIException;
             }
 
             final val tsqResponse = nipOutwardFacade.doTsq(tsqRequest);
