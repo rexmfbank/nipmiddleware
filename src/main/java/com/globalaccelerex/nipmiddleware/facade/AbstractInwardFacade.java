@@ -19,11 +19,15 @@ public abstract class AbstractInwardFacade {
     }
 
     protected String encryptString(String clearString){
-        return ssmUtil.encryptRequest(clearString);
+        //@TODO fix for Inward
+        //return ssmUtil.encryptRequest(clearString);
+        return "";
     }
 
     protected String decryptString(String encryptedString){
-        return ssmUtil.decryptResponse(encryptedString);
+        //@TODO fix for Inward
+        //return ssmUtil.decryptResponse(encryptedString);
+        return "";
     }
 
     protected boolean ignoreEncryption(){

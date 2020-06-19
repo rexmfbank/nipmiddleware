@@ -4,6 +4,7 @@ import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
+import com.globalaccelerex.nipmiddleware.institution.GAConfig;
 import com.globalaccelerex.nipmiddleware.mapper.NIPOutwardMapper;
 import com.globalaccelerex.nipmiddleware.messaging.QueueMode;
 import com.globalaccelerex.nipmiddleware.messaging.QueuePayload;
@@ -59,7 +60,7 @@ public class NIPOutwardFacade {
 
     private final FundsTransferDbService fundsTransferDbService;
 
-    private final NipConfig nipConfig;
+    private final GAConfig gaConfig;
 
     private final SQSService sqsService;
 
@@ -69,14 +70,14 @@ public class NIPOutwardFacade {
 
     @Autowired
     public NIPOutwardFacade(XmlUtil xmlUtil, NIPOutwardMapper nipOutwardMapper, NIPOutwardWS nipOutwardWS,
-                            SSMUtil ssmUtil, FundsTransferDbService fundsTransferDbService, NipConfig nipConfig,
+                            SSMUtil ssmUtil, FundsTransferDbService fundsTransferDbService, GAConfig gaConfig,
                             SQSService sqsService, ClientDbService clientDbService, SystemSettingUtil systemSettingUtil) {
         this.xmlUtil = xmlUtil;
         this.nipOutwardMapper = nipOutwardMapper;
         this.nipOutwardWS = nipOutwardWS;
         this.ssmUtil = ssmUtil;
         this.fundsTransferDbService = fundsTransferDbService;
-        this.nipConfig = nipConfig;
+        this.gaConfig = gaConfig;
         this.sqsService = sqsService;
         this.clientDbService = clientDbService;
         this.systemSettingUtil = systemSettingUtil;
@@ -345,10 +346,10 @@ public class NIPOutwardFacade {
     }
 
     private String encryptString(String clearString){
-        return ssmUtil.encryptRequest(clearString);
+        return ssmUtil.encryptRequest(clearString,gaConfig.getPrivateKeyPath(),gaConfig.getPublicKeyPath());
     }
 
     private String decryptString(String encryptedString){
-        return ssmUtil.decryptResponse(encryptedString);
+        return ssmUtil.decryptResponse(encryptedString,gaConfig.getPrivateKeyPath(),gaConfig.getPublicKeyPath(),gaConfig.getPasswordKey());
     }
 }

@@ -5,6 +5,7 @@ import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
 import com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum;
 import com.globalaccelerex.nipmiddleware.http.HTTPHelpers;
 import com.globalaccelerex.nipmiddleware.http.HTTPRestTemplate;
+import com.globalaccelerex.nipmiddleware.institution.GAConfig;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.mapper.NIPOutwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.tsq.TsqSingleItemRequestVO;
@@ -52,6 +53,9 @@ public class ClientCallbackService {
 
     @Autowired
     private SQSService sqsService;
+
+    @Autowired
+    private GAConfig gaConfig;
 
     public static final int DEFAULT_QUEUE_WAIT_PERIOD = 30;
 
@@ -126,7 +130,8 @@ public class ClientCallbackService {
             String tsqSingleItemRequestXmlString = xmlUtil.marshal(TsqSingleItemRequestVO.class, tsqSingleItemRequestVO);
             marker.setRequest(" clear tsqSingleItemRequestXmlString  to NIBSS ", tsqSingleItemRequestXmlString);
 
-            final val encryptedTsqSingleItemRequestXmlString = ssmUtil.encryptRequest(tsqSingleItemRequestXmlString);
+            final val encryptedTsqSingleItemRequestXmlString = ssmUtil
+                    .encryptRequest(tsqSingleItemRequestXmlString,gaConfig.getPrivateKeyPath(),gaConfig.getPublicKeyPath());
 
             final val txnStatusQuerySingleitem = new Txnstatusquerysingleitem();
             txnStatusQuerySingleitem.setRequest(encryptedTsqSingleItemRequestXmlString);
@@ -137,7 +142,9 @@ public class ClientCallbackService {
                 marker.info(" Empty  Response from NIPOutwardWS For TSQ ");
                 systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
             }else {
-                val tsqSingleItemResponseXmlString = ssmUtil.decryptResponse(txnStatusQuerySingleItemResponse.getReturn());
+                val tsqSingleItemResponseXmlString = ssmUtil
+                        .decryptResponse(txnStatusQuerySingleItemResponse.getReturn(),gaConfig.getPrivateKeyPath(),gaConfig.getPublicKeyPath(),
+                                gaConfig.getPasswordKey());
                 marker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);
 
                 val tsqSingleItemResponseVO = xmlUtil.unmarshal(tsqSingleItemResponseXmlString, TsqSingleItemResponseVO.class);
