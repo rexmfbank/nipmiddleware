@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.institution;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ConfigUtil {
 
@@ -20,9 +22,9 @@ public class ConfigUtil {
      public BankConfig getBankConfig(String originatingInstitutionCode){
         for(BankConfig bankConfig : bankConfigList){
             if(StringUtils.equalsIgnoreCase(originatingInstitutionCode,BankCodeEnum.GA.getDevEnv()) || StringUtils.equalsIgnoreCase(originatingInstitutionCode,BankCodeEnum.GA.getProdEnv())){
-                return bankConfig;
+                GAConfig gaConfig = (GAConfig) bankConfig;
+                return gaConfig;
             }
-
         }
         return null;
      }

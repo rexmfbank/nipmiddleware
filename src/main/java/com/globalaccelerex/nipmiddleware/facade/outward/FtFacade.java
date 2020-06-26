@@ -73,7 +73,6 @@ public class FtFacade {
         this.systemSettingUtil = systemSettingUtil;
     }
 
-
     public NESingleResponse doNameEnquiry(NESingleRequest neSingleRequest){
         val iMarker = neSingleRequest.getMarker();
         NESingleRequestVO neSingleRequestVO = nipOutwardMapper.mapNESingleRequestVO.apply(neSingleRequest);
