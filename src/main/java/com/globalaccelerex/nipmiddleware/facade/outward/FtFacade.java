@@ -155,7 +155,12 @@ public class FtFacade {
         }catch (Exception exception){
             iMarker.info(exception.getMessage(),exception);
             fundsTransferEntity.setResponseCode(NIP_201.getCode());
-            fundsTransferEntity.setResponseDescription(NAME_ENQUIRY_FAILED_MSG);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                fundsTransferEntity.setResponseDescription(nipMiddleWareAPIException.getErrorResponse().getResponseMessage());
+            }else {
+                fundsTransferEntity.setResponseDescription(NAME_ENQUIRY_FAILED_MSG);
+            }
             fundsTransferEntity.setPaymentStatusEnum(FAILED);
             fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
             //write a response to SQS to do client callback

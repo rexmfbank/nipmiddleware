@@ -2,7 +2,7 @@ package com.globalaccelerex.nipmiddleware.exception;
 
 public interface ErrorMessage {
 
-    String TXN_SUSPENDED_MSG ="Transactions To NIBSS are temporarily suspended";
+    String TXN_SUSPENDED_MSG ="Application Error : Transactions To NIBSS are temporarily suspended";
 
     String PAYMENT_REFERENCE_EXISTS_MSG = "Application Error :  Payment Reference Already Exists";
 
@@ -34,7 +34,7 @@ public interface ErrorMessage {
 
     String USER_ACCESS_FORBIDDEN_MSG = "Authentication Error :  Access forbidden to User";
 
-    String WEB_SERVICE_ERROR_MSG ="Error occurred while connecting to NIBSS WebService URL";
+    String WEB_SERVICE_ERROR_MSG ="Application Error : Error occurred while connecting to NIBSS WebService URL";
 
     String AUTHORIZATION_HEADER_NOT_SENT_MSG = "Authentication Error :   Authorization Header not  Sent";
 
@@ -50,5 +50,5 @@ public interface ErrorMessage {
 
     String CLIENT_ID_NOT_MATCHING_MSG = "Authentication Error :  Client Id does not match authenticated value";
 
-    String ORIGINATING_BANK_CODE_NOT_FOUND_MSG ="Originating Bank Code required for Encryption Not found";
+    String ORIGINATING_BANK_CODE_NOT_FOUND_MSG ="Application  Error :  Originating Bank Code required for Encryption/Decryption Not found";
 }
