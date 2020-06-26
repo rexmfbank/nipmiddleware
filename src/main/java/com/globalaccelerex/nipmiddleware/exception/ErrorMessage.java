@@ -49,4 +49,6 @@ public interface ErrorMessage {
     String INVALID_AUTHENTICATION_MSG = "Authentication Error :  Invalid authentication";
 
     String CLIENT_ID_NOT_MATCHING_MSG = "Authentication Error :  Client Id does not match authenticated value";
+
+    String ORIGINATING_BANK_CODE_NOT_FOUND_MSG ="Originating Bank Code required for Encryption Not found";
 }

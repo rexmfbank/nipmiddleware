@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @Validated
 @Component
 @ConfigurationProperties(prefix = "ga")
-public class GAConfig extends DefaultConfig{
+public class GAConfig implements BankConfig {
 
     @NotBlank
     private String privateKeyPath;
@@ -25,6 +25,19 @@ public class GAConfig extends DefaultConfig{
 
     @NotBlank
     private String passwordKey;
+
+
+    public String getPrivateKeyPath() {
+        return privateKeyPath;
+    }
+
+    public String getPublicKeyPath() {
+        return publicKeyPath;
+    }
+
+    public String getPasswordKey() {
+        return passwordKey;
+    }
 
     @PostConstruct
     public void init(){

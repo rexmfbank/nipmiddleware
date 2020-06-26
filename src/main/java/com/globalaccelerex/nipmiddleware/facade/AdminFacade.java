@@ -2,6 +2,7 @@ package com.globalaccelerex.nipmiddleware.facade;
 
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
+import com.globalaccelerex.nipmiddleware.facade.outward.FtFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.mapper.ClientMapper;
 import com.globalaccelerex.nipmiddleware.payload.client.*;
@@ -30,17 +31,17 @@ public class AdminFacade {
 
     private final ClientMapper clientMapper;
 
-    private final NIPOutwardFacade nipOutwardFacade;
+    private final FtFacade ftFacade;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public AdminFacade(ClientDbService clientDbService, JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper, NIPOutwardFacade nipOutwardFacade) {
+    public AdminFacade(ClientDbService clientDbService, JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper, FtFacade ftFacade) {
         this.clientDbService = clientDbService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.clientMapper = clientMapper;
-        this.nipOutwardFacade = nipOutwardFacade;
+        this.ftFacade = ftFacade;
     }
 
     public CreateClientResponse createClient(CreateClientRequest createClientRequest){
@@ -55,7 +56,7 @@ public class AdminFacade {
         }
         val neSingleRequest = clientMapper.mapNESingleRequest.apply(createClientRequest);
         neSingleRequest.setMarker(createClientRequest.getMarker());
-        val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+        val neSingleResponse = ftFacade.doNameEnquiry(neSingleRequest);
 
         if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
             final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
@@ -121,7 +122,7 @@ public class AdminFacade {
             // Do NameEnquiry
             val neSingleRequest = clientMapper.mapNESingleRequest_1.apply(updateClientRequest);
             neSingleRequest.setMarker(updateClientRequest.getMarker());
-            val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+            val neSingleResponse = ftFacade.doNameEnquiry(neSingleRequest);
 
             if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
                 updatedClientEntity.setAccountName(neSingleResponse.getAccountName());
