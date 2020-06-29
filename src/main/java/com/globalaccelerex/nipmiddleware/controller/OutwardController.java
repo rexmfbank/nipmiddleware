@@ -2,7 +2,8 @@ package com.globalaccelerex.nipmiddleware.controller;
 
 
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
-import com.globalaccelerex.nipmiddleware.facade.NIPOutwardFacade;
+import com.globalaccelerex.nipmiddleware.facade.outward.FtFacade;
+import com.globalaccelerex.nipmiddleware.facade.outward.TsqFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
 import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTPendingResponse;
@@ -10,7 +11,6 @@ import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTSingleC
 import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqRequest;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
-import com.globalaccelerex.nipmiddleware.util.SystemSettingUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +27,6 @@ import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
 import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.PAYMENT_REFERENCE_EXISTS_MSG;
-import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.TXN_SUSPENDED_MSG;
 
 
 @Slf4j
@@ -35,17 +34,17 @@ import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.TXN_SUSPE
 @RequestMapping(OUTWARD_API)
 public class OutwardController extends APIController{
 
-    private final NIPOutwardFacade nipOutwardFacade;
+    private final FtFacade ftFacade;
 
     private final SessionIdUtil sessionIdUtil;
 
-    private final SystemSettingUtil systemSettingUtil;
+    private final TsqFacade tsqFacade;
 
     @Autowired
-    public OutwardController(NIPOutwardFacade nipOutwardFacade, SessionIdUtil sessionIdUtil, SystemSettingUtil systemSettingUtil) {
-        this.nipOutwardFacade = nipOutwardFacade;
+    public OutwardController(FtFacade ftFacade, SessionIdUtil sessionIdUtil, TsqFacade tsqFacade) {
+        this.ftFacade = ftFacade;
         this.sessionIdUtil = sessionIdUtil;
-        this.systemSettingUtil = systemSettingUtil;
+        this.tsqFacade = tsqFacade;
     }
 
     @PostMapping(NAME_ENQUIRY)
@@ -63,12 +62,8 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), neSingleRequest.toString(), false);
 
-            if(systemSettingUtil.isNibssStatusDown()){
-                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-                nipMiddleWareAPIException.buildFailureStatusException(TXN_SUSPENDED_MSG,marker);
-                throw nipMiddleWareAPIException;
-            }
-            final val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+            confirmNibssStatus(marker);
+            final val neSingleResponse = ftFacade.doNameEnquiry(neSingleRequest);
             marker.setMainResponse(neSingleResponse.toString(), false);
             return new ResponseEntity(neSingleResponse, HttpStatus.OK);
         } finally {
@@ -89,13 +84,9 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
 
-            if(systemSettingUtil.isNibssStatusDown()){
-                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-                nipMiddleWareAPIException.buildFailureStatusException(TXN_SUSPENDED_MSG,marker);
-                throw nipMiddleWareAPIException;
-            }
+            confirmNibssStatus(marker);
 
-            final val result = nipOutwardFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
+            final val result = ftFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
 
             final val ftPendingResponse = new FTPendingResponse();
             ftPendingResponse.setClientId(ftSingleCreditRequest.getClientId());
@@ -105,7 +96,7 @@ public class OutwardController extends APIController{
                 throw nipMiddleWareAPIException;
             }
 
-            val responseMsg = nipOutwardFacade.validateCompulsoryFields(ftSingleCreditRequest);
+            val responseMsg = ftFacade.validateCompulsoryFields(ftSingleCreditRequest);
             if(StringUtils.isNotBlank(responseMsg)){
                 val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
                 nipMiddleWareAPIException.buildFailureStatusException(responseMsg,marker);
@@ -113,7 +104,7 @@ public class OutwardController extends APIController{
             }
 
             final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
-            nipOutwardFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
+            ftFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
             ftPendingResponse.setSessionId(sessionId);
             ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());
             marker.setMainResponse(ftPendingResponse.toString(), false);
@@ -137,13 +128,9 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), tsqRequest.toString(), false);
 
-            if(systemSettingUtil.isNibssStatusDown()){
-                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-                nipMiddleWareAPIException.buildFailureStatusException(TXN_SUSPENDED_MSG,marker);
-                throw nipMiddleWareAPIException;
-            }
+            confirmNibssStatus(marker);
 
-            final val tsqResponse = nipOutwardFacade.doTsq(tsqRequest);
+            final val tsqResponse = tsqFacade.doTsq(tsqRequest);
             marker.setMainResponse(tsqResponse.toString(), false);
             return new ResponseEntity(tsqResponse, HttpStatus.OK);
         }finally {

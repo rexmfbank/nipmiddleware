@@ -1,17 +1,19 @@
 package com.globalaccelerex.nipmiddleware.institution;
 
 import com.globalaccelerex.nipmiddleware.util.FileUtil;
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
-@Slf4j
-public class DefaultConfig {
 
-    private FileUtil fileUtil;
+public interface BankConfig {
 
+    String getPrivateKeyPath() ;
 
-    protected String[] updateFilePath(String privateKey , String publicKey){
-        fileUtil = new FileUtil();
+    String getPublicKeyPath() ;
+
+    String getPasswordKey() ;
+
+    default String[] updateFilePath(String privateKey , String publicKey){
+        val fileUtil = new FileUtil();
         privateKey = fileUtil.resolvePath(privateKey);
         publicKey = fileUtil.resolvePath(publicKey);
         final val output = new String[2];

@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.institution;
 
 import lombok.Data;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,12 +11,14 @@ import org.springframework.validation.annotation.Validated;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotBlank;
 
-@Data
+
 @Slf4j
+@ToString
+@Data
 @Validated
 @Component
 @ConfigurationProperties(prefix = "ga")
-public class GAConfig extends DefaultConfig{
+public class GAConfig implements BankConfig {
 
     @NotBlank
     private String privateKeyPath;
@@ -32,4 +35,5 @@ public class GAConfig extends DefaultConfig{
         privateKeyPath = updateFilePathArray[0];
         publicKeyPath = updateFilePathArray[1];
     }
+
 }

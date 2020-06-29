@@ -131,7 +131,7 @@ public class ClientCallbackService {
             marker.setRequest(" clear tsqSingleItemRequestXmlString  to NIBSS ", tsqSingleItemRequestXmlString);
 
             final val encryptedTsqSingleItemRequestXmlString = ssmUtil
-                    .encryptRequest(tsqSingleItemRequestXmlString,gaConfig.getPrivateKeyPath(),gaConfig.getPublicKeyPath());
+                    .encryptRequest(tsqSingleItemRequestXmlString,originatorBankCode,marker);
 
             final val txnStatusQuerySingleitem = new Txnstatusquerysingleitem();
             txnStatusQuerySingleitem.setRequest(encryptedTsqSingleItemRequestXmlString);
@@ -142,9 +142,8 @@ public class ClientCallbackService {
                 marker.info(" Empty  Response from NIPOutwardWS For TSQ ");
                 systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
             }else {
-                val tsqSingleItemResponseXmlString = ssmUtil
-                        .decryptResponse(txnStatusQuerySingleItemResponse.getReturn(),gaConfig.getPrivateKeyPath(),gaConfig.getPublicKeyPath(),
-                                gaConfig.getPasswordKey());
+                val tsqSingleItemResponseXmlString =
+                        ssmUtil.decryptResponse(txnStatusQuerySingleItemResponse.getReturn(),originatorBankCode,marker);
                 marker.setResponse(" Clear  Response from NIPOutwardWS TSQ "+ tsqSingleItemResponseXmlString);
 
                 val tsqSingleItemResponseVO = xmlUtil.unmarshal(tsqSingleItemResponseXmlString, TsqSingleItemResponseVO.class);
