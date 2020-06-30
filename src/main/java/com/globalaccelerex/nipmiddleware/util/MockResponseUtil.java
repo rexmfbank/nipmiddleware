@@ -17,12 +17,12 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.tsq.TsqSingleItemResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleResponseVO;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -52,7 +52,7 @@ public class MockResponseUtil {
 
     public NESingleResponseVO buildNESingleResponseVO(NESingleRequestVO neSingleRequestVO){
         return NESingleResponseVO.builder()
-                .accountName("Ayodeji Ilori")
+                .accountName("ADEYEMI TENIOLA")
                 .accountNo("0023456782")
                 .bvn("2136748372615")
                 .channelCode(neSingleRequestVO.getChannelCode())
