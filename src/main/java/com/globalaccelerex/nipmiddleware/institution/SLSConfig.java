@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.institution;
 
+
 import lombok.Data;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -11,14 +12,13 @@ import org.springframework.validation.annotation.Validated;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotBlank;
 
-
 @Slf4j
 @ToString
 @Data
 @Validated
 @Component
-@ConfigurationProperties(prefix = "ga")
-public class GAConfig implements BankConfig {
+@ConfigurationProperties(prefix = "sls")
+public class SLSConfig implements BankConfig{
 
     @NotBlank
     private String privateKeyPath;
@@ -38,5 +38,4 @@ public class GAConfig implements BankConfig {
         privateKeyPath = updateFilePathArray[0];
         publicKeyPath = updateFilePathArray[1];
     }
-
 }
