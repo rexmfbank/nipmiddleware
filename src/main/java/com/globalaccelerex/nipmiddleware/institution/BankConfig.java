@@ -12,6 +12,8 @@ public interface BankConfig {
 
     String getPasswordKey() ;
 
+    String getInstitutionCode();
+
     default String[] updateFilePath(String privateKey , String publicKey){
         val fileUtil = new FileUtil();
         privateKey = fileUtil.resolvePath(privateKey);
