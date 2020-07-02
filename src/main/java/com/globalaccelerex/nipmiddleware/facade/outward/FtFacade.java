@@ -211,7 +211,12 @@ public class FtFacade {
             writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
         }catch(Exception exception){
             iMarker.info(exception.getMessage(),exception);
-            fundsTransferDbService.updateFTResponseCode(sessionId, NIP_202.getCode(),clientId,TRANSACTION_NOT_COMPLETED_MSG,iMarker);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                fundsTransferDbService.updateFTResponseCode(sessionId, NIP_202.getCode(),clientId,nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),iMarker);
+            }else {
+                fundsTransferDbService.updateFTResponseCode(sessionId, NIP_202.getCode(),clientId,TRANSACTION_NOT_COMPLETED_MSG,iMarker);
+            }
             //write a response to SQS to do Tsq
             writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
         }

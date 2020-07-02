@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.facade;
 
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
+import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
 import com.globalaccelerex.nipmiddleware.util.XmlUtil;
 
@@ -18,17 +19,15 @@ public abstract class AbstractInwardFacade {
         this.nipConfig = nipConfig;
     }
 
-    protected String encryptString(String clearString){
-        //@TODO fix for Inward
-        //return ssmUtil.encryptRequest(clearString);
-        return "";
+
+    protected String encryptString(String clearString, String originatingInstitutionCode, IMarker marker){
+        return ssmUtil.encryptRequest(clearString,originatingInstitutionCode,marker);
     }
 
-    protected String decryptString(String encryptedString){
-        //@TODO fix for Inward
-        //return ssmUtil.decryptResponse(encryptedString);
-        return "";
+    protected String decryptString(String encryptedString, String originatingInstitutionCode, IMarker marker){
+        return ssmUtil.decryptResponse(encryptedString,originatingInstitutionCode,marker);
     }
+
 
     protected boolean ignoreEncryption(){
         return nipConfig.isIgnoreEncryption();

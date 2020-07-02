@@ -24,12 +24,10 @@ public class ConfigUtil {
             if(StringUtils.equalsIgnoreCase(bankConfig.getInstitutionCode(),originatingInstitutionCode)){
                 if(BankCodeEnum.isGA(originatingInstitutionCode)){
                     GAConfig gaConfig = (GAConfig) bankConfig;
-                    log.info("\n\nGA ::::::::: {}\n\n" , gaConfig.toString());
                     return gaConfig;
                 }
                 if(BankCodeEnum.isSLS(originatingInstitutionCode)){
                     SLSConfig slsConfig = (SLSConfig) bankConfig;
-                    log.info("\n\nSLS ::::::::: {}\n\n" , slsConfig.toString());
                     return slsConfig;
                 }
             }
