@@ -8,6 +8,7 @@ import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -44,6 +45,9 @@ public class NIPInwardEndpoint {
         try{
             iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), nameEnquirySingleItem.getValue().getRequest(), false);
+            log.info(">>>>>>>> {}", ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString());
+            final val requestUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            log.info(">>>>>>>> {}",StringUtils.substringAfter(requestUrl,"ws/"));
             final val objectFactory = new ObjectFactory();
             final val nameEnquirySingleItemResponse = nipInwardFacade.handleNameEnquiry(nameEnquirySingleItem.getValue(),iMarker);
             iMarker.setMainResponse(nameEnquirySingleItemResponse.getReturn() , false);
