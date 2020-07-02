@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.facade;
 
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
+import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryResponseVO;
@@ -62,7 +63,12 @@ public class NIPInwardFacade extends AbstractInwardFacade{
             }
 
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             nameEnquirySingleItemResponse.setReturn("");
         }
         return nameEnquirySingleItemResponse;
