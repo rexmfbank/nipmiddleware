@@ -28,7 +28,6 @@ public class ConfigUtil {
                 }
                 if(BankCodeEnum.isSLS(originatingInstitutionCode)){
                     SLSConfig slsConfig = (SLSConfig) bankConfig;
-                    log.info("\n\nSLS ::::::::: {}\n\n" , slsConfig.toString());
                     return slsConfig;
                 }
             }
