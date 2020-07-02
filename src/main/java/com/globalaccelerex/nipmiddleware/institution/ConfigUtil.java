@@ -21,9 +21,15 @@ public class ConfigUtil {
 
      public BankConfig getBankConfig(String originatingInstitutionCode){
         for(BankConfig bankConfig : bankConfigList){
-            if(StringUtils.equalsIgnoreCase(originatingInstitutionCode,BankCodeEnum.GA.getDevEnv()) || StringUtils.equalsIgnoreCase(originatingInstitutionCode,BankCodeEnum.GA.getProdEnv())){
-                GAConfig gaConfig = (GAConfig) bankConfig;
-                return gaConfig;
+            if(StringUtils.equalsIgnoreCase(bankConfig.getInstitutionCode(),originatingInstitutionCode)){
+                if(BankCodeEnum.isGA(originatingInstitutionCode)){
+                    GAConfig gaConfig = (GAConfig) bankConfig;
+                    return gaConfig;
+                }
+                if(BankCodeEnum.isSLS(originatingInstitutionCode)){
+                    SLSConfig slsConfig = (SLSConfig) bankConfig;
+                    return slsConfig;
+                }
             }
         }
         return null;

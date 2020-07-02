@@ -2,7 +2,7 @@ package com.globalaccelerex.nipmiddleware.api;
 
 public interface BankAPI {
 
-    String CBA_API ="/api/nipmiddleware/v1/cba";
+    String MOCK_CBA_API ="/api/nipmiddleware/v1/cba";
 
     String NAME_ENQUIRY_API = "/nameEnquiry";
 
