@@ -1,6 +1,6 @@
 package com.globalaccelerex.nipmiddleware.util;
 
-import com.globalaccelerex.nipmiddleware.config.NipConfig;
+import com.globalaccelerex.nipmiddleware.institution.SLSConfig;
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
@@ -34,7 +34,7 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00
 @Service
 public class MockResponseUtil {
 
-    private final NipConfig nipConfig;
+    private final SLSConfig slsConfig;
 
     private final SessionIdUtil sessionIdUtil;
 
@@ -43,8 +43,8 @@ public class MockResponseUtil {
     private final FinancialInstitutionDbService financialInstitutionDbService;
 
     @Autowired
-    public MockResponseUtil(NipConfig nipConfig, SessionIdUtil sessionIdUtil, NIPInwardMapper nipInwardMapper, FinancialInstitutionDbService financialInstitutionDbService) {
-        this.nipConfig = nipConfig;
+    public MockResponseUtil(SLSConfig slsConfig, SessionIdUtil sessionIdUtil, NIPInwardMapper nipInwardMapper, FinancialInstitutionDbService financialInstitutionDbService) {
+        this.slsConfig = slsConfig;
         this.sessionIdUtil = sessionIdUtil;
         this.nipInwardMapper = nipInwardMapper;
         this.financialInstitutionDbService = financialInstitutionDbService;
@@ -59,7 +59,7 @@ public class MockResponseUtil {
                 .destinationInstitutionCode(neSingleRequestVO.getDestinationInstitutionCode())
                 .kycLevel("1")
                 .responseCode(NIP_00.getCode())
-                .sessionId(neSingleRequestVO.getSessionId())
+                .sessionId(sessionIdUtil.generateSessionId(slsConfig.getInstitutionCode()))
                 .build();
     }
 
@@ -72,7 +72,7 @@ public class MockResponseUtil {
         return FinancialInstitutionListResponseVO.builder()
                 .batchNumber(financialInstitutionListRequest.getHeader().getBatchNumber())
                 .channelCode(financialInstitutionListRequest.getHeader().getChannelCode())
-                .destinationInstitutionCode("xxxxxxxxxxxxx")
+                .destinationInstitutionCode(slsConfig.getInstitutionCode())
                 .numberOfRecords(String.valueOf(financialInstitutionListRequest.getRecordList().size()))
                 .responseCode(NIP_00.getCode())
                 .build();
@@ -96,7 +96,7 @@ public class MockResponseUtil {
                 .narration(ftDirectDebitRequestVO.getNarration())
                 .paymentReference(ftDirectDebitRequestVO.getPaymentReference())
                 .responseCode(NIP_00.getCode())
-                .sessionId(sessionIdUtil.generateSessionId("xxxxxxxxxxx"))
+                .sessionId(ftDirectDebitRequestVO.getSessionId())
                 .transactionFee(ftDirectDebitRequestVO.getTransactionFee())
                 .transactionLocation(ftDirectDebitRequestVO.getTransactionLocation())
                 .build();
@@ -119,7 +119,7 @@ public class MockResponseUtil {
                 .originatorKYCLevel(ftDirectCreditRequestVO.getOriginatorKYCLevel())
                 .paymentReference(ftDirectCreditRequestVO.getPaymentReference())
                 .responseCode(NIP_00.getCode())
-                .sessionId(sessionIdUtil.generateSessionId("xxxxxxxxxx"))
+                .sessionId(ftDirectCreditRequestVO.getSessionId())
                 .transactionLocation(ftDirectCreditRequestVO.getTransactionLocation())
                 .build();
     }

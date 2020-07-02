@@ -1,9 +1,9 @@
 package com.globalaccelerex.nipmiddleware.endpoint;
 
 
-import com.globalaccelerex.nipmiddleware.facade.FTInwardFacade;
-import com.globalaccelerex.nipmiddleware.facade.LienInwardFacade;
-import com.globalaccelerex.nipmiddleware.facade.NIPInwardFacade;
+import com.globalaccelerex.nipmiddleware.facade.inward.FTInwardFacade;
+import com.globalaccelerex.nipmiddleware.facade.inward.LienInwardFacade;
+import com.globalaccelerex.nipmiddleware.facade.inward.NIPInwardFacade;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
 import lombok.extern.slf4j.Slf4j;

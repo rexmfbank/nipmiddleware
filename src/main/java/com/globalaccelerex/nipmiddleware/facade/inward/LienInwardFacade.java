@@ -1,6 +1,7 @@
-package com.globalaccelerex.nipmiddleware.facade;
+package com.globalaccelerex.nipmiddleware.facade.inward;
 
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
+import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
@@ -60,7 +61,12 @@ public class LienInwardFacade extends AbstractInwardFacade{
                 accountBlockResponse.setReturn(encryptedXmlString);
             }
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             accountBlockResponse.setReturn("");
         }
 
@@ -94,7 +100,13 @@ public class LienInwardFacade extends AbstractInwardFacade{
                 accountUnblockResponse.setReturn(encryptedXmlString);
             }
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
+
             accountUnblockResponse.setReturn("");
         }
 
@@ -127,7 +139,12 @@ public class LienInwardFacade extends AbstractInwardFacade{
                 amountBlockResponse.setReturn(encryptedXmlString);
             }
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             amountBlockResponse.setReturn("");
         }
 
@@ -162,7 +179,12 @@ public class LienInwardFacade extends AbstractInwardFacade{
                 amountunblockResponse.setReturn(encryptedXmlString);
             }
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             amountunblockResponse.setReturn("");
         }
 

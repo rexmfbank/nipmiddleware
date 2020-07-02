@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.facade;
+package com.globalaccelerex.nipmiddleware.facade.inward;
 
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;

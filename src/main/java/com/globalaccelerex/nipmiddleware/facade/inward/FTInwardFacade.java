@@ -1,6 +1,7 @@
-package com.globalaccelerex.nipmiddleware.facade;
+package com.globalaccelerex.nipmiddleware.facade.inward;
 
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
+import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
@@ -47,7 +48,12 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             fundtransfersingleitemDdResponse.setReturn(encryptedXmlString);
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             fundtransfersingleitemDdResponse.setReturn("");
         }
 
@@ -76,7 +82,12 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             fundtransfersingleitemDcResponse.setReturn(encryptedXmlString);
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             fundtransfersingleitemDcResponse.setReturn("");
         }
 
@@ -104,7 +115,12 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             fundtransferAdviceDcResponse.setReturn(encryptedXmlString);
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             fundtransferAdviceDcResponse.setReturn("");
         }
 
@@ -132,7 +148,12 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             fundtransferAdviceDdResponse.setReturn(encryptedXmlString);
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             fundtransferAdviceDdResponse.setReturn("");
         }
 
@@ -152,7 +173,12 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             ftackcreditrequestResponse.setReturn(encryptedXmlString);
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             ftackcreditrequestResponse.setReturn("");
         }
 

@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.facade;
+package com.globalaccelerex.nipmiddleware.facade.inward;
 
 import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
@@ -101,7 +101,12 @@ public class NIPInwardFacade extends AbstractInwardFacade{
             }
 
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             financialinstitutionlistResponse.setReturn("");
         }
 
@@ -139,7 +144,12 @@ public class NIPInwardFacade extends AbstractInwardFacade{
             }
 
         }catch (Exception exception){
-            marker.info(exception.getMessage(),exception);
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
             txnstatusquerysingleitemResponse.setReturn("");
         }
         return txnstatusquerysingleitemResponse;
@@ -174,7 +184,13 @@ public class NIPInwardFacade extends AbstractInwardFacade{
                 mandateAdviceResponse.setReturn(encryptedXmlString);
             }
         }catch (Exception exception){
-
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
+            mandateAdviceResponse.setReturn("");
         }
 
         return mandateAdviceResponse;
@@ -209,7 +225,13 @@ public class NIPInwardFacade extends AbstractInwardFacade{
                 balanceEnquiryResponse.setReturn(encryptedXmlString);
             }
         }catch (Exception exception){
-
+            if(exception instanceof NIPMiddleWareAPIException){
+                val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
+                marker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),nipMiddleWareAPIException);
+            }else {
+                marker.info(exception.getMessage(),exception);
+            }
+            balanceEnquiryResponse.setReturn("");
         }
 
         return balanceEnquiryResponse;

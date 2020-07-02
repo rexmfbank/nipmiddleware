@@ -153,12 +153,13 @@ public class FtFacade {
                 }
             }
         }catch (Exception exception){
-            iMarker.info(exception.getMessage(),exception);
             fundsTransferEntity.setResponseCode(NIP_201.getCode());
             if(exception instanceof NIPMiddleWareAPIException){
                 val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
                 fundsTransferEntity.setResponseDescription(nipMiddleWareAPIException.getErrorResponse().getResponseMessage());
+                iMarker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),exception);
             }else {
+                iMarker.info(exception.getMessage(),exception);
                 fundsTransferEntity.setResponseDescription(NAME_ENQUIRY_FAILED_MSG);
             }
             fundsTransferEntity.setPaymentStatusEnum(FAILED);
@@ -210,11 +211,12 @@ public class FtFacade {
             //write a response to SQS to do Tsq
             writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
         }catch(Exception exception){
-            iMarker.info(exception.getMessage(),exception);
             if(exception instanceof NIPMiddleWareAPIException){
                 val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
                 fundsTransferDbService.updateFTResponseCode(sessionId, NIP_202.getCode(),clientId,nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),iMarker);
+                iMarker.info(nipMiddleWareAPIException.getErrorResponse().getResponseMessage(),exception);
             }else {
+                iMarker.info(exception.getMessage(),exception);
                 fundsTransferDbService.updateFTResponseCode(sessionId, NIP_202.getCode(),clientId,TRANSACTION_NOT_COMPLETED_MSG,iMarker);
             }
             //write a response to SQS to do Tsq
