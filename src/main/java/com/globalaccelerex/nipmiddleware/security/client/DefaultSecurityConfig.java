@@ -30,8 +30,8 @@ public class DefaultSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/health");
-        web.ignoring().antMatchers("/info");
+        web.ignoring().antMatchers("/actuator/health");
+        web.ignoring().antMatchers("/actuator/info");
         web.ignoring().antMatchers(LOCATION_URI+"**");
         web.ignoring().antMatchers(MOCK_CBA_API+"/**");
     }
