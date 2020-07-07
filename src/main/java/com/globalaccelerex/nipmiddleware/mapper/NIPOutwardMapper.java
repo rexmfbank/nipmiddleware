@@ -12,7 +12,6 @@ import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqResponse;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,7 +73,8 @@ public class NIPOutwardMapper {
             .beneficiaryKYCLevel(ftSingleCreditRequest.getBeneficiaryKYCLevel())
             .channelCode(String.valueOf(CC_1.getCode()))
             .destinationInstitutionCode(ftSingleCreditRequest.getDestinationBankCode())
-            .narration(StringUtils.substring(ftSingleCreditRequest.getNarration() ,0 ,100))
+            //.narration(StringUtils.substring(ftSingleCreditRequest.getNarration() ,0 ,100))
+            .narration(ftSingleCreditRequest.getNarration())
             .originatorAccountName(ftSingleCreditRequest.getOriginatorAccountName())
             .originatorAccountNo(ftSingleCreditRequest.getOriginatorAccountNo())
             .originatorBVN(ftSingleCreditRequest.getOriginatorBVN())
