@@ -43,7 +43,7 @@ public enum NIPResponseCodeEnum {
 
     NIP_18("18","Wrong Method Call",FAILED),
 
-    NIP_21("21","No action taken" , PENDING),
+    NIP_21("21","No action taken" , FAILED),
 
     NIP_25("25","Unable to locate record",PENDING),
 
