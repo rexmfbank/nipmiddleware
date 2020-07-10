@@ -23,7 +23,7 @@ public class FTSingleCreditRequest extends BaseRequest {
     @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
     private String destinationBankCode;
 
-    @Nuban(ignoreIfEmpty = false)
+    //@Nuban(ignoreIfEmpty = false)
     @NotBlank(message = "destination account number is required")
     private String destinationAccountNo;
 

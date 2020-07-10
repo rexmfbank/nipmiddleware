@@ -1,6 +1,5 @@
 package com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry;
 
-import com.globalaccelerex.nipmiddleware.annotation.Nuban;
 import com.globalaccelerex.nipmiddleware.payload.outward.BaseRequest;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +20,7 @@ public class NESingleRequest extends BaseRequest {
     @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
     private String destinationBankCode;
 
-    @Nuban(ignoreIfEmpty = false)
+    //@Nuban(ignoreIfEmpty = false)
     @NotEmpty(message = "Account No is required")
     private String accountNo;
 
