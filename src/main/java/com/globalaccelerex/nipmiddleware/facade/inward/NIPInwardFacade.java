@@ -51,7 +51,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
                 final val neSingleRequestVO = xmlUtil.unmarshal(clearNEString, NESingleRequestVO.class);
                 //connect to backend service to retrieve the name
                 // add a logic to determine which backend CBA to call based on destination code
-                final val neSingleResponseVO = nipInwardService.handleNameEnquiry(neSingleRequestVO);
+                final val neSingleResponseVO = nipInwardService.handleNameEnquiry(neSingleRequestVO,originatingInstitutionCode);
 
                 marker.setResponse("Response from NameEnquiry CBA " + neSingleResponseVO.toString());
 
@@ -89,7 +89,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
 
                 final val financialInstitutionListRequest = xmlUtil.unmarshal(clearFIListString, FinancialInstitutionListRequestVO.class);
 
-                val financialInstitutionListResponse = nipInwardService.handleFIList(financialInstitutionListRequest);
+                val financialInstitutionListResponse = nipInwardService.handleFIList(financialInstitutionListRequest,originatingInstitutionCode);
 
                 marker.setResponse("Response from FIList CBA " + financialInstitutionListResponse.toString());
 
@@ -131,7 +131,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
                 final val tsQuerySingleRequestVO = xmlUtil.unmarshal(clearTsqString, TSQuerySingleRequestVO.class);
                 // some backend calls
 
-                final val tsQuerySingleResponseVO = nipInwardService.handleTSQ(tsQuerySingleRequestVO);
+                final val tsQuerySingleResponseVO = nipInwardService.handleTSQ(tsQuerySingleRequestVO,originatingInstitutionCode);
 
                 marker.setResponse("Response from TSQ CBA " + tsQuerySingleResponseVO.toString());
 
@@ -173,7 +173,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
 
                 // some backend calls
 
-                final val mandateAdviceResponseVO = nipInwardService.handleMandateAdvice(mandateAdviceRequestVO);
+                final val mandateAdviceResponseVO = nipInwardService.handleMandateAdvice(mandateAdviceRequestVO,originatingInstitutionCode);
 
                 marker.setResponse("Response from Mandate Advice CBA " + mandateAdviceResponseVO.toString());
 
@@ -214,7 +214,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
 
                 //some backend calls
 
-                final val balanceEnquiryResponseVO = nipInwardService.handleBalanceEnquiry(balanceEnquiryRequestVO);
+                final val balanceEnquiryResponseVO = nipInwardService.handleBalanceEnquiry(balanceEnquiryRequestVO,originatingInstitutionCode);
 
                 marker.setResponse("Response from balance Enquiry CBA " + balanceEnquiryResponseVO.toString());
 

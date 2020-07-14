@@ -1,7 +1,7 @@
 package com.globalaccelerex.nipmiddleware.util.mocks;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -22,31 +22,30 @@ public class MockAccountDetails {
     private static final String defaultBVN = "2136748372615";
 
     static {
-        accountDetails = AccountDetails.builder()
-                .accountName(defaultAccountName)
-                .accountNo(defaultAccountNo)
-                .bvn(defaultBVN)
-                .kyclevel("2")
-                .balance(new BigDecimal(50000000))
-                .build();
+        accountDetails = new AccountDetails();
+        accountDetails.setAccountName(defaultAccountName);
+        accountDetails.setAccountNo(defaultAccountNo);
+        accountDetails.setBvn(defaultBVN);
+        accountDetails.setKyclevel("2");
+        accountDetails.setBalance(new BigDecimal(50000000));
 
         mandateHashMap= new HashMap<>();
-
     }
 
     @Getter
-    @Builder
+    @Setter
+    static
     class AccountDetails{
 
-        private final String accountName;
+        private  String accountName;
 
-        private final String accountNo;
+        private  String accountNo;
 
-        private final String bvn;
+        private  String bvn;
 
-        private final String kyclevel;
+        private  String kyclevel;
 
-        private final BigDecimal balance;
+        private  BigDecimal balance;
     }
 
 

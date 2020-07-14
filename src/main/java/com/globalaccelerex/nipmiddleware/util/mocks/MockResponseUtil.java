@@ -1,6 +1,5 @@
 package com.globalaccelerex.nipmiddleware.util.mocks;
 
-import com.globalaccelerex.nipmiddleware.institution.SLSConfig;
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
@@ -36,8 +35,6 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00
 @Service
 public class MockResponseUtil {
 
-    private final SLSConfig slsConfig;
-
     private final SessionIdUtil sessionIdUtil;
 
     private final NIPInwardMapper nipInwardMapper;
@@ -45,38 +42,37 @@ public class MockResponseUtil {
     private final FinancialInstitutionDbService financialInstitutionDbService;
 
     @Autowired
-    public MockResponseUtil(SLSConfig slsConfig, SessionIdUtil sessionIdUtil, NIPInwardMapper nipInwardMapper, FinancialInstitutionDbService financialInstitutionDbService) {
-        this.slsConfig = slsConfig;
+    public MockResponseUtil( SessionIdUtil sessionIdUtil, NIPInwardMapper nipInwardMapper, FinancialInstitutionDbService financialInstitutionDbService) {
         this.sessionIdUtil = sessionIdUtil;
         this.nipInwardMapper = nipInwardMapper;
         this.financialInstitutionDbService = financialInstitutionDbService;
     }
 
-    public NESingleResponseVO buildNESingleResponseVO(NESingleRequestVO neSingleRequestVO){
+    public NESingleResponseVO buildNESingleResponseVO(NESingleRequestVO neSingleRequestVO , String originatingInstitutionCode){
         val neSingleResponseVO = MockNE.handleNameEnquiry(neSingleRequestVO);
         if(StringUtils.equalsIgnoreCase(neSingleResponseVO.getResponseCode(),NIP_00.getCode())){
-            neSingleResponseVO.setSessionId(sessionIdUtil.generateSessionId(slsConfig.getInstitutionCode()));
+            neSingleResponseVO.setSessionId(sessionIdUtil.generateSessionId(originatingInstitutionCode));
         }
         return neSingleResponseVO;
     }
 
-    public MandateAdviceResponseVO buildMandateAdviceResponseVO(MandateAdviceRequestVO mandateAdviceRequestVO){
+    public MandateAdviceResponseVO buildMandateAdviceResponseVO(MandateAdviceRequestVO mandateAdviceRequestVO, String originatingInstitutionCode){
         val mandateAdviceResponseVO = MockMandateAdvice.handleMandate(mandateAdviceRequestVO);
         if(StringUtils.equalsIgnoreCase(mandateAdviceResponseVO.getResponseCode(),NIP_00.getCode())){
-            mandateAdviceResponseVO.setSessionId(sessionIdUtil.generateSessionId(slsConfig.getInstitutionCode()));
+            mandateAdviceResponseVO.setSessionId(sessionIdUtil.generateSessionId(originatingInstitutionCode));
         }
         return mandateAdviceResponseVO;
     }
 
-    public BalanceEnquiryResponseVO buildBalanceEnquiryResponseVO(BalanceEnquiryRequestVO balanceEnquiryRequestVO){
+    public BalanceEnquiryResponseVO buildBalanceEnquiryResponseVO(BalanceEnquiryRequestVO balanceEnquiryRequestVO, String originatingInstitutionCode){
         val balanceEnquiryResponseVO = MockTransaction.handleBalanceEnquiry(balanceEnquiryRequestVO);
         if(StringUtils.equalsIgnoreCase(balanceEnquiryResponseVO.getResponseCode(),NIP_00.getCode())){
-            balanceEnquiryResponseVO.setSessionID(sessionIdUtil.generateSessionId(slsConfig.getInstitutionCode()));
+            balanceEnquiryResponseVO.setSessionID(sessionIdUtil.generateSessionId(originatingInstitutionCode));
         }
         return balanceEnquiryResponseVO;
     }
 
-    public FinancialInstitutionListResponseVO buildFIListResponse(FinancialInstitutionListRequestVO financialInstitutionListRequest){
+    public FinancialInstitutionListResponseVO buildFIListResponse(FinancialInstitutionListRequestVO financialInstitutionListRequest, String originatingInstitutionCode){
         final val financialInstitutionEntityList =financialInstitutionListRequest.getRecordList().stream()
                 .map(nipInwardMapper.mapFIEntity)
                 .collect(Collectors.toList());
@@ -85,13 +81,13 @@ public class MockResponseUtil {
         return FinancialInstitutionListResponseVO.builder()
                 .batchNumber(financialInstitutionListRequest.getHeader().getBatchNumber())
                 .channelCode(financialInstitutionListRequest.getHeader().getChannelCode())
-                .destinationInstitutionCode(slsConfig.getInstitutionCode())
+                .destinationInstitutionCode(originatingInstitutionCode)
                 .numberOfRecords(String.valueOf(financialInstitutionListRequest.getRecordList().size()))
                 .responseCode(NIP_00.getCode())
                 .build();
     }
 
-    public FTDirectDebitResponseVO buildFTDirectDebitResponseVO(FTDirectDebitRequestVO ftDirectDebitRequestVO){
+    public FTDirectDebitResponseVO buildFTDirectDebitResponseVO(FTDirectDebitRequestVO ftDirectDebitRequestVO, String originatingInstitutionCode){
         return FTDirectDebitResponseVO.builder()
                 .amount(ftDirectDebitRequestVO.getAmount())
                 .beneficiaryAccountName(ftDirectDebitRequestVO.getBeneficiaryAccountName())
@@ -115,7 +111,7 @@ public class MockResponseUtil {
                 .build();
     }
 
-    public FTDirectCreditResponseVO buildFtDirectCreditResponseVO(FTDirectCreditRequestVO ftDirectCreditRequestVO){
+    public FTDirectCreditResponseVO buildFtDirectCreditResponseVO(FTDirectCreditRequestVO ftDirectCreditRequestVO, String originatingInstitutionCode){
         return FTDirectCreditResponseVO.builder()
                 .amount(ftDirectCreditRequestVO.getAmount())
                 .beneficiaryAccountName(ftDirectCreditRequestVO.getBeneficiaryAccountName())
@@ -137,16 +133,16 @@ public class MockResponseUtil {
                 .build();
     }
 
-    public TsqSingleItemResponseVO buildTsqSingleItemResponseVO(String sessionId , String sourceInstitutionCode){
+    public TsqSingleItemResponseVO buildTsqSingleItemResponseVO(String sessionId , String originatingInstitutionCode){
         final val tsqSingleItemResponseVO = new TsqSingleItemResponseVO();
         tsqSingleItemResponseVO.setChannelCode(String.valueOf(CC_1.getCode()));
         tsqSingleItemResponseVO.setResponseCode(NIP_00.getCode());
         tsqSingleItemResponseVO.setSessionId(sessionId);
-        tsqSingleItemResponseVO.setSourceInstitutionCode(sourceInstitutionCode);
+        tsqSingleItemResponseVO.setSourceInstitutionCode(originatingInstitutionCode);
         return tsqSingleItemResponseVO;
     }
 
-    public FTAdviceDirectCreditResponseVO buildFTAdviceDirectCreditResponseVO(FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO){
+    public FTAdviceDirectCreditResponseVO buildFTAdviceDirectCreditResponseVO(FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO, String originatingInstitutionCode){
         return FTAdviceDirectCreditResponseVO.builder()
                 .amount(ftAdviceDirectCreditRequestVO.getAmount())
                 .beneficiaryAccountName(ftAdviceDirectCreditRequestVO.getBeneficiaryAccountName())
