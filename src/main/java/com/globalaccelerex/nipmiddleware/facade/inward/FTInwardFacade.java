@@ -38,7 +38,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             // some backend calls
 
-            final val ftDirectDebitResponseVO = nipInwardService.handleFT_DirectDebit(ftDirectDebitRequestVO);
+            final val ftDirectDebitResponseVO = nipInwardService.handleFT_DirectDebit(ftDirectDebitRequestVO,originatingInstitutionCode);
 
             marker.setResponse("Response from FT_Dd CBA " + ftDirectDebitResponseVO.toString());
 
@@ -72,7 +72,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             // some backend calls
 
-            final val ftDirectCreditResponseVO = nipInwardService.handleFT_DirectCredit(ftDirectCreditRequestVO);
+            final val ftDirectCreditResponseVO = nipInwardService.handleFT_DirectCredit(ftDirectCreditRequestVO,originatingInstitutionCode);
             marker.setResponse("Response from FT_Dc CBA " + ftDirectCreditResponseVO.toString());
 
 
@@ -106,7 +106,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             //some backend calls
 
-            final val ftAdviceDirectCreditResponseVO = nipInwardService.handleFTAdviceDirectCredit(ftAdviceDirectCreditRequestVO);
+            final val ftAdviceDirectCreditResponseVO = nipInwardService.handleFTAdviceDirectCredit(ftAdviceDirectCreditRequestVO,originatingInstitutionCode);
             marker.setResponse("Response from FT_Advice_DC CBA " + ftAdviceDirectCreditResponseVO.toString());
 
             final val ftAdviseDirectCreditResponseVOXmlString = xmlUtil.marshal(FTAdviceDirectCreditResponseVO.class, ftAdviceDirectCreditResponseVO);
@@ -139,7 +139,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             //some backend calls
 
-            final val ftAdviceDirectDebitResponseVO = nipInwardService.handleFTAdviceDirectDebit(ftAdviceDirectDebitRequestVO);
+            final val ftAdviceDirectDebitResponseVO = nipInwardService.handleFTAdviceDirectDebit(ftAdviceDirectDebitRequestVO,originatingInstitutionCode);
             marker.setResponse("Response from FT_Advice_DC CBA " + ftAdviceDirectDebitResponseVO.toString());
 
             final val ftAdviseDirectDebitResponseVOXmlString = xmlUtil.marshal(FTAdviceDirectDebitResponseVO.class, ftAdviceDirectDebitResponseVO);

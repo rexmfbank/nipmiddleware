@@ -17,9 +17,9 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
 import com.globalaccelerex.nipmiddleware.service.rest.BankRestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,55 +41,55 @@ public class NIPInwardService {
         this.bankRestService = bankRestService;
     }
 
-    public NESingleResponseVO handleNameEnquiry(NESingleRequestVO neSingleRequestVO){
-        return bankRestService.doNameEnquiry(neSingleRequestVO);
+    public NESingleResponseVO handleNameEnquiry(NESingleRequestVO neSingleRequestVO , String originatingInstitutionCode){
+        return bankRestService.doNameEnquiry(neSingleRequestVO,originatingInstitutionCode);
     }
 
-    public FinancialInstitutionListResponseVO handleFIList(FinancialInstitutionListRequestVO financialInstitutionListRequest){
-        return bankRestService.doFIList(financialInstitutionListRequest);
+    public FinancialInstitutionListResponseVO handleFIList(FinancialInstitutionListRequestVO financialInstitutionListRequest, String originatingInstitutionCode){
+        return bankRestService.doFIList(financialInstitutionListRequest,originatingInstitutionCode);
     }
 
-    public FTDirectDebitResponseVO handleFT_DirectDebit(FTDirectDebitRequestVO ftDirectDebitRequestVO){
-        return bankRestService.doFTDirectDebit(ftDirectDebitRequestVO);
+    public FTDirectDebitResponseVO handleFT_DirectDebit(FTDirectDebitRequestVO ftDirectDebitRequestVO, String originatingInstitutionCode){
+        return bankRestService.doFTDirectDebit(ftDirectDebitRequestVO,originatingInstitutionCode);
     }
 
-    public FTDirectCreditResponseVO handleFT_DirectCredit(FTDirectCreditRequestVO ftDirectCreditRequestVO){
-        return bankRestService.doFTDirectCredit(ftDirectCreditRequestVO);
+    public FTDirectCreditResponseVO handleFT_DirectCredit(FTDirectCreditRequestVO ftDirectCreditRequestVO, String originatingInstitutionCode){
+        return bankRestService.doFTDirectCredit(ftDirectCreditRequestVO,originatingInstitutionCode);
     }
 
-    public TSQuerySingleResponseVO handleTSQ(TSQuerySingleRequestVO tsQuerySingleRequestVO){
-        return bankRestService.doTsq(tsQuerySingleRequestVO);
+    public TSQuerySingleResponseVO handleTSQ(TSQuerySingleRequestVO tsQuerySingleRequestVO, String originatingInstitutionCode){
+        return bankRestService.doTsq(tsQuerySingleRequestVO,originatingInstitutionCode);
     }
 
-    public FTAdviceDirectCreditResponseVO handleFTAdviceDirectCredit(FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO){
-        return bankRestService.doFTAdviceDirectCredit(ftAdviceDirectCreditRequestVO);
+    public FTAdviceDirectCreditResponseVO handleFTAdviceDirectCredit(FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO, String originatingInstitutionCode){
+        return bankRestService.doFTAdviceDirectCredit(ftAdviceDirectCreditRequestVO,originatingInstitutionCode);
     }
 
-    public FTAdviceDirectDebitResponseVO handleFTAdviceDirectDebit(FTAdviceDirectDebitRequestVO ftAdviceDirectDebitRequestVO){
-        return bankRestService.doFTAdviceDirectDebit(ftAdviceDirectDebitRequestVO);
+    public FTAdviceDirectDebitResponseVO handleFTAdviceDirectDebit(FTAdviceDirectDebitRequestVO ftAdviceDirectDebitRequestVO, String originatingInstitutionCode){
+        return bankRestService.doFTAdviceDirectDebit(ftAdviceDirectDebitRequestVO,originatingInstitutionCode);
     }
 
-    public MandateAdviceResponseVO handleMandateAdvice(MandateAdviceRequestVO mandateAdviceRequestVO){
-        return bankRestService.doMandateAdvice(mandateAdviceRequestVO);
+    public MandateAdviceResponseVO handleMandateAdvice(MandateAdviceRequestVO mandateAdviceRequestVO, String originatingInstitutionCode){
+        return bankRestService.doMandateAdvice(mandateAdviceRequestVO,originatingInstitutionCode);
     }
 
-    public AccountBlockResponseVO handleAccountBlock(AccountBlockRequestVO accountBlockRequestVO){
-        return bankRestService.doAccountBlock(accountBlockRequestVO);
+    public AccountBlockResponseVO handleAccountBlock(AccountBlockRequestVO accountBlockRequestVO, String originatingInstitutionCode){
+        return bankRestService.doAccountBlock(accountBlockRequestVO,originatingInstitutionCode);
     }
 
-    public AccountUnblockResponseVO handleAccountUnblock(AccountUnblockRequestVO accountUnblockRequestVO){
-        return bankRestService.doAccountUnblock(accountUnblockRequestVO);
+    public AccountUnblockResponseVO handleAccountUnblock(AccountUnblockRequestVO accountUnblockRequestVO, String originatingInstitutionCode){
+        return bankRestService.doAccountUnblock(accountUnblockRequestVO,originatingInstitutionCode);
     }
 
-    public AmountBlockResponseVO handleAmountBlock(AmountBlockRequestVO amountBlockRequestVO){
-        return bankRestService.doAmountBlock(amountBlockRequestVO);
+    public AmountBlockResponseVO handleAmountBlock(AmountBlockRequestVO amountBlockRequestVO, String originatingInstitutionCode){
+        return bankRestService.doAmountBlock(amountBlockRequestVO,originatingInstitutionCode);
     }
 
-    public AmountUnblockResponseVO handleAmountUnblock(AmountUnblockRequestVO amountUnblockRequestVO){
-        return bankRestService.doAmountUnblock(amountUnblockRequestVO);
+    public AmountUnblockResponseVO handleAmountUnblock(AmountUnblockRequestVO amountUnblockRequestVO, String originatingInstitutionCode){
+        return bankRestService.doAmountUnblock(amountUnblockRequestVO,originatingInstitutionCode);
     }
 
-    public BalanceEnquiryResponseVO handleBalanceEnquiry(BalanceEnquiryRequestVO balanceEnquiryRequestVO){
-        return bankRestService.doBalanceEnquiry(balanceEnquiryRequestVO);
+    public BalanceEnquiryResponseVO handleBalanceEnquiry(BalanceEnquiryRequestVO balanceEnquiryRequestVO, String originatingInstitutionCode){
+        return bankRestService.doBalanceEnquiry(balanceEnquiryRequestVO,originatingInstitutionCode);
     }
 }

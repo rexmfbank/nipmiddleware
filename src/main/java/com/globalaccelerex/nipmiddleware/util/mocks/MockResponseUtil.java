@@ -1,6 +1,5 @@
-package com.globalaccelerex.nipmiddleware.util;
+package com.globalaccelerex.nipmiddleware.util.mocks;
 
-import com.globalaccelerex.nipmiddleware.institution.SLSConfig;
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
@@ -21,7 +20,9 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingle
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.tsq.TsqSingleItemResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
+import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +35,6 @@ import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00
 @Service
 public class MockResponseUtil {
 
-    private final SLSConfig slsConfig;
-
     private final SessionIdUtil sessionIdUtil;
 
     private final NIPInwardMapper nipInwardMapper;
@@ -43,27 +42,37 @@ public class MockResponseUtil {
     private final FinancialInstitutionDbService financialInstitutionDbService;
 
     @Autowired
-    public MockResponseUtil(SLSConfig slsConfig, SessionIdUtil sessionIdUtil, NIPInwardMapper nipInwardMapper, FinancialInstitutionDbService financialInstitutionDbService) {
-        this.slsConfig = slsConfig;
+    public MockResponseUtil( SessionIdUtil sessionIdUtil, NIPInwardMapper nipInwardMapper, FinancialInstitutionDbService financialInstitutionDbService) {
         this.sessionIdUtil = sessionIdUtil;
         this.nipInwardMapper = nipInwardMapper;
         this.financialInstitutionDbService = financialInstitutionDbService;
     }
 
-    public NESingleResponseVO buildNESingleResponseVO(NESingleRequestVO neSingleRequestVO){
-        return NESingleResponseVO.builder()
-                .accountName("ADEYEMI TENIOLA")
-                .accountNo("0023456782")
-                .bvn("2136748372615")
-                .channelCode(neSingleRequestVO.getChannelCode())
-                .destinationInstitutionCode(neSingleRequestVO.getDestinationInstitutionCode())
-                .kycLevel("1")
-                .responseCode(NIP_00.getCode())
-                .sessionId(sessionIdUtil.generateSessionId(slsConfig.getInstitutionCode()))
-                .build();
+    public NESingleResponseVO buildNESingleResponseVO(NESingleRequestVO neSingleRequestVO , String originatingInstitutionCode){
+        val neSingleResponseVO = MockNE.handleNameEnquiry(neSingleRequestVO);
+        if(StringUtils.equalsIgnoreCase(neSingleResponseVO.getResponseCode(),NIP_00.getCode())){
+            neSingleResponseVO.setSessionId(sessionIdUtil.generateSessionId(originatingInstitutionCode));
+        }
+        return neSingleResponseVO;
     }
 
-    public FinancialInstitutionListResponseVO buildFIListResponse(FinancialInstitutionListRequestVO financialInstitutionListRequest){
+    public MandateAdviceResponseVO buildMandateAdviceResponseVO(MandateAdviceRequestVO mandateAdviceRequestVO, String originatingInstitutionCode){
+        val mandateAdviceResponseVO = MockMandateAdvice.handleMandate(mandateAdviceRequestVO);
+        if(StringUtils.equalsIgnoreCase(mandateAdviceResponseVO.getResponseCode(),NIP_00.getCode())){
+            mandateAdviceResponseVO.setSessionId(sessionIdUtil.generateSessionId(originatingInstitutionCode));
+        }
+        return mandateAdviceResponseVO;
+    }
+
+    public BalanceEnquiryResponseVO buildBalanceEnquiryResponseVO(BalanceEnquiryRequestVO balanceEnquiryRequestVO, String originatingInstitutionCode){
+        val balanceEnquiryResponseVO = MockTransaction.handleBalanceEnquiry(balanceEnquiryRequestVO);
+        if(StringUtils.equalsIgnoreCase(balanceEnquiryResponseVO.getResponseCode(),NIP_00.getCode())){
+            balanceEnquiryResponseVO.setSessionID(sessionIdUtil.generateSessionId(originatingInstitutionCode));
+        }
+        return balanceEnquiryResponseVO;
+    }
+
+    public FinancialInstitutionListResponseVO buildFIListResponse(FinancialInstitutionListRequestVO financialInstitutionListRequest, String originatingInstitutionCode){
         final val financialInstitutionEntityList =financialInstitutionListRequest.getRecordList().stream()
                 .map(nipInwardMapper.mapFIEntity)
                 .collect(Collectors.toList());
@@ -72,13 +81,13 @@ public class MockResponseUtil {
         return FinancialInstitutionListResponseVO.builder()
                 .batchNumber(financialInstitutionListRequest.getHeader().getBatchNumber())
                 .channelCode(financialInstitutionListRequest.getHeader().getChannelCode())
-                .destinationInstitutionCode(slsConfig.getInstitutionCode())
+                .destinationInstitutionCode(originatingInstitutionCode)
                 .numberOfRecords(String.valueOf(financialInstitutionListRequest.getRecordList().size()))
                 .responseCode(NIP_00.getCode())
                 .build();
     }
 
-    public FTDirectDebitResponseVO buildFTDirectDebitResponseVO(FTDirectDebitRequestVO ftDirectDebitRequestVO){
+    public FTDirectDebitResponseVO buildFTDirectDebitResponseVO(FTDirectDebitRequestVO ftDirectDebitRequestVO, String originatingInstitutionCode){
         return FTDirectDebitResponseVO.builder()
                 .amount(ftDirectDebitRequestVO.getAmount())
                 .beneficiaryAccountName(ftDirectDebitRequestVO.getBeneficiaryAccountName())
@@ -102,7 +111,7 @@ public class MockResponseUtil {
                 .build();
     }
 
-    public FTDirectCreditResponseVO buildFtDirectCreditResponseVO(FTDirectCreditRequestVO ftDirectCreditRequestVO){
+    public FTDirectCreditResponseVO buildFtDirectCreditResponseVO(FTDirectCreditRequestVO ftDirectCreditRequestVO, String originatingInstitutionCode){
         return FTDirectCreditResponseVO.builder()
                 .amount(ftDirectCreditRequestVO.getAmount())
                 .beneficiaryAccountName(ftDirectCreditRequestVO.getBeneficiaryAccountName())
@@ -124,16 +133,16 @@ public class MockResponseUtil {
                 .build();
     }
 
-    public TsqSingleItemResponseVO buildTsqSingleItemResponseVO(String sessionId , String sourceInstitutionCode){
+    public TsqSingleItemResponseVO buildTsqSingleItemResponseVO(String sessionId , String originatingInstitutionCode){
         final val tsqSingleItemResponseVO = new TsqSingleItemResponseVO();
         tsqSingleItemResponseVO.setChannelCode(String.valueOf(CC_1.getCode()));
         tsqSingleItemResponseVO.setResponseCode(NIP_00.getCode());
         tsqSingleItemResponseVO.setSessionId(sessionId);
-        tsqSingleItemResponseVO.setSourceInstitutionCode(sourceInstitutionCode);
+        tsqSingleItemResponseVO.setSourceInstitutionCode(originatingInstitutionCode);
         return tsqSingleItemResponseVO;
     }
 
-    public FTAdviceDirectCreditResponseVO buildFTAdviceDirectCreditResponseVO(FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO){
+    public FTAdviceDirectCreditResponseVO buildFTAdviceDirectCreditResponseVO(FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO, String originatingInstitutionCode){
         return FTAdviceDirectCreditResponseVO.builder()
                 .amount(ftAdviceDirectCreditRequestVO.getAmount())
                 .beneficiaryAccountName(ftAdviceDirectCreditRequestVO.getBeneficiaryAccountName())
@@ -199,23 +208,6 @@ public class MockResponseUtil {
                     .transactionLocation(ftAdviceDirectDebitRequestVO.getTransactionLocation())
                     .build();
 
-    public Function<MandateAdviceRequestVO, MandateAdviceResponseVO> mapMandateAdviceResponseVO =
-            mandateAdviceRequestVO -> MandateAdviceResponseVO.builder()
-                    .amount(mandateAdviceRequestVO.getAmount())
-                    .beneficiaryAccountName(mandateAdviceRequestVO.getBeneficiaryAccountName())
-                    .beneficiaryAccountNo(mandateAdviceRequestVO.getBeneficiaryAccountNo())
-                    .beneficiaryBVN(mandateAdviceRequestVO.getBeneficiaryBVN())
-                    .beneficiaryKYCLevel(mandateAdviceRequestVO.getBeneficiaryKYCLevel())
-                    .channelCode(mandateAdviceRequestVO.getChannelCode())
-                    .debitAccountName(mandateAdviceRequestVO.getDebitAccountName())
-                    .debitAccountNo(mandateAdviceRequestVO.getDebitAccountNo())
-                    .debitBVN(mandateAdviceRequestVO.getDebitBVN())
-                    .debitKYCLevel(mandateAdviceRequestVO.getDebitKYCLevel())
-                    .destinationCode(mandateAdviceRequestVO.getDestinationCode())
-                    .mandateReferenceNo(mandateAdviceRequestVO.getMandateReferenceNo())
-                    .responseCode(NIP_00.getCode())
-                    .sessionId(mandateAdviceRequestVO.getSessionId())
-                    .build();
 
     public Function<AccountBlockRequestVO, AccountBlockResponseVO> mapAccountBlockResponseVO =
             accountBlockRequestVO -> AccountBlockResponseVO.builder()
@@ -275,18 +267,5 @@ public class MockResponseUtil {
                     .targetBVN(amountUnblockRequestVO.getTargetBVN())
                     .build();
 
-    public BalanceEnquiryResponseVO buildBalanceEnquiryResponseVO(BalanceEnquiryRequestVO balanceEnquiryRequestVO){
-        return BalanceEnquiryResponseVO.builder()
-                .authorizationCode(balanceEnquiryRequestVO.getAuthorizationCode())
-                .availableBalance("2,340,000")
-                .channelCode(balanceEnquiryRequestVO.getChannelCode())
-                .destinationInstitutionCode(balanceEnquiryRequestVO.getDestinationInstitutionCode())
-                .responseCode(NIP_00.getCode())
-                .sessionID(balanceEnquiryRequestVO.getSessionID())
-                .targetAccountName(balanceEnquiryRequestVO.getTargetAccountName())
-                .targetAccountNo(balanceEnquiryRequestVO.getTargetAccountNo())
-                .targetBankVerificationNo(balanceEnquiryRequestVO.getTargetBankVerificationNo())
-                .build();
 
-    }
 }
