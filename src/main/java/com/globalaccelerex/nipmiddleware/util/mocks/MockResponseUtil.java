@@ -68,7 +68,13 @@ public class MockResponseUtil {
         return mandateAdviceResponseVO;
     }
 
-
+    public BalanceEnquiryResponseVO buildBalanceEnquiryResponseVO(BalanceEnquiryRequestVO balanceEnquiryRequestVO){
+        val balanceEnquiryResponseVO = MockTransaction.handleBalanceEnquiry(balanceEnquiryRequestVO);
+        if(StringUtils.equalsIgnoreCase(balanceEnquiryResponseVO.getResponseCode(),NIP_00.getCode())){
+            balanceEnquiryResponseVO.setSessionID(sessionIdUtil.generateSessionId(slsConfig.getInstitutionCode()));
+        }
+        return balanceEnquiryResponseVO;
+    }
 
     public FinancialInstitutionListResponseVO buildFIListResponse(FinancialInstitutionListRequestVO financialInstitutionListRequest){
         final val financialInstitutionEntityList =financialInstitutionListRequest.getRecordList().stream()
@@ -265,18 +271,5 @@ public class MockResponseUtil {
                     .targetBVN(amountUnblockRequestVO.getTargetBVN())
                     .build();
 
-    public BalanceEnquiryResponseVO buildBalanceEnquiryResponseVO(BalanceEnquiryRequestVO balanceEnquiryRequestVO){
-        return BalanceEnquiryResponseVO.builder()
-                .authorizationCode(balanceEnquiryRequestVO.getAuthorizationCode())
-                .availableBalance("2,340,000")
-                .channelCode(balanceEnquiryRequestVO.getChannelCode())
-                .destinationInstitutionCode(balanceEnquiryRequestVO.getDestinationInstitutionCode())
-                .responseCode(NIP_00.getCode())
-                .sessionID(balanceEnquiryRequestVO.getSessionID())
-                .targetAccountName(balanceEnquiryRequestVO.getTargetAccountName())
-                .targetAccountNo(balanceEnquiryRequestVO.getTargetAccountNo())
-                .targetBankVerificationNo(balanceEnquiryRequestVO.getTargetBankVerificationNo())
-                .build();
 
-    }
 }
