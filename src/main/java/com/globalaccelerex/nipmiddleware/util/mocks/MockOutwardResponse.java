@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.util;
+package com.globalaccelerex.nipmiddleware.util.mocks;
 
 import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleResponse;

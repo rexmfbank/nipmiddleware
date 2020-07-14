@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.util;
+package com.globalaccelerex.nipmiddleware.util.mocks;
 
 import com.globalaccelerex.nipmiddleware.institution.SLSConfig;
 import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
@@ -21,7 +21,9 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingle
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.tsq.TsqSingleItemResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
+import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,17 +53,22 @@ public class MockResponseUtil {
     }
 
     public NESingleResponseVO buildNESingleResponseVO(NESingleRequestVO neSingleRequestVO){
-        return NESingleResponseVO.builder()
-                .accountName("ADEYEMI TENIOLA")
-                .accountNo("0023456782")
-                .bvn("2136748372615")
-                .channelCode(neSingleRequestVO.getChannelCode())
-                .destinationInstitutionCode(neSingleRequestVO.getDestinationInstitutionCode())
-                .kycLevel("1")
-                .responseCode(NIP_00.getCode())
-                .sessionId(sessionIdUtil.generateSessionId(slsConfig.getInstitutionCode()))
-                .build();
+        val neSingleResponseVO = MockNE.handleNameEnquiry(neSingleRequestVO);
+        if(StringUtils.equalsIgnoreCase(neSingleResponseVO.getResponseCode(),NIP_00.getCode())){
+            neSingleResponseVO.setSessionId(sessionIdUtil.generateSessionId(slsConfig.getInstitutionCode()));
+        }
+        return neSingleResponseVO;
     }
+
+    public MandateAdviceResponseVO buildMandateAdviceResponseVO(MandateAdviceRequestVO mandateAdviceRequestVO){
+        val mandateAdviceResponseVO = MockMandateAdvice.handleMandate(mandateAdviceRequestVO);
+        if(StringUtils.equalsIgnoreCase(mandateAdviceResponseVO.getResponseCode(),NIP_00.getCode())){
+            mandateAdviceResponseVO.setSessionId(sessionIdUtil.generateSessionId(slsConfig.getInstitutionCode()));
+        }
+        return mandateAdviceResponseVO;
+    }
+
+
 
     public FinancialInstitutionListResponseVO buildFIListResponse(FinancialInstitutionListRequestVO financialInstitutionListRequest){
         final val financialInstitutionEntityList =financialInstitutionListRequest.getRecordList().stream()
@@ -199,23 +206,6 @@ public class MockResponseUtil {
                     .transactionLocation(ftAdviceDirectDebitRequestVO.getTransactionLocation())
                     .build();
 
-    public Function<MandateAdviceRequestVO, MandateAdviceResponseVO> mapMandateAdviceResponseVO =
-            mandateAdviceRequestVO -> MandateAdviceResponseVO.builder()
-                    .amount(mandateAdviceRequestVO.getAmount())
-                    .beneficiaryAccountName(mandateAdviceRequestVO.getBeneficiaryAccountName())
-                    .beneficiaryAccountNo(mandateAdviceRequestVO.getBeneficiaryAccountNo())
-                    .beneficiaryBVN(mandateAdviceRequestVO.getBeneficiaryBVN())
-                    .beneficiaryKYCLevel(mandateAdviceRequestVO.getBeneficiaryKYCLevel())
-                    .channelCode(mandateAdviceRequestVO.getChannelCode())
-                    .debitAccountName(mandateAdviceRequestVO.getDebitAccountName())
-                    .debitAccountNo(mandateAdviceRequestVO.getDebitAccountNo())
-                    .debitBVN(mandateAdviceRequestVO.getDebitBVN())
-                    .debitKYCLevel(mandateAdviceRequestVO.getDebitKYCLevel())
-                    .destinationCode(mandateAdviceRequestVO.getDestinationCode())
-                    .mandateReferenceNo(mandateAdviceRequestVO.getMandateReferenceNo())
-                    .responseCode(NIP_00.getCode())
-                    .sessionId(mandateAdviceRequestVO.getSessionId())
-                    .build();
 
     public Function<AccountBlockRequestVO, AccountBlockResponseVO> mapAccountBlockResponseVO =
             accountBlockRequestVO -> AccountBlockResponseVO.builder()

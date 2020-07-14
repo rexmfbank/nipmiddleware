@@ -13,7 +13,7 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.FTDirec
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
-import com.globalaccelerex.nipmiddleware.util.MockResponseUtil;
+import com.globalaccelerex.nipmiddleware.util.mocks.MockResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,6 @@ import static com.globalaccelerex.nipmiddleware.api.BankAPI.*;
 @Slf4j
 @RestController
 @RequestMapping(MOCK_CBA_API)
-
 public class BankController {
 
     @Autowired
@@ -81,7 +80,7 @@ public class BankController {
 
     @PostMapping(MANDATE_ADVICE_API)
     public ResponseEntity<?> doMandateAdvice(@Valid @RequestBody MandateAdviceRequestVO mandateAdviceRequestVO){
-        final val mandateAdviceResponseVO = mockResponseUtil.mapMandateAdviceResponseVO.apply(mandateAdviceRequestVO);
+        final val mandateAdviceResponseVO = mockResponseUtil.buildMandateAdviceResponseVO(mandateAdviceRequestVO);
         return new ResponseEntity(mandateAdviceResponseVO, HttpStatus.OK);
     }
 
