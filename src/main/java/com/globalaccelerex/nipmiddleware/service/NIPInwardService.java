@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.service;
 
-import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
+import com.globalaccelerex.nipmiddleware.institution.ConfigUtil;
+import com.globalaccelerex.nipmiddleware.mapper.BankMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
@@ -16,33 +17,33 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
 import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
 import com.globalaccelerex.nipmiddleware.service.rest.BankRestService;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NIPInwardService {
 
-    private final NIPInwardMapper nipInwardMapper;
+    private FinancialInstitutionDbService financialInstitutionDbService;
 
-    private final FinancialInstitutionDbService financialInstitutionDbService;
+    private BankRestService bankRestService;
 
-    private final BankRestService bankRestService;
+    private BankMapper bankMapper;
 
-    @Autowired
-    public NIPInwardService(NIPInwardMapper nipInwardMapper, FinancialInstitutionDbService financialInstitutionDbService, BankRestService bankRestService) {
-        this.nipInwardMapper = nipInwardMapper;
-        this.financialInstitutionDbService = financialInstitutionDbService;
-        this.bankRestService = bankRestService;
-    }
+
+
 
     public NESingleResponseVO handleNameEnquiry(NESingleRequestVO neSingleRequestVO , String originatingInstitutionCode){
-        return bankRestService.doNameEnquiry(neSingleRequestVO,originatingInstitutionCode);
+        final val neSingleRequestDTO = bankMapper.mapNESingleRequestDTO.apply(neSingleRequestVO);
+        final val neSingleResponseDTO = bankRestService.doNameEnquiry(neSingleRequestDTO, originatingInstitutionCode);
+        final val neSingleResponseVO = bankMapper.mapNESingleResponseVO.apply(neSingleResponseDTO);
+        return neSingleResponseVO;
     }
 
     public FinancialInstitutionListResponseVO handleFIList(FinancialInstitutionListRequestVO financialInstitutionListRequest, String originatingInstitutionCode){
@@ -91,5 +92,25 @@ public class NIPInwardService {
 
     public BalanceEnquiryResponseVO handleBalanceEnquiry(BalanceEnquiryRequestVO balanceEnquiryRequestVO, String originatingInstitutionCode){
         return bankRestService.doBalanceEnquiry(balanceEnquiryRequestVO,originatingInstitutionCode);
+    }
+
+    @Autowired
+    public void setFinancialInstitutionDbService(FinancialInstitutionDbService financialInstitutionDbService) {
+        this.financialInstitutionDbService = financialInstitutionDbService;
+    }
+
+    @Autowired
+    public void setBankRestService(BankRestService bankRestService) {
+        this.bankRestService = bankRestService;
+    }
+
+    @Autowired
+    public void setBankMapper(BankMapper bankMapper) {
+        this.bankMapper = bankMapper;
+    }
+
+    @Autowired
+    public void setConfigUtil(ConfigUtil configUtil) {
+        this.configUtil = configUtil;
     }
 }

@@ -3,7 +3,7 @@ package com.globalaccelerex.nipmiddleware.facade;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.mapper.ClientMapper;
-import com.globalaccelerex.nipmiddleware.payload.client.UpdateClientPasswordRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.updateclient.UpdateClientPasswordRequest;
 import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;

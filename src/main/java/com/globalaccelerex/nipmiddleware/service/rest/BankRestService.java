@@ -1,7 +1,9 @@
 package com.globalaccelerex.nipmiddleware.service.rest;
 
-import com.globalaccelerex.nipmiddleware.config.NipConfig;
 import com.globalaccelerex.nipmiddleware.http.HTTPRestTemplate;
+import com.globalaccelerex.nipmiddleware.institution.ConfigUtil;
+import com.globalaccelerex.nipmiddleware.payload.bank.nameenquiry.NESingleRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.nameenquiry.NESingleResponseDTO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
@@ -19,8 +21,6 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.Mandat
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,23 +31,23 @@ import static com.globalaccelerex.nipmiddleware.api.BankAPI.*;
 @Service
 public class BankRestService {
 
-    private final HTTPRestTemplate httpRestTemplate;
+    private  HTTPRestTemplate httpRestTemplate;
 
-    private final NipConfig nipConfig;
+    private ConfigUtil configUtil;
 
-    @Autowired
-    public BankRestService(HTTPRestTemplate httpRestTemplate, NipConfig nipConfig) {
-        this.httpRestTemplate = httpRestTemplate;
-        this.nipConfig = nipConfig;
-    }
-
-    public NESingleResponseVO doNameEnquiry(NESingleRequestVO neSingleRequestVO, String originatingInstitutionCode){
-        final val nameEnquiryUrl =  new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(NAME_ENQUIRY_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        final val restTemplate = httpRestTemplate.getClient();
-        return restTemplate.postForObject(nameEnquiryUrl, neSingleRequestVO, NESingleResponseVO.class);
+    public NESingleResponseDTO doNameEnquiry(NESingleRequestDTO neSingleRequestDTO, String originatingInstitutionCode){
+        NESingleResponseDTO neSingleResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val nameEnquiryUrl =  new StringBuilder().append(bankConfig.getBaseUrl())
+                    .append(NAME_ENQUIRY_API)
+                    .toString();
+            final val restTemplate = httpRestTemplate.getClient();
+            neSingleResponseDTO =  restTemplate.postForObject(nameEnquiryUrl, neSingleRequestDTO, NESingleResponseDTO.class);
+        }catch (Exception ex){
+            neSingleResponseDTO = new NESingleResponseDTO();
+        }
+        return neSingleResponseDTO;
     }
 
     public FinancialInstitutionListResponseVO doFIList(FinancialInstitutionListRequestVO financialInstitutionListRequestVO, String originatingInstitutionCode){
@@ -148,5 +148,15 @@ public class BankRestService {
                 .append(StringUtils.replace(BALANCE_ENQUIRY_API,"{originatingInstitutionCode}",originatingInstitutionCode))
                 .toString();
         return httpRestTemplate.getClient().postForObject(balanceEnquiryUrl, balanceEnquiryRequestVO, BalanceEnquiryResponseVO.class);
+    }
+
+    @Autowired
+    public void setHttpRestTemplate(HTTPRestTemplate httpRestTemplate) {
+        this.httpRestTemplate = httpRestTemplate;
+    }
+
+    @Autowired
+    public void setConfigUtil(ConfigUtil configUtil) {
+        this.configUtil = configUtil;
     }
 }

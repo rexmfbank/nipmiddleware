@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.payload.outward;
+package com.globalaccelerex.nipmiddleware.payload.client;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;

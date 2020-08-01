@@ -1,6 +1,6 @@
-package com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer;
+package com.globalaccelerex.nipmiddleware.payload.client.fundstransfer;
 
-import com.globalaccelerex.nipmiddleware.payload.outward.BaseResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.BaseResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

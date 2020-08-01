@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.payload.client;
+package com.globalaccelerex.nipmiddleware.payload.client.getclients;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

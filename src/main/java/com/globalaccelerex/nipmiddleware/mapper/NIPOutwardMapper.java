@@ -1,14 +1,14 @@
 package com.globalaccelerex.nipmiddleware.mapper;
 
 import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
+import com.globalaccelerex.nipmiddleware.payload.client.fundstransfer.FTSingleCreditRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.nameenquiry.NESingleRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.nameenquiry.NESingleResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.tsq.TsqResponse;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.fundtransfer.FTSingleCreditRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.nameenquiry.NESingleResponseVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.outward.tsq.TsqSingleItemRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTSingleCreditRequest;
-import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
-import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleResponse;
-import com.globalaccelerex.nipmiddleware.payload.outward.tsq.TsqResponse;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;

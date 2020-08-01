@@ -1,8 +1,8 @@
-package com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer;
+package com.globalaccelerex.nipmiddleware.payload.client.fundstransfer;
 
 import com.globalaccelerex.nipmiddleware.annotation.Nuban;
 import com.globalaccelerex.nipmiddleware.entity.ClientEntity;
-import com.globalaccelerex.nipmiddleware.payload.outward.BaseRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

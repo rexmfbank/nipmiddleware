@@ -32,6 +32,8 @@ public class GAConfig implements BankConfig {
     @NotBlank
     private String institutionCode;
 
+    private String baseUrl;
+
     @PostConstruct
     public void init(){
         final val updateFilePathArray = updateFilePath(privateKeyPath, publicKeyPath);

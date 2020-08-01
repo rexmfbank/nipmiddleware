@@ -1,7 +1,7 @@
-package com.globalaccelerex.nipmiddleware.payload.client;
+package com.globalaccelerex.nipmiddleware.payload.client.createClient;
 
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
-import com.globalaccelerex.nipmiddleware.payload.outward.BaseResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.BaseResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

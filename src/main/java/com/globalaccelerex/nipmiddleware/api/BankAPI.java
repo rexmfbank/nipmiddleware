@@ -4,7 +4,7 @@ public interface BankAPI {
 
     String MOCK_CBA_API ="/api/nipmiddleware/v1/cba";
 
-    String NAME_ENQUIRY_API = "/nameEnquiry/{originatingInstitutionCode}";
+    String NAME_ENQUIRY_API = "/nameEnquiry";
 
     String FI_LIST_API ="/fI";
 

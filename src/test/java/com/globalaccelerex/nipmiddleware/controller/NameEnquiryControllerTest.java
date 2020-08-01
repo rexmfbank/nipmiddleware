@@ -1,14 +1,14 @@
 package com.globalaccelerex.nipmiddleware.controller;
 
-import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTPendingResponse;
-import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.nameenquiry.NESingleResponse;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 
-import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
+import static com.globalaccelerex.nipmiddleware.api.ClientAPI.NAME_ENQUIRY;
+import static com.globalaccelerex.nipmiddleware.api.ClientAPI.OUTWARD_API;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

@@ -1,6 +1,6 @@
-package com.globalaccelerex.nipmiddleware.payload.outward.tsq;
+package com.globalaccelerex.nipmiddleware.payload.client.tsq;
 
-import com.globalaccelerex.nipmiddleware.payload.outward.BaseRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

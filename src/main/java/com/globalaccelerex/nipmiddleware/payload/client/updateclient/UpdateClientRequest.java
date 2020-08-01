@@ -1,7 +1,7 @@
-package com.globalaccelerex.nipmiddleware.payload.client;
+package com.globalaccelerex.nipmiddleware.payload.client.updateclient;
 
 import com.globalaccelerex.nipmiddleware.annotation.Nuban;
-import com.globalaccelerex.nipmiddleware.payload.outward.BaseRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

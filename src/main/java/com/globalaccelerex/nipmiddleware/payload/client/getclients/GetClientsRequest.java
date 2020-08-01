@@ -1,4 +1,4 @@
-package com.globalaccelerex.nipmiddleware.payload.client;
+package com.globalaccelerex.nipmiddleware.payload.client.getclients;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;

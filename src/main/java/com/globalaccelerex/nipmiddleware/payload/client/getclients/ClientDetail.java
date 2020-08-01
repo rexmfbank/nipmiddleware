@@ -1,6 +1,6 @@
-package com.globalaccelerex.nipmiddleware.payload.client;
+package com.globalaccelerex.nipmiddleware.payload.client.getclients;
 
-import com.globalaccelerex.nipmiddleware.payload.outward.BaseResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.BaseResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

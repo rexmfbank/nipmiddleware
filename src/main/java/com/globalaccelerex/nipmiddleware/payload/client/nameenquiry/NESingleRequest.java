@@ -1,6 +1,6 @@
-package com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry;
+package com.globalaccelerex.nipmiddleware.payload.client.nameenquiry;
 
-import com.globalaccelerex.nipmiddleware.payload.outward.BaseRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.BaseRequest;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
