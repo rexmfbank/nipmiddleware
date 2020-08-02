@@ -88,7 +88,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
 
                 final val financialInstitutionListRequest = xmlUtil.unmarshal(clearFIListString, FinancialInstitutionListRequestVO.class);
 
-                val financialInstitutionListResponse = nipInwardService.handleFIList(financialInstitutionListRequest,originatingInstitutionCode);
+                val financialInstitutionListResponse = nipInwardService.handleFIList(financialInstitutionListRequest,originatingInstitutionCode,marker);
 
                 marker.setResponse("Response from FIList CBA " + financialInstitutionListResponse.toString());
 
@@ -130,7 +130,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
                 final val tsQuerySingleRequestVO = xmlUtil.unmarshal(clearTsqString, TSQuerySingleRequestVO.class);
                 // some backend calls
 
-                final val tsQuerySingleResponseVO = nipInwardService.handleTSQ(tsQuerySingleRequestVO,originatingInstitutionCode);
+                final val tsQuerySingleResponseVO = nipInwardService.handleTSQ(tsQuerySingleRequestVO,originatingInstitutionCode,marker);
 
                 marker.setResponse("Response from TSQ CBA " + tsQuerySingleResponseVO.toString());
 
@@ -172,7 +172,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
 
                 // some backend calls
 
-                final val mandateAdviceResponseVO = nipInwardService.handleMandateAdvice(mandateAdviceRequestVO,originatingInstitutionCode);
+                final val mandateAdviceResponseVO = nipInwardService.handleMandateAdvice(mandateAdviceRequestVO,originatingInstitutionCode,marker);
 
                 marker.setResponse("Response from Mandate Advice CBA " + mandateAdviceResponseVO.toString());
 
@@ -213,7 +213,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
 
                 //some backend calls
 
-                final val balanceEnquiryResponseVO = nipInwardService.handleBalanceEnquiry(balanceEnquiryRequestVO,originatingInstitutionCode);
+                final val balanceEnquiryResponseVO = nipInwardService.handleBalanceEnquiry(balanceEnquiryRequestVO,originatingInstitutionCode,marker);
 
                 marker.setResponse("Response from balance Enquiry CBA " + balanceEnquiryResponseVO.toString());
 

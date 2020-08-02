@@ -26,7 +26,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
         super(ssmUtil,xmlUtil, nipConfig);
     }
 
-    public FundtransfersingleitemDdResponse handleFT_DD(FundtransfersingleitemDd fundtransfersingleitemDd, IMarker marker, String originatingInstitutionCode){
+    public FundtransfersingleitemDdResponse handleFTDirectDebit(FundtransfersingleitemDd fundtransfersingleitemDd, IMarker marker, String originatingInstitutionCode){
         final val fundtransfersingleitemDdResponse = new FundtransfersingleitemDdResponse();
         try{
             final val encryptedFTDirectDebitString = fundtransfersingleitemDd.getRequest();
@@ -38,7 +38,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             // some backend calls
 
-            final val ftDirectDebitResponseVO = nipInwardService.handleFT_DirectDebit(ftDirectDebitRequestVO,originatingInstitutionCode);
+            final val ftDirectDebitResponseVO = nipInwardService.handleFTDirectDebit(ftDirectDebitRequestVO,originatingInstitutionCode,marker);
 
             marker.setResponse("Response from FT_Dd CBA " + ftDirectDebitResponseVO.toString());
 
@@ -60,7 +60,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransfersingleitemDdResponse;
     }
 
-    public FundtransfersingleitemDcResponse handleFT_DC(FundtransfersingleitemDc fundtransfersingleitemDc, IMarker marker, String originatingInstitutionCode){
+    public FundtransfersingleitemDcResponse handleFTDirectCredit(FundtransfersingleitemDc fundtransfersingleitemDc, IMarker marker, String originatingInstitutionCode){
         final val fundtransfersingleitemDcResponse = new FundtransfersingleitemDcResponse();
         try{
             final val encryptedFTSingleItemDCString = fundtransfersingleitemDc.getRequest();
@@ -72,9 +72,8 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             // some backend calls
 
-            final val ftDirectCreditResponseVO = nipInwardService.handleFT_DirectCredit(ftDirectCreditRequestVO,originatingInstitutionCode);
+            final val ftDirectCreditResponseVO = nipInwardService.handleFTDirectCredit(ftDirectCreditRequestVO,originatingInstitutionCode,marker);
             marker.setResponse("Response from FT_Dc CBA " + ftDirectCreditResponseVO.toString());
-
 
             final val ftDirectCreditResponseVOXmlString = xmlUtil.marshal(FTDirectCreditResponseVO.class, ftDirectCreditResponseVO);
 
@@ -94,7 +93,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransfersingleitemDcResponse;
     }
 
-    public FundtransferAdviceDcResponse handleFTAdvice_DC(FundtransferAdviceDc fundtransferAdviceDc, IMarker marker, String originatingInstitutionCode){
+    public FundtransferAdviceDcResponse handleFTAdviceDirectCredit(FundtransferAdviceDc fundtransferAdviceDc, IMarker marker, String originatingInstitutionCode){
         final val fundtransferAdviceDcResponse = new FundtransferAdviceDcResponse();
         try{
             final val encryptedFTAdviceDirectCreditString = fundtransferAdviceDc.getRequest();
@@ -106,7 +105,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             //some backend calls
 
-            final val ftAdviceDirectCreditResponseVO = nipInwardService.handleFTAdviceDirectCredit(ftAdviceDirectCreditRequestVO,originatingInstitutionCode);
+            final val ftAdviceDirectCreditResponseVO = nipInwardService.handleFTAdviceDirectCredit(ftAdviceDirectCreditRequestVO,originatingInstitutionCode,marker);
             marker.setResponse("Response from FT_Advice_DC CBA " + ftAdviceDirectCreditResponseVO.toString());
 
             final val ftAdviseDirectCreditResponseVOXmlString = xmlUtil.marshal(FTAdviceDirectCreditResponseVO.class, ftAdviceDirectCreditResponseVO);
@@ -127,7 +126,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransferAdviceDcResponse;
     }
 
-    public FundtransferAdviceDdResponse handleFTAdvice_DD(FundtransferAdviceDd fundtransferAdviceDd, IMarker marker, String originatingInstitutionCode){
+    public FundtransferAdviceDdResponse handleFTAdviceDirectDebit(FundtransferAdviceDd fundtransferAdviceDd, IMarker marker, String originatingInstitutionCode){
         final val fundtransferAdviceDdResponse = new FundtransferAdviceDdResponse();
         try{
             final val encryptedFTAdviceDirectDebitString = fundtransferAdviceDd.getRequest();
@@ -139,7 +138,7 @@ public class FTInwardFacade extends AbstractInwardFacade{
 
             //some backend calls
 
-            final val ftAdviceDirectDebitResponseVO = nipInwardService.handleFTAdviceDirectDebit(ftAdviceDirectDebitRequestVO,originatingInstitutionCode);
+            final val ftAdviceDirectDebitResponseVO = nipInwardService.handleFTAdviceDirectDebit(ftAdviceDirectDebitRequestVO,originatingInstitutionCode,marker);
             marker.setResponse("Response from FT_Advice_DC CBA " + ftAdviceDirectDebitResponseVO.toString());
 
             final val ftAdviseDirectDebitResponseVOXmlString = xmlUtil.marshal(FTAdviceDirectDebitResponseVO.class, ftAdviceDirectDebitResponseVO);

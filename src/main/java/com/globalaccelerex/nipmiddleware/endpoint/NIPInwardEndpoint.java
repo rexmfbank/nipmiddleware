@@ -86,7 +86,7 @@ public class NIPInwardEndpoint {
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val fundtransfersingleitemDdResponse = ftInwardFacade.handleFT_DD(fundtransfersingleitemDd.getValue(), iMarker,originatingInstitutionCode);
+            final val fundtransfersingleitemDdResponse = ftInwardFacade.handleFTDirectDebit(fundtransfersingleitemDd.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransfersingleitemDdResponse.getReturn() , false);
             return objectFactory.createFundtransfersingleitemDdResponse(fundtransfersingleitemDdResponse);
         }finally {
@@ -106,7 +106,7 @@ public class NIPInwardEndpoint {
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val fundtransfersingleitemDcResponse = ftInwardFacade.handleFT_DC(fundtransfersingleitemDc.getValue(), iMarker,originatingInstitutionCode);
+            final val fundtransfersingleitemDcResponse = ftInwardFacade.handleFTDirectCredit(fundtransfersingleitemDc.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransfersingleitemDcResponse.getReturn() , false);
             return objectFactory.createFundtransfersingleitemDcResponse(fundtransfersingleitemDcResponse);
         }finally {
@@ -144,7 +144,7 @@ public class NIPInwardEndpoint {
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val fundtransferAdviceDcResponse = ftInwardFacade.handleFTAdvice_DC(fundtransferAdviceDC.getValue(), iMarker,originatingInstitutionCode);
+            final val fundtransferAdviceDcResponse = ftInwardFacade.handleFTAdviceDirectCredit(fundtransferAdviceDC.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransferAdviceDcResponse.getReturn() , false);
             return objectFactory.createFundtransferAdviceDcResponse(fundtransferAdviceDcResponse);
         }finally {
@@ -165,7 +165,7 @@ public class NIPInwardEndpoint {
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val fundtransferAdviceDdResponse = ftInwardFacade.handleFTAdvice_DD(fundtransferAdviceDD.getValue(), iMarker,originatingInstitutionCode);
+            final val fundtransferAdviceDdResponse = ftInwardFacade.handleFTAdviceDirectDebit(fundtransferAdviceDD.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransferAdviceDdResponse.getReturn() , false);
             return objectFactory.createFundtransferAdviceDdResponse(fundtransferAdviceDdResponse);
         }finally {

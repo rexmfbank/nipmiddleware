@@ -4,6 +4,8 @@ import com.globalaccelerex.nipmiddleware.institution.ConfigUtil;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.payload.bank.accountblock.AccountBlockRequestDTO;
 import com.globalaccelerex.nipmiddleware.payload.bank.accountblock.AccountBlockResponseDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.accountunblock.AccountUnblockRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.accountunblock.AccountUnblockResponseDTO;
 import com.globalaccelerex.nipmiddleware.payload.bank.amountblock.AmountBlockRequestDTO;
 import com.globalaccelerex.nipmiddleware.payload.bank.amountblock.AmountBlockResponseDTO;
 import com.globalaccelerex.nipmiddleware.payload.bank.amountunblock.AmountUnblockRequestDTO;
@@ -25,8 +27,6 @@ import com.globalaccelerex.nipmiddleware.payload.bank.mandateadvice.MandateAdvic
 import com.globalaccelerex.nipmiddleware.payload.bank.nameenquiry.NESingleRequestDTO;
 import com.globalaccelerex.nipmiddleware.payload.bank.nameenquiry.NESingleResponseDTO;
 import com.globalaccelerex.nipmiddleware.payload.bank.tsq.TsqSingleResponseDTO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,21 +197,21 @@ public class BankRestService {
         return accountBlockResponseDTO;
     }
 
-    public AccountUnblockResponseVO doAccountUnblock(AccountUnblockRequestVO accountUnblockRequestVO, String originatingInstitutionCode, IMarker marker){
-        AccountUnblockResponseVO accountUnblockResponseVO = null;
+    public AccountUnblockResponseDTO doAccountUnblock(AccountUnblockRequestDTO accountUnblockRequestDTO, String originatingInstitutionCode, IMarker marker){
+        AccountUnblockResponseDTO accountUnblockResponseDTO = null;
         try{
             final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
             final val baseUrl = bankConfig.getBaseUrl();
             marker.info("Sending Account Block request to " + bankConfig.getBankName());
-            marker.setRequest("request Body ", accountUnblockRequestVO.toString());
-            accountUnblockResponseVO = bankHttpClient.postRequest(baseUrl, ACCOUNT_UNBLOCK_API, accountUnblockRequestVO, AccountUnblockResponseVO.class, null, null);
+            marker.setRequest("request Body ", accountUnblockRequestDTO.toString());
+            accountUnblockResponseDTO = bankHttpClient.postRequest(baseUrl, ACCOUNT_UNBLOCK_API, accountUnblockRequestDTO, AccountUnblockResponseDTO.class, null, null);
         }catch (Exception exception){
-            accountUnblockResponseVO = new AccountUnblockResponseVO();
-            accountUnblockResponseVO.setResponseCode(NIP_201.getCode());
+            accountUnblockResponseDTO = new AccountUnblockResponseDTO();
+            accountUnblockResponseDTO.setResponseCode(NIP_201.getCode());
             logException(marker,exception);
         }
-        marker.setResponse("Account UnBlock Response  ::: " + accountUnblockResponseVO.toString());
-        return accountUnblockResponseVO;
+        marker.setResponse("Account UnBlock Response  ::: " + accountUnblockResponseDTO.toString());
+        return accountUnblockResponseDTO;
     }
 
     public AmountBlockResponseDTO doAmountBlock(AmountBlockRequestDTO amountBlockRequestDTO, String originatingInstitutionCode, IMarker marker){
