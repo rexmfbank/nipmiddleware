@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.service;
 
 import com.globalaccelerex.nipmiddleware.institution.ConfigUtil;
+import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.mapper.BankMapper;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
@@ -36,13 +37,10 @@ public class NIPInwardService {
 
     private BankMapper bankMapper;
 
-
-
-
-    public NESingleResponseVO handleNameEnquiry(NESingleRequestVO neSingleRequestVO , String originatingInstitutionCode){
-        final val neSingleRequestDTO = bankMapper.mapNESingleRequestDTO.apply(neSingleRequestVO);
-        final val neSingleResponseDTO = bankRestService.doNameEnquiry(neSingleRequestDTO, originatingInstitutionCode);
-        final val neSingleResponseVO = bankMapper.mapNESingleResponseVO.apply(neSingleResponseDTO);
+    public NESingleResponseVO handleNameEnquiry(NESingleRequestVO neSingleRequestVO , String originatingInstitutionCode, IMarker marker){
+        val neSingleRequestDTO = bankMapper.mapNESingleRequestDTO.apply(neSingleRequestVO);
+        val neSingleResponseDTO = bankRestService.doNameEnquiry(neSingleRequestDTO, originatingInstitutionCode,marker);
+        val neSingleResponseVO = bankMapper.mapNESingleResponseVO.apply(neSingleResponseDTO);
         return neSingleResponseVO;
     }
 

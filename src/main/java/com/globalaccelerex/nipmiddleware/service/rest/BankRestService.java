@@ -1,162 +1,289 @@
 package com.globalaccelerex.nipmiddleware.service.rest;
 
-import com.globalaccelerex.nipmiddleware.http.HTTPRestTemplate;
 import com.globalaccelerex.nipmiddleware.institution.ConfigUtil;
+import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
+import com.globalaccelerex.nipmiddleware.payload.bank.accountblock.AccountBlockRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.accountblock.AccountBlockResponseDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.amountblock.AmountBlockRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.amountblock.AmountBlockResponseDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.amountunblock.AmountUnblockRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.amountunblock.AmountUnblockResponseDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.balanceenquiry.BalanceEnquiryRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.balanceenquiry.BalanceEnquiryResponseDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.fiList.FinancialInstitutionListRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.fiList.FinancialInstitutionListResponseDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.ftadvicedirectcredit.FTAdviceDirectCreditRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.ftadvicedirectcredit.FTAdviceDirectCreditResponseDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.ftadvicedirectdebit.FTAdviceDirectDebitRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.ftadvicedirectdebit.FTAdviceDirectDebitResponseDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.ftdirectcredit.FTDirectCreditRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.ftdirectcredit.FTDirectCreditResponseDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.ftdirectdebit.FTDirectDebitRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.ftdirectdebit.FTDirectDebitResponseDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.mandateadvice.MandateAdviceRequestDTO;
+import com.globalaccelerex.nipmiddleware.payload.bank.mandateadvice.MandateAdviceResponseDTO;
 import com.globalaccelerex.nipmiddleware.payload.bank.nameenquiry.NESingleRequestDTO;
 import com.globalaccelerex.nipmiddleware.payload.bank.nameenquiry.NESingleResponseDTO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.bank.tsq.TsqSingleResponseDTO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceResponseVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
-import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleResponseVO;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.globalaccelerex.nipmiddleware.api.BankAPI.*;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
 
 @Service
 public class BankRestService {
 
-    private  HTTPRestTemplate httpRestTemplate;
+    private  BankHttpClient bankHttpClient;
 
     private ConfigUtil configUtil;
 
-    public NESingleResponseDTO doNameEnquiry(NESingleRequestDTO neSingleRequestDTO, String originatingInstitutionCode){
+    public NESingleResponseDTO doNameEnquiry(NESingleRequestDTO neSingleRequestDTO, String originatingInstitutionCode,IMarker marker){
         NESingleResponseDTO neSingleResponseDTO = null;
         try{
             final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
-            final val nameEnquiryUrl =  new StringBuilder().append(bankConfig.getBaseUrl())
-                    .append(NAME_ENQUIRY_API)
-                    .toString();
-            final val restTemplate = httpRestTemplate.getClient();
-            neSingleResponseDTO =  restTemplate.postForObject(nameEnquiryUrl, neSingleRequestDTO, NESingleResponseDTO.class);
-        }catch (Exception ex){
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending Name Enquiry request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", neSingleRequestDTO.toString());
+            neSingleResponseDTO =  bankHttpClient.postRequest(baseUrl,NAME_ENQUIRY_API, neSingleRequestDTO, NESingleResponseDTO.class , null,null);
+        }catch (Exception exception){
             neSingleResponseDTO = new NESingleResponseDTO();
+            neSingleResponseDTO.setResponseCode(NIP_201.getCode());
+            neSingleResponseDTO.setSessionId(neSingleRequestDTO.getSessionId());
+            logException(marker,exception);
         }
+        marker.setResponse(" NameEnquiry response :::: " + neSingleResponseDTO.toString());
         return neSingleResponseDTO;
     }
 
-    public FinancialInstitutionListResponseVO doFIList(FinancialInstitutionListRequestVO financialInstitutionListRequestVO, String originatingInstitutionCode){
-        final val fiListUrl = new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(FI_LIST_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(fiListUrl, financialInstitutionListRequestVO, FinancialInstitutionListResponseVO.class);
+    public FinancialInstitutionListResponseDTO doFIList(FinancialInstitutionListRequestDTO financialInstitutionListRequestDTO, String originatingInstitutionCode, IMarker marker){
+        FinancialInstitutionListResponseDTO financialInstitutionListResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending FI List  request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", financialInstitutionListRequestDTO.toString());
+            financialInstitutionListResponseDTO = bankHttpClient.postRequest(baseUrl, FI_LIST_API, financialInstitutionListRequestDTO, FinancialInstitutionListResponseDTO.class, null, null);
+        }catch (Exception exception){
+            financialInstitutionListResponseDTO = new FinancialInstitutionListResponseDTO();
+            financialInstitutionListResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("FIList Response ::: " + financialInstitutionListResponseDTO.toString());
+        return financialInstitutionListResponseDTO;
     }
 
-    public FTDirectDebitResponseVO doFTDirectDebit(FTDirectDebitRequestVO ftDirectDebitRequestVO, String originatingInstitutionCode){
-        final val ftDirectDebitUrl = new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(FT_DIRECT_DEBIT_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(ftDirectDebitUrl, ftDirectDebitRequestVO, FTDirectDebitResponseVO.class);
+    public FTDirectDebitResponseDTO doFTDirectDebit(FTDirectDebitRequestDTO ftDirectDebitRequestDTO, String originatingInstitutionCode, IMarker marker){
+        FTDirectDebitResponseDTO ftDirectDebitResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending FT Direct Debit request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", ftDirectDebitRequestDTO.toString());
+            ftDirectDebitResponseDTO = bankHttpClient.postRequest(baseUrl, FT_DIRECT_DEBIT_API, ftDirectDebitRequestDTO, FTDirectDebitResponseDTO.class, null, null);
+        }catch (Exception exception){
+            ftDirectDebitResponseDTO = new FTDirectDebitResponseDTO();
+            ftDirectDebitResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("FTDirectDebit Response  ::: " + ftDirectDebitResponseDTO.toString());
+        return ftDirectDebitResponseDTO;
     }
 
-    public FTDirectCreditResponseVO doFTDirectCredit(FTDirectCreditRequestVO ftDirectCreditRequestVO, String originatingInstitutionCode){
-        final val ftDirectCreditUrl = new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(FT_DIRECT_CREDIT_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(ftDirectCreditUrl, ftDirectCreditRequestVO, FTDirectCreditResponseVO.class);
+    public FTDirectCreditResponseDTO doFTDirectCredit(FTDirectCreditRequestDTO ftDirectCreditRequestDTO, String originatingInstitutionCode, IMarker marker){
+        FTDirectCreditResponseDTO ftDirectCreditResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending FT Direct Credit request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", ftDirectCreditRequestDTO.toString());
+            ftDirectCreditResponseDTO = bankHttpClient.postRequest(baseUrl, FT_DIRECT_CREDIT_API, ftDirectCreditRequestDTO, FTDirectCreditResponseDTO.class, null, null);
+        }catch (Exception exception){
+            ftDirectCreditResponseDTO = new FTDirectCreditResponseDTO();
+            ftDirectCreditResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("FTDirectCredit Response  ::: " + ftDirectCreditResponseDTO.toString());
+        return ftDirectCreditResponseDTO;
     }
 
-    public TSQuerySingleResponseVO doTsq(TSQuerySingleRequestVO tsQuerySingleRequestVO, String originatingInstitutionCode){
-        final val tsqUrl = new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(TSQ_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(tsqUrl, tsQuerySingleRequestVO, TSQuerySingleResponseVO.class);
+    public TsqSingleResponseDTO doTsq(String sessionId, String originatingInstitutionCode, IMarker marker){
+        TsqSingleResponseDTO tsqSingleResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending Tsq to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", sessionId);
+            val tsqUrl = StringUtils.replace(TSQ_API,"{sessionId}",sessionId);
+            tsqSingleResponseDTO =  bankHttpClient.getRequest(baseUrl,tsqUrl,null ,TsqSingleResponseDTO.class ,null, null);
+        }catch (Exception exception){
+            tsqSingleResponseDTO = new TsqSingleResponseDTO();
+            tsqSingleResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("Tsq Response  ::: " + tsqSingleResponseDTO.toString());
+        return tsqSingleResponseDTO;
     }
 
-    public FTAdviceDirectCreditResponseVO doFTAdviceDirectCredit(FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO, String originatingInstitutionCode){
-
-        final val ftAdviceDirectCreditUrl = new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(FT_ADVICE_DIRECT_CREDIT_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(ftAdviceDirectCreditUrl, ftAdviceDirectCreditRequestVO, FTAdviceDirectCreditResponseVO.class);
+    public FTAdviceDirectCreditResponseDTO doFTAdviceDirectCredit(FTAdviceDirectCreditRequestDTO ftAdviceDirectCreditRequestDTO, String originatingInstitutionCode, IMarker marker){
+        FTAdviceDirectCreditResponseDTO ftAdviceDirectCreditResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending FT Advice Direct Credit request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", ftAdviceDirectCreditRequestDTO.toString());
+            ftAdviceDirectCreditResponseDTO = bankHttpClient.postRequest(baseUrl, FT_ADVICE_DIRECT_CREDIT_API, ftAdviceDirectCreditRequestDTO, FTAdviceDirectCreditResponseDTO.class, null, null);
+        }catch (Exception exception){
+            ftAdviceDirectCreditResponseDTO = new FTAdviceDirectCreditResponseDTO();
+            ftAdviceDirectCreditResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("FTAdvice Direct Credit Response  ::: " + ftAdviceDirectCreditResponseDTO.toString());
+        return ftAdviceDirectCreditResponseDTO;
     }
 
-    public FTAdviceDirectDebitResponseVO doFTAdviceDirectDebit(FTAdviceDirectDebitRequestVO ftAdviceDirectDebitRequestVO, String originatingInstitutionCode){
-        final val ftAdviceDirectDebitUrl =new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(FT_ADVICE_DIRECT_DEBIT_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(ftAdviceDirectDebitUrl, ftAdviceDirectDebitRequestVO, FTAdviceDirectDebitResponseVO.class);
+    public FTAdviceDirectDebitResponseDTO doFTAdviceDirectDebit(FTAdviceDirectDebitRequestDTO ftAdviceDirectDebitRequestDTO, String originatingInstitutionCode, IMarker marker){
+        FTAdviceDirectDebitResponseDTO ftAdviceDirectDebitResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending FT Advice Direct Debit request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", ftAdviceDirectDebitRequestDTO.toString());
+            ftAdviceDirectDebitResponseDTO = bankHttpClient.postRequest(baseUrl, FT_ADVICE_DIRECT_DEBIT_API, ftAdviceDirectDebitRequestDTO, FTAdviceDirectDebitResponseDTO.class, null, null);
+        }catch (Exception exception){
+            ftAdviceDirectDebitResponseDTO = new FTAdviceDirectDebitResponseDTO();
+            ftAdviceDirectDebitResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("FTAdvice Direct Debit Response  ::: " + ftAdviceDirectDebitResponseDTO.toString());
+        return ftAdviceDirectDebitResponseDTO;
     }
 
-    public MandateAdviceResponseVO doMandateAdvice(MandateAdviceRequestVO mandateAdviceRequestVO, String originatingInstitutionCode){
-        final val mandateAdviceUrl =new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(MANDATE_ADVICE_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(mandateAdviceUrl, mandateAdviceRequestVO, MandateAdviceResponseVO.class);
+    public MandateAdviceResponseDTO doMandateAdvice(MandateAdviceRequestDTO mandateAdviceRequestDTO, String originatingInstitutionCode, IMarker marker){
+        MandateAdviceResponseDTO mandateAdviceResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending Mandate Advice request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", mandateAdviceRequestDTO.toString());
+            mandateAdviceResponseDTO = bankHttpClient.postRequest(baseUrl, MANDATE_ADVICE_API, mandateAdviceRequestDTO, MandateAdviceResponseDTO.class, null, null);
+        }catch (Exception exception){
+            mandateAdviceResponseDTO = new MandateAdviceResponseDTO();
+            mandateAdviceResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("Mandate Advice Response  ::: " + mandateAdviceResponseDTO.toString());
+        return mandateAdviceResponseDTO;
     }
 
-    public AccountBlockResponseVO doAccountBlock(AccountBlockRequestVO accountBlockRequestVO, String originatingInstitutionCode){
-        final val accountBlockUrl = new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(ACCOUNT_BLOCK_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(accountBlockUrl, accountBlockRequestVO, AccountBlockResponseVO.class);
+    public AccountBlockResponseDTO doAccountBlock(AccountBlockRequestDTO accountBlockRequestDTO, String originatingInstitutionCode, IMarker marker){
+        AccountBlockResponseDTO accountBlockResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending Account Block request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", accountBlockRequestDTO.toString());
+            accountBlockResponseDTO = bankHttpClient.postRequest(baseUrl, ACCOUNT_BLOCK_API, accountBlockRequestDTO, AccountBlockResponseDTO.class, null, null);
+        }catch (Exception exception){
+            accountBlockResponseDTO = new AccountBlockResponseDTO();
+            accountBlockResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("Account Block Response  ::: " + accountBlockResponseDTO.toString());
+        return accountBlockResponseDTO;
     }
 
-    public AccountUnblockResponseVO doAccountUnblock(AccountUnblockRequestVO accountUnblockRequestVO, String originatingInstitutionCode){
-        final val accountUnblockUrl = new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(ACCOUNT_UNBLOCK_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(accountUnblockUrl, accountUnblockRequestVO, AccountUnblockResponseVO.class);
+    public AccountUnblockResponseVO doAccountUnblock(AccountUnblockRequestVO accountUnblockRequestVO, String originatingInstitutionCode, IMarker marker){
+        AccountUnblockResponseVO accountUnblockResponseVO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending Account Block request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", accountUnblockRequestVO.toString());
+            accountUnblockResponseVO = bankHttpClient.postRequest(baseUrl, ACCOUNT_UNBLOCK_API, accountUnblockRequestVO, AccountUnblockResponseVO.class, null, null);
+        }catch (Exception exception){
+            accountUnblockResponseVO = new AccountUnblockResponseVO();
+            accountUnblockResponseVO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("Account UnBlock Response  ::: " + accountUnblockResponseVO.toString());
+        return accountUnblockResponseVO;
     }
 
-    public AmountBlockResponseVO doAmountBlock(AmountBlockRequestVO amountBlockRequestVO, String originatingInstitutionCode){
-
-        final val amountBlockUrl = new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(AMOUNT_BLOCK_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(amountBlockUrl, amountBlockRequestVO, AmountBlockResponseVO.class);
+    public AmountBlockResponseDTO doAmountBlock(AmountBlockRequestDTO amountBlockRequestDTO, String originatingInstitutionCode, IMarker marker){
+        AmountBlockResponseDTO amountBlockResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending Account Block request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", amountBlockRequestDTO.toString());
+            amountBlockResponseDTO = bankHttpClient.postRequest(baseUrl, AMOUNT_BLOCK_API, amountBlockRequestDTO, AmountBlockResponseDTO.class, null, null);
+        }catch (Exception exception){
+            amountBlockResponseDTO = new AmountBlockResponseDTO();
+            amountBlockResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("Amount Block Response  ::: " + amountBlockResponseDTO.toString());
+        return amountBlockResponseDTO;
     }
 
-    public AmountUnblockResponseVO doAmountUnblock(AmountUnblockRequestVO amountUnblockRequestVO, String originatingInstitutionCode){
+    public AmountUnblockResponseDTO doAmountUnblock(AmountUnblockRequestDTO amountUnblockRequestDTO, String originatingInstitutionCode, IMarker marker){
 
-        final val amountUnblockUrl = new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(AMOUNT_UNBLOCK_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(amountUnblockUrl, amountUnblockRequestVO, AmountUnblockResponseVO.class);
+        AmountUnblockResponseDTO amountUnblockResponseDTO = null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending Account UnBlock request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", amountUnblockRequestDTO.toString());
+            amountUnblockResponseDTO = bankHttpClient.postRequest(baseUrl, AMOUNT_UNBLOCK_API, amountUnblockRequestDTO, AmountUnblockResponseDTO.class, null, null);
+        }catch (Exception exception){
+            amountUnblockResponseDTO = new AmountUnblockResponseDTO();
+            amountUnblockResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("Amount UnBlock Response  ::: " + amountUnblockResponseDTO.toString());
+        return amountUnblockResponseDTO;
+
     }
 
-    public BalanceEnquiryResponseVO doBalanceEnquiry(BalanceEnquiryRequestVO balanceEnquiryRequestVO, String originatingInstitutionCode){
-
-        final val balanceEnquiryUrl = new StringBuilder().append(nipConfig.getBankUrl())
-                .append(MOCK_CBA_API)
-                .append(StringUtils.replace(BALANCE_ENQUIRY_API,"{originatingInstitutionCode}",originatingInstitutionCode))
-                .toString();
-        return httpRestTemplate.getClient().postForObject(balanceEnquiryUrl, balanceEnquiryRequestVO, BalanceEnquiryResponseVO.class);
+    public BalanceEnquiryResponseDTO doBalanceEnquiry(BalanceEnquiryRequestDTO balanceEnquiryRequestDTO, String originatingInstitutionCode, IMarker marker){
+        BalanceEnquiryResponseDTO balanceEnquiryResponseDTO= null;
+        try{
+            final val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+            final val baseUrl = bankConfig.getBaseUrl();
+            marker.info("Sending Balance Enquiry request to " + bankConfig.getBankName());
+            marker.setRequest("request Body ", balanceEnquiryRequestDTO.toString());
+            balanceEnquiryResponseDTO = bankHttpClient.postRequest(baseUrl, BALANCE_ENQUIRY_API, balanceEnquiryRequestDTO, BalanceEnquiryResponseDTO.class, null, null);
+        }catch (Exception exception){
+            balanceEnquiryResponseDTO = new BalanceEnquiryResponseDTO();
+            balanceEnquiryResponseDTO.setResponseCode(NIP_201.getCode());
+            logException(marker,exception);
+        }
+        marker.setResponse("Balance Enquiry Response  ::: " + balanceEnquiryResponseDTO.toString());
+        return balanceEnquiryResponseDTO;
     }
 
-    @Autowired
-    public void setHttpRestTemplate(HTTPRestTemplate httpRestTemplate) {
-        this.httpRestTemplate = httpRestTemplate;
+    private void logException(IMarker marker , Exception exception){
+        if(exception instanceof BankAPIException){
+            val bankException =(BankAPIException) exception;
+            marker.info(bankException.getErrorResponse().getResponseMessage(), exception);
+        }else{
+            marker.info(exception.getMessage(), exception);
+        }
     }
+
 
     @Autowired
     public void setConfigUtil(ConfigUtil configUtil) {
         this.configUtil = configUtil;
+    }
+
+    @Autowired
+    public void setBankHttpClient(BankHttpClient bankHttpClient) {
+        this.bankHttpClient = bankHttpClient;
     }
 }

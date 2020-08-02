@@ -41,7 +41,6 @@ public class NIPInwardEndpoint {
     public @ResponsePayload  JAXBElement<NameenquirysingleitemResponse> handleNE(@RequestPayload JAXBElement<Nameenquirysingleitem> nameEnquirySingleItem) {
         final val iMarker = Marker.fromString();
         iMarker.info("<<< NameEnquiry >>>");
-
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , nameEnquirySingleItem.getValue().getRequest(), false);

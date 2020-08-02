@@ -51,7 +51,7 @@ public class NIPInwardFacade extends AbstractInwardFacade{
                 final val neSingleRequestVO = xmlUtil.unmarshal(clearNEString, NESingleRequestVO.class);
                 //connect to backend service to retrieve the name
                 // add a logic to determine which backend CBA to call based on destination code
-                final val neSingleResponseVO = nipInwardService.handleNameEnquiry(neSingleRequestVO,originatingInstitutionCode);
+                final val neSingleResponseVO = nipInwardService.handleNameEnquiry(neSingleRequestVO,originatingInstitutionCode,marker);
 
                 marker.setResponse("Response from NameEnquiry CBA " + neSingleResponseVO.toString());
 
@@ -61,7 +61,6 @@ public class NIPInwardFacade extends AbstractInwardFacade{
 
                 nameEnquirySingleItemResponse.setReturn(encryptedXmlString);
             }
-
         }catch (Exception exception){
             if(exception instanceof NIPMiddleWareAPIException){
                 val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
