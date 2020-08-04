@@ -23,9 +23,9 @@ public class BankRestTemplate {
 
     private RestTemplate restTemplate;
 
-    private final static int DEFAULT_CONNECTION_TIMEOUT = 120000;
-    private final static int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 120000;
-    private final static int DEFAULT_CONNECTION_SOCKET_TIMEOUT = 120000;
+    private final static int DEFAULT_CONNECTION_TIMEOUT = 15000;
+    private final static int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 15000;
+    private final static int DEFAULT_CONNECTION_SOCKET_TIMEOUT = 15000;
 
     private static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("Africa/Lagos");
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
