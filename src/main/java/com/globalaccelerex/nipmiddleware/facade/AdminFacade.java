@@ -32,24 +32,16 @@ import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.*;
 @Service
 public class AdminFacade {
 
-    private final ClientDbService clientDbService;
+    private  ClientDbService clientDbService;
 
-    private final JwtTokenUtil jwtTokenUtil;
+    private  JwtTokenUtil jwtTokenUtil;
 
-    private final ClientMapper clientMapper;
+    private  ClientMapper clientMapper;
 
-    private final FtFacade ftFacade;
+    private  FtFacade ftFacade;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bcryptPasswordEncoder;
 
-    @Autowired
-    public AdminFacade(ClientDbService clientDbService, JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper, FtFacade ftFacade) {
-        this.clientDbService = clientDbService;
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.clientMapper = clientMapper;
-        this.ftFacade = ftFacade;
-    }
 
     public CreateClientResponse createClient(CreateClientRequest createClientRequest){
         final val iMarker = createClientRequest.getMarker();
@@ -190,12 +182,37 @@ public class AdminFacade {
         val clientEntity = clientEntityOpt.get();
 
         val newPassword = RandomStringUtils.randomAlphanumeric(5).toUpperCase();
-        clientEntity.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        clientEntity.setPassword(bcryptPasswordEncoder.encode(newPassword));
         clientDbService.updateClientEntity(clientEntity);
         val resetPasswordResponse = new ResetPasswordResponse(NIP_00);
         resetPasswordResponse.setPassword(newPassword);
         resetPasswordResponse.setClientId(resetPasswordRequest.getClientId());
         marker.info("done resetting password  request ");
         return resetPasswordResponse;
+    }
+
+    @Autowired
+    public void setClientDbService(ClientDbService clientDbService) {
+        this.clientDbService = clientDbService;
+    }
+
+    @Autowired
+    public void setJwtTokenUtil(JwtTokenUtil jwtTokenUtil) {
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
+
+    @Autowired
+    public void setClientMapper(ClientMapper clientMapper) {
+        this.clientMapper = clientMapper;
+    }
+
+    @Autowired
+    public void setFtFacade(FtFacade ftFacade) {
+        this.ftFacade = ftFacade;
+    }
+
+    @Autowired
+    public void setBcryptPasswordEncoder(BCryptPasswordEncoder bcryptPasswordEncoder) {
+        this.bcryptPasswordEncoder = bcryptPasswordEncoder;
     }
 }
