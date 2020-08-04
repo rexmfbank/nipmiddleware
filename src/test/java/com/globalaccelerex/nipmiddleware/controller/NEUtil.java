@@ -1,10 +1,7 @@
 package com.globalaccelerex.nipmiddleware.controller;
 
-import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
-import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.nameenquiry.NESingleRequest;
 import lombok.val;
-
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00;
 
 public class NEUtil {
 

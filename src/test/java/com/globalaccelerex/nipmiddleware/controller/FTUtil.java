@@ -1,6 +1,6 @@
 package com.globalaccelerex.nipmiddleware.controller;
 
-import com.globalaccelerex.nipmiddleware.payload.outward.fundstransfer.FTSingleCreditRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.fundstransfer.FTSingleCreditRequest;
 import lombok.val;
 
 import java.math.BigDecimal;

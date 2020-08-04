@@ -32,6 +32,11 @@ public class SLSConfig implements BankConfig{
     @NotBlank
     private String institutionCode;
 
+    private String baseUrl;
+
+    @NotBlank
+    private String bankName;
+
     @PostConstruct
     public void init(){
         final val updateFilePathArray = updateFilePath(privateKeyPath, publicKeyPath);

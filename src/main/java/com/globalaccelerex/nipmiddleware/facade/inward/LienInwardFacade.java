@@ -50,7 +50,7 @@ public class LienInwardFacade extends AbstractInwardFacade{
 
                 // some backend calls
 
-                final val accountBlockResponseVO = nipInwardService.handleAccountBlock(accountBlockRequestVO,originatingInstitutionCode);
+                final val accountBlockResponseVO = nipInwardService.handleAccountBlock(accountBlockRequestVO,originatingInstitutionCode,marker);
 
                 marker.setResponse("Response from AccountBlock CBA " + accountBlockResponseVO.toString());
 
@@ -89,7 +89,7 @@ public class LienInwardFacade extends AbstractInwardFacade{
                 final val accountUnblockRequestVO = xmlUtil.unmarshal(clearAccountUnblockString, AccountUnblockRequestVO.class);
 
                 // some backend calls
-                final val accountUnblockResponseVO = nipInwardService.handleAccountUnblock(accountUnblockRequestVO,originatingInstitutionCode);
+                final val accountUnblockResponseVO = nipInwardService.handleAccountUnblock(accountUnblockRequestVO,originatingInstitutionCode,marker);
 
                 marker.setResponse("Response from Account Unblock CBA " + accountUnblockResponseVO.toString());
 
@@ -128,7 +128,7 @@ public class LienInwardFacade extends AbstractInwardFacade{
                 final val amountBlockRequestVO = xmlUtil.unmarshal(clearAmountBlockString, AmountBlockRequestVO.class);
 
                 // some backend calls
-                final val amountBlockResponseVO = nipInwardService.handleAmountBlock(amountBlockRequestVO,originatingInstitutionCode);
+                final val amountBlockResponseVO = nipInwardService.handleAmountBlock(amountBlockRequestVO,originatingInstitutionCode,marker);
 
                 marker.setResponse("Response from Amount block CBA " + amountBlockResponseVO.toString());
 
@@ -168,7 +168,7 @@ public class LienInwardFacade extends AbstractInwardFacade{
 
                 // some backend calls
 
-                final val amountUnblockResponseVO = nipInwardService.handleAmountUnblock(amountUnblockRequestVO,originatingInstitutionCode);
+                final val amountUnblockResponseVO = nipInwardService.handleAmountUnblock(amountUnblockRequestVO,originatingInstitutionCode,marker);
 
                 marker.setResponse("Response from Amount Unblock CBA " + amountUnblockResponseVO.toString());
 

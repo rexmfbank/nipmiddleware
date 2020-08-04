@@ -1,0 +1,20 @@
+package com.globalaccelerex.nipmiddleware.payload.client.tsq;
+
+import com.globalaccelerex.nipmiddleware.payload.client.BaseRequest;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import javax.validation.constraints.NotEmpty;
+
+@Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class TsqRequest extends BaseRequest {
+
+    private String sessionId;
+
+    @NotEmpty(message = "PaymentReference is required")
+    private String paymentReference;
+
+}
