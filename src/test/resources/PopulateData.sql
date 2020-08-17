@@ -1,6 +1,7 @@
 INSERT INTO `client_entity` (`id`, `client_id`, `client_name`, `password`, `active`, `business_Desc`, `callback_url`, `contact_email`, `contact_phone`, `created_at`, `last_updated_at`,`account_name`,`bvn`,`kyc_level`,`account_no`,`bank_code`) VALUES (5, 'nip01', 'nip01', '$2a$10$3eGZfStDaj4Jg2A6Ny0FGO0cwRk4WA0TL8oeueJyhwNr5ZnDmvgKy', 1, 'We do nothing ', '', '', NULL, '2020-04-27 22:47:53', '2020-04-27 22:47:53','','','','','');
 
 
+
 INSERT INTO `funds_transfer_entity` (`id`, `amount`, `beneficiary_account_name`, `beneficiary_account_no`, `beneficiarybvn`, `beneficiarykyclevel`, `channel_code`, `created_at`, `destination_institution_code`, `last_updated`, `name_enquiry_reference`, `narration`, `originator_account_name`, `originator_account_no`, `originatorbvn`, `originator_institution_code`, `originatorkyclevel`, `payment_reference`, `payment_status`, `response_code`, `session_id`, `transaction_location`, `client_id`) VALUES
 (5, '34.80', 'SOLIAT ADELEYE AZEEZ AYODELE', '0018056244', NULL, NULL, '1', '2020-04-27 23:02:54', '999044', '2020-04-28 23:03:39', '1588028573616', NULL, 'Ayodeji Ilori', '0036722182', NULL, '999157', NULL, '1582227994697', 'FAILED', '25', '999157200427230252597501251708', NULL, 'nip01'),
 (6, '34.80', 'SOLIAT ADELEYE AZEEZ AYODELE', '0018056244', NULL, NULL, '1', '2020-04-28 09:55:45', '999044', '2020-04-28 09:55:45', '999157200428095534064297043621', NULL, 'Ayodeji Ilori', '0036722182', NULL, '999157', NULL, '16766994697', 'FAILED', 'NIP_105', '999157200428095534562937515806', NULL, 'nip01'),
