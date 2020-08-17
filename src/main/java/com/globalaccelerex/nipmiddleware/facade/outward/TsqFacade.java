@@ -11,7 +11,6 @@ import com.globalaccelerex.nipmiddleware.payload.nip.ws.Txnstatusquerysingleitem
 import com.globalaccelerex.nipmiddleware.service.db.FundsTransferDbService;
 import com.globalaccelerex.nipmiddleware.service.ws.NIPOutwardWS;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
-import com.globalaccelerex.nipmiddleware.util.SystemSettingUtil;
 import com.globalaccelerex.nipmiddleware.util.XmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -21,8 +20,7 @@ import org.springframework.stereotype.Service;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_15;
 import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.NO_RESPONSE_FROM_NIBSS_MSG;
-import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.CALL_NIBSS_API;
-import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.DOWN_STATUS;
+
 
 @Slf4j
 @Service
@@ -36,18 +34,16 @@ public class TsqFacade {
 
     private final NIPOutwardWS nipOutwardWS;
 
-    private final SystemSettingUtil systemSettingUtil;
 
     private final SSMUtil ssmUtil;
 
     @Autowired
     public TsqFacade(FundsTransferDbService fundsTransferDbService, NIPOutwardMapper nipOutwardMapper, XmlUtil xmlUtil,
-                     NIPOutwardWS nipOutwardWS, SystemSettingUtil systemSettingUtil, SSMUtil ssmUtil) {
+                     NIPOutwardWS nipOutwardWS,  SSMUtil ssmUtil) {
         this.fundsTransferDbService = fundsTransferDbService;
         this.nipOutwardMapper = nipOutwardMapper;
         this.xmlUtil = xmlUtil;
         this.nipOutwardWS = nipOutwardWS;
-        this.systemSettingUtil = systemSettingUtil;
         this.ssmUtil = ssmUtil;
     }
 
@@ -94,7 +90,6 @@ public class TsqFacade {
 
             if(StringUtils.isBlank(txnStatusQuerySingleItemResponse.getReturn())){
                 iMarker.info(" Empty  Response from NIPOutwardWS ");
-                systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
                 val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
                 nipMiddleWareAPIException.buildFailureStatusException(NO_RESPONSE_FROM_NIBSS_MSG,iMarker);
                 throw nipMiddleWareAPIException;

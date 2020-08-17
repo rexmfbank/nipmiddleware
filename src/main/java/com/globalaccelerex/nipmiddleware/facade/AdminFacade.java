@@ -57,6 +57,7 @@ public class AdminFacade {
         neSingleRequest.setMarker(createClientRequest.getMarker());
         val neSingleResponse = ftFacade.doNameEnquiry(neSingleRequest);
 
+
         if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
             final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
             clientEntity.setAccountName(neSingleResponse.getAccountName());
@@ -72,8 +73,9 @@ public class AdminFacade {
             createClientResponse.setSecretKey(jwtTokenStr);
             return createClientResponse;
         }else{
+            final val responseCodeEnum = NIPResponseCodeEnum.getResponseCodeEnum(neSingleResponse.getResponseCode());
             val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-            nipMiddleWareAPIException.buildFailureStatusException(NAME_ENQUIRY_FAILED_MSG,iMarker);
+            nipMiddleWareAPIException.buildFailureStatusException(responseCodeEnum.getDescription(),responseCodeEnum.getCode(), iMarker);
             throw nipMiddleWareAPIException;
         }
     }

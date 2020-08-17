@@ -62,7 +62,6 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), neSingleRequest.toString(), false);
 
-            confirmNibssStatus(marker);
             final val neSingleResponse = ftFacade.doNameEnquiry(neSingleRequest);
             marker.setMainResponse(neSingleResponse.toString(), false);
             return new ResponseEntity(neSingleResponse, HttpStatus.OK);
@@ -84,7 +83,6 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
 
-            confirmNibssStatus(marker);
 
             final val result = ftFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
 
@@ -127,8 +125,6 @@ public class OutwardController extends APIController{
             tsqRequest.setMarker(marker);
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), tsqRequest.toString(), false);
-
-            confirmNibssStatus(marker);
 
             final val tsqResponse = tsqFacade.doTsq(tsqRequest);
             marker.setMainResponse(tsqResponse.toString(), false);
