@@ -133,6 +133,7 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+
     compile group: 'com.google.guava', name: 'guava', version: '22.0'
     compile group: 'org.jsondoc', name: 'jsondoc-core', version: '1.2.11'
     compile group: 'org.jsondoc', name: 'jsondoc-ui-webjar', version: '1.2.11'

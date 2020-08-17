@@ -20,7 +20,6 @@ import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.service.db.FundsTransferDbService;
 import com.globalaccelerex.nipmiddleware.service.ws.NIPOutwardWS;
 import com.globalaccelerex.nipmiddleware.util.SSMUtil;
-import com.globalaccelerex.nipmiddleware.util.SystemSettingUtil;
 import com.globalaccelerex.nipmiddleware.util.XmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -35,8 +34,7 @@ import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.*;
 import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.CALLBACK;
 import static com.globalaccelerex.nipmiddleware.messaging.QueueMode.TSQ;
 import static com.globalaccelerex.nipmiddleware.messaging.SQSService.TSQ_WAIT_DURATION_IN_SECONDS;
-import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.CALL_NIBSS_API;
-import static com.globalaccelerex.nipmiddleware.util.SystemSettingUtil.DOWN_STATUS;
+
 
 
 @Slf4j
@@ -57,12 +55,11 @@ public class FtFacade {
 
     private final ClientDbService clientDbService;
 
-    private final SystemSettingUtil systemSettingUtil;
 
     @Autowired
     public FtFacade(XmlUtil xmlUtil, NIPOutwardMapper nipOutwardMapper, NIPOutwardWS nipOutwardWS,
                     SSMUtil ssmUtil, FundsTransferDbService fundsTransferDbService,
-                    SQSService sqsService, ClientDbService clientDbService, SystemSettingUtil systemSettingUtil) {
+                    SQSService sqsService, ClientDbService clientDbService) {
         this.xmlUtil = xmlUtil;
         this.nipOutwardMapper = nipOutwardMapper;
         this.nipOutwardWS = nipOutwardWS;
@@ -70,7 +67,7 @@ public class FtFacade {
         this.fundsTransferDbService = fundsTransferDbService;
         this.sqsService = sqsService;
         this.clientDbService = clientDbService;
-        this.systemSettingUtil = systemSettingUtil;
+
     }
 
     public NESingleResponse doNameEnquiry(NESingleRequest neSingleRequest){
@@ -94,7 +91,6 @@ public class FtFacade {
         val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
         if(StringUtils.isBlank(nameEnquirySingleItemResponse.getReturn())){
             iMarker.info(" Empty  Response from NIPOutwardWS ");
-            systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
             val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
             nipMiddleWareAPIException.buildFailureStatusException(NO_RESPONSE_FROM_NIBSS_MSG,iMarker);
             throw nipMiddleWareAPIException;
@@ -198,7 +194,6 @@ public class FtFacade {
                 //update db
                 iMarker.info(" Received  No Response from NIPOutwardWS  " );
                 fundsTransferDbService.updateFTResponseCode(sessionId, NIP_202.getCode(),clientId,NO_RESPONSE_FROM_NIBSS_MSG,iMarker);
-                systemSettingUtil.changeStatus(CALL_NIBSS_API,DOWN_STATUS);
                 //write a response to SQS to do Tsq
                 writeToSQS(clientId,TSQ, sessionId,originatorBankCode);
                 return;

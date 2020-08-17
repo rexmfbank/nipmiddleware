@@ -27,6 +27,14 @@ public class NIPMiddleWareAPIException extends RuntimeException {
         setMarker(marker);
     }
 
+    public void buildFailureStatusException(String responseMessage,String responseCode,IMarker marker){
+        errorResponse = ErrorResponse.builder()
+                .responseCode(responseCode)
+                .responseMessage(responseMessage)
+                .build();
+        setMarker(marker);
+    }
+
     public void buildPendingStatusException(String responseMessage,IMarker marker){
         errorResponse = ErrorResponse.builder()
                 .responseCode(NIP_202.getCode())
