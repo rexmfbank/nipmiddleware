@@ -1,7 +1,5 @@
 package com.globalaccelerex.nipmiddleware.security.admin;
 
-import com.globalaccelerex.nipmiddleware.security.admin.AdminAuthenticationFilter;
-import com.globalaccelerex.nipmiddleware.security.admin.AdminAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +25,8 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AdminAuthenticationProvider customAuthenticationProvider;
+
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

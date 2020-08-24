@@ -1,0 +1,271 @@
+package com.globalaccelerex.nipmiddleware.util.mocks;
+
+import com.globalaccelerex.nipmiddleware.mapper.NIPInwardMapper;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountblock.AccountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.accountunblock.AccountUnblockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountblock.AmountBlockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.amountunblock.AmountUnblockResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.balanceenquiry.BalanceEnquiryResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.financialinstitution.FinancialInstitutionListResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.fundtransfer.*;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.mandateadvice.MandateAdviceResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleRequestVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingleResponseVO;
+import com.globalaccelerex.nipmiddleware.payload.nip.outward.tsq.TsqSingleItemResponseVO;
+import com.globalaccelerex.nipmiddleware.service.db.FinancialInstitutionDbService;
+import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
+import lombok.val;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.globalaccelerex.nipmiddleware.enums.ChannelCodesEnum.CC_1;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00;
+
+@Service
+public class MockResponseUtil {
+
+    private final SessionIdUtil sessionIdUtil;
+
+    private final NIPInwardMapper nipInwardMapper;
+
+    private final FinancialInstitutionDbService financialInstitutionDbService;
+
+    @Autowired
+    public MockResponseUtil( SessionIdUtil sessionIdUtil, NIPInwardMapper nipInwardMapper, FinancialInstitutionDbService financialInstitutionDbService) {
+        this.sessionIdUtil = sessionIdUtil;
+        this.nipInwardMapper = nipInwardMapper;
+        this.financialInstitutionDbService = financialInstitutionDbService;
+    }
+
+    public NESingleResponseVO buildNESingleResponseVO(NESingleRequestVO neSingleRequestVO , String originatingInstitutionCode){
+        val neSingleResponseVO = MockNE.handleNameEnquiry(neSingleRequestVO);
+        if(StringUtils.equalsIgnoreCase(neSingleResponseVO.getResponseCode(),NIP_00.getCode())){
+            neSingleResponseVO.setSessionId(sessionIdUtil.generateSessionId(originatingInstitutionCode));
+        }
+        return neSingleResponseVO;
+    }
+
+    public MandateAdviceResponseVO buildMandateAdviceResponseVO(MandateAdviceRequestVO mandateAdviceRequestVO, String originatingInstitutionCode){
+        val mandateAdviceResponseVO = MockMandateAdvice.handleMandate(mandateAdviceRequestVO);
+        if(StringUtils.equalsIgnoreCase(mandateAdviceResponseVO.getResponseCode(),NIP_00.getCode())){
+            mandateAdviceResponseVO.setSessionId(sessionIdUtil.generateSessionId(originatingInstitutionCode));
+        }
+        return mandateAdviceResponseVO;
+    }
+
+    public BalanceEnquiryResponseVO buildBalanceEnquiryResponseVO(BalanceEnquiryRequestVO balanceEnquiryRequestVO, String originatingInstitutionCode){
+        val balanceEnquiryResponseVO = MockTransaction.handleBalanceEnquiry(balanceEnquiryRequestVO);
+        if(StringUtils.equalsIgnoreCase(balanceEnquiryResponseVO.getResponseCode(),NIP_00.getCode())){
+            balanceEnquiryResponseVO.setSessionID(sessionIdUtil.generateSessionId(originatingInstitutionCode));
+        }
+        return balanceEnquiryResponseVO;
+    }
+
+    public FinancialInstitutionListResponseVO buildFIListResponse(FinancialInstitutionListRequestVO financialInstitutionListRequest, String originatingInstitutionCode){
+        final val financialInstitutionEntityList =financialInstitutionListRequest.getRecordList().stream()
+                .map(nipInwardMapper.mapFIEntity)
+                .collect(Collectors.toList());
+        financialInstitutionDbService.saveAll(financialInstitutionEntityList);
+
+        return FinancialInstitutionListResponseVO.builder()
+                .batchNumber(financialInstitutionListRequest.getHeader().getBatchNumber())
+                .channelCode(financialInstitutionListRequest.getHeader().getChannelCode())
+                .destinationInstitutionCode(originatingInstitutionCode)
+                .numberOfRecords(String.valueOf(financialInstitutionListRequest.getRecordList().size()))
+                .responseCode(NIP_00.getCode())
+                .build();
+    }
+
+    public FTDirectDebitResponseVO buildFTDirectDebitResponseVO(FTDirectDebitRequestVO ftDirectDebitRequestVO, String originatingInstitutionCode){
+        return FTDirectDebitResponseVO.builder()
+                .amount(ftDirectDebitRequestVO.getAmount())
+                .beneficiaryAccountName(ftDirectDebitRequestVO.getBeneficiaryAccountName())
+                .beneficiaryBVN(ftDirectDebitRequestVO.getBeneficiaryBVN())
+                .beneficiaryKYCLevel(ftDirectDebitRequestVO.getBeneficiaryKYCLevel())
+                .beneficiaryAccountNo(ftDirectDebitRequestVO.getBeneficiaryAccountNo())
+                .channelCode(ftDirectDebitRequestVO.getChannelCode())
+                .debitAccountName(ftDirectDebitRequestVO.getDebitAccountName())
+                .debitAccountNo(ftDirectDebitRequestVO.getDebitAccountNo())
+                .debitBVN(ftDirectDebitRequestVO.getDebitBVN())
+                .debitKYCLevel(ftDirectDebitRequestVO.getDebitKYCLevel())
+                .destinationInstitutionCode(ftDirectDebitRequestVO.getDestinationInstitutionCode())
+                .mandateReferenceNo(ftDirectDebitRequestVO.getMandateReferenceNo())
+                .nameEnquiryRef(ftDirectDebitRequestVO.getNameEnquiryRef())
+                .narration(ftDirectDebitRequestVO.getNarration())
+                .paymentReference(ftDirectDebitRequestVO.getPaymentReference())
+                .responseCode(NIP_00.getCode())
+                .sessionId(ftDirectDebitRequestVO.getSessionId())
+                .transactionFee(ftDirectDebitRequestVO.getTransactionFee())
+                .transactionLocation(ftDirectDebitRequestVO.getTransactionLocation())
+                .build();
+    }
+
+    public FTDirectCreditResponseVO buildFtDirectCreditResponseVO(FTDirectCreditRequestVO ftDirectCreditRequestVO, String originatingInstitutionCode){
+        return FTDirectCreditResponseVO.builder()
+                .amount(ftDirectCreditRequestVO.getAmount())
+                .beneficiaryAccountName(ftDirectCreditRequestVO.getBeneficiaryAccountName())
+                .beneficiaryAccountNo(ftDirectCreditRequestVO.getBeneficiaryAccountNo())
+                .beneficiaryBVN(ftDirectCreditRequestVO.getBeneficiaryBVN())
+                .beneficiaryKYCLevel(ftDirectCreditRequestVO.getBeneficiaryKYCLevel())
+                .channelCode(ftDirectCreditRequestVO.getChannelCode())
+                .destinationInstitutionCode(ftDirectCreditRequestVO.getDestinationInstitutionCode())
+                .nameEnquiryRef(ftDirectCreditRequestVO.getNameEnquiryRef())
+                .narration(ftDirectCreditRequestVO.getNarration())
+                .originatorAccountName(ftDirectCreditRequestVO.getOriginatorAccountName())
+                .originatorAccountNo(ftDirectCreditRequestVO.getOriginatorAccountNo())
+                .originatorBVN(ftDirectCreditRequestVO.getOriginatorBVN())
+                .originatorKYCLevel(ftDirectCreditRequestVO.getOriginatorKYCLevel())
+                .paymentReference(ftDirectCreditRequestVO.getPaymentReference())
+                .responseCode(NIP_00.getCode())
+                .sessionId(ftDirectCreditRequestVO.getSessionId())
+                .transactionLocation(ftDirectCreditRequestVO.getTransactionLocation())
+                .build();
+    }
+
+    public TsqSingleItemResponseVO buildTsqSingleItemResponseVO(String sessionId , String originatingInstitutionCode){
+        final val tsqSingleItemResponseVO = new TsqSingleItemResponseVO();
+        tsqSingleItemResponseVO.setChannelCode(String.valueOf(CC_1.getCode()));
+        tsqSingleItemResponseVO.setResponseCode(NIP_00.getCode());
+        tsqSingleItemResponseVO.setSessionId(sessionId);
+        tsqSingleItemResponseVO.setSourceInstitutionCode(originatingInstitutionCode);
+        return tsqSingleItemResponseVO;
+    }
+
+    public FTAdviceDirectCreditResponseVO buildFTAdviceDirectCreditResponseVO(FTAdviceDirectCreditRequestVO ftAdviceDirectCreditRequestVO, String originatingInstitutionCode){
+        return FTAdviceDirectCreditResponseVO.builder()
+                .amount(ftAdviceDirectCreditRequestVO.getAmount())
+                .beneficiaryAccountName(ftAdviceDirectCreditRequestVO.getBeneficiaryAccountName())
+                .beneficiaryAccountNo(ftAdviceDirectCreditRequestVO.getBeneficiaryAccountNo())
+                .beneficiaryBVN(ftAdviceDirectCreditRequestVO.getBeneficiaryBVN())
+                .beneficiaryKYCLevel(ftAdviceDirectCreditRequestVO.getBeneficiaryKYCLevel())
+                .channelCode(ftAdviceDirectCreditRequestVO.getChannelCode())
+                .destinationInstitutionCode(ftAdviceDirectCreditRequestVO.getDestinationInstitutionCode())
+                .nameEnquiryRef(ftAdviceDirectCreditRequestVO.getNameEnquiryRef())
+                .narration(ftAdviceDirectCreditRequestVO.getNarration())
+                .originatorAccountName(ftAdviceDirectCreditRequestVO.getOriginatorAccountName())
+                .originatorAccountNo(ftAdviceDirectCreditRequestVO.getOriginatorAccountNo())
+                .originatorBVN(ftAdviceDirectCreditRequestVO.getOriginatorBVN())
+                .originatorKYCLevel(ftAdviceDirectCreditRequestVO.getOriginatorKYCLevel())
+                .paymentReference(ftAdviceDirectCreditRequestVO.getPaymentReference())
+                .responseCode(NIP_00.getCode())
+                .sessionId(ftAdviceDirectCreditRequestVO.getSessionId())
+                .transactionLocation(ftAdviceDirectCreditRequestVO.getTransactionLocation())
+                .build();
+    }
+
+    public Function<FTAdviceDirectCreditRequestVO,FTAdviceDirectCreditResponseVO> mapFTAdviceDirectCreditResponseVO =
+            ftAdviceDirectCreditRequestVO -> FTAdviceDirectCreditResponseVO.builder()
+                    .amount(ftAdviceDirectCreditRequestVO.getAmount())
+                    .beneficiaryAccountName(ftAdviceDirectCreditRequestVO.getBeneficiaryAccountName())
+                    .beneficiaryAccountNo(ftAdviceDirectCreditRequestVO.getBeneficiaryAccountNo())
+                    .beneficiaryBVN(ftAdviceDirectCreditRequestVO.getBeneficiaryBVN())
+                    .beneficiaryKYCLevel(ftAdviceDirectCreditRequestVO.getBeneficiaryKYCLevel())
+                    .channelCode(ftAdviceDirectCreditRequestVO.getChannelCode())
+                    .destinationInstitutionCode(ftAdviceDirectCreditRequestVO.getDestinationInstitutionCode())
+                    .nameEnquiryRef(ftAdviceDirectCreditRequestVO.getNameEnquiryRef())
+                    .narration(ftAdviceDirectCreditRequestVO.getNarration())
+                    .originatorAccountName(ftAdviceDirectCreditRequestVO.getOriginatorAccountName())
+                    .originatorAccountNo(ftAdviceDirectCreditRequestVO.getOriginatorAccountNo())
+                    .originatorBVN(ftAdviceDirectCreditRequestVO.getOriginatorBVN())
+                    .originatorKYCLevel(ftAdviceDirectCreditRequestVO.getOriginatorKYCLevel())
+                    .paymentReference(ftAdviceDirectCreditRequestVO.getPaymentReference())
+                    .responseCode(NIP_00.getCode())
+                    .sessionId(ftAdviceDirectCreditRequestVO.getSessionId())
+                    .transactionLocation(ftAdviceDirectCreditRequestVO.getTransactionLocation())
+                    .build();
+
+    public Function<FTAdviceDirectDebitRequestVO,FTAdviceDirectDebitResponseVO> mapFTAdviceDirectDebitResponseVO =
+            ftAdviceDirectDebitRequestVO -> FTAdviceDirectDebitResponseVO.builder()
+                    .amount(ftAdviceDirectDebitRequestVO.getAmount())
+                    .beneficiaryAccountName(ftAdviceDirectDebitRequestVO.getBeneficiaryAccountName())
+                    .beneficiaryAccountNo(ftAdviceDirectDebitRequestVO.getBeneficiaryAccountNo())
+                    .beneficiaryBVN(ftAdviceDirectDebitRequestVO.getBeneficiaryBVN())
+                    .beneficiaryKYCLevel(ftAdviceDirectDebitRequestVO.getBeneficiaryKYCLevel())
+                    .channelCode(ftAdviceDirectDebitRequestVO.getChannelCode())
+                    .debitAccountName(ftAdviceDirectDebitRequestVO.getDebitAccountName())
+                    .debitAccountNo(ftAdviceDirectDebitRequestVO.getDebitAccountNo())
+                    .debitBVN(ftAdviceDirectDebitRequestVO.getDebitBVN())
+                    .debitKYCLevel(ftAdviceDirectDebitRequestVO.getDebitKYCLevel())
+                    .destinationInstitutionCode(ftAdviceDirectDebitRequestVO.getDestinationInstitutionCode())
+                    .mandateReferenceNo(ftAdviceDirectDebitRequestVO.getMandateReferenceNo())
+                    .nameEnquiryRef(ftAdviceDirectDebitRequestVO.getNameEnquiryRef())
+                    .narration(ftAdviceDirectDebitRequestVO.getNarration())
+                    .paymentReference(ftAdviceDirectDebitRequestVO.getPaymentReference())
+                    .responseCode(NIP_00.getCode())
+                    .sessionId(ftAdviceDirectDebitRequestVO.getSessionId())
+                    .transactionFee(ftAdviceDirectDebitRequestVO.getTransactionFee())
+                    .transactionLocation(ftAdviceDirectDebitRequestVO.getTransactionLocation())
+                    .build();
+
+
+    public Function<AccountBlockRequestVO, AccountBlockResponseVO> mapAccountBlockResponseVO =
+            accountBlockRequestVO -> AccountBlockResponseVO.builder()
+            .channelCode(accountBlockRequestVO.getChannelCode())
+            .destinationInstitutionCode(accountBlockRequestVO.getDestinationInstitutionCode())
+            .narration(accountBlockRequestVO.getNarration())
+            .reasonCode(accountBlockRequestVO.getReasonCode())
+            .referenceCode(accountBlockRequestVO.getReferenceCode())
+            .responseCode(NIP_00.getCode())
+            .sessionId(accountBlockRequestVO.getSessionId())
+            .targetAccountName(accountBlockRequestVO.getTargetAccountName())
+            .targetAccountNo(accountBlockRequestVO.getTargetAccountNo())
+            .targetBVN(accountBlockRequestVO.getTargetBVN())
+            .build();
+
+    public Function<AccountUnblockRequestVO , AccountUnblockResponseVO> mapAccountUnblockResponseVO =
+            accountUnblockRequestVO -> AccountUnblockResponseVO.builder()
+            .channelCode(accountUnblockRequestVO.getChannelCode())
+            .destinationInstitutionCode(accountUnblockRequestVO.getDestinationInstitutionCode())
+            .narration(accountUnblockRequestVO.getNarration())
+            .responseCode(NIP_00.getCode())
+            .referenceCode(accountUnblockRequestVO.getReferenceCode())
+            .reasonCode(accountUnblockRequestVO.getReasonCode())
+            .sessionId(accountUnblockRequestVO.getSessionId())
+            .targetAccountName(accountUnblockRequestVO.getTargetAccountName())
+            .targetAccountNo(accountUnblockRequestVO.getTargetAccountNo())
+            .targetBVN(accountUnblockRequestVO.getTargetBVN())
+            .build();
+
+    public Function<AmountBlockRequestVO , AmountBlockResponseVO> mapAmountBlockResponseVO =
+            amountBlockRequestVO -> AmountBlockResponseVO.builder()
+            .amount(amountBlockRequestVO.getAmount())
+            .channelCode(amountBlockRequestVO.getChannelCode())
+            .destinationInstitutionCode(amountBlockRequestVO.getDestinationInstitutionCode())
+            .narration(amountBlockRequestVO.getNarration())
+            .reasonCode(amountBlockRequestVO.getReasonCode())
+            .referenceCode(amountBlockRequestVO.getReferenceCode())
+            .responseCode(NIP_00.getCode())
+            .sessionId(amountBlockRequestVO.getSessionId())
+            .targetAccountName(amountBlockRequestVO.getTargetAccountName())
+            .targetAccountNo(amountBlockRequestVO.getTargetAccountNo())
+            .targetBVN(amountBlockRequestVO.getTargetBVN())
+            .build();
+
+    public Function<AmountUnblockRequestVO, AmountUnblockResponseVO> mapAmountUnblockResponseVO =
+            amountUnblockRequestVO -> AmountUnblockResponseVO.builder()
+                    .amount(amountUnblockRequestVO.getAmount())
+                    .channelCode(amountUnblockRequestVO.getChannelCode())
+                    .destinationInstitutionCode(amountUnblockRequestVO.getDestinationInstitutionCode())
+                    .narration(amountUnblockRequestVO.getNarration())
+                    .reasonCode(amountUnblockRequestVO.getReasonCode())
+                    .referenceCode(amountUnblockRequestVO.getReferenceCode())
+                    .responseCode(NIP_00.getCode())
+                    .sessionId(amountUnblockRequestVO.getSessionId())
+                    .targetAccountName(amountUnblockRequestVO.getTargetAccountName())
+                    .targetAccountNo(amountUnblockRequestVO.getTargetAccountNo())
+                    .targetBVN(amountUnblockRequestVO.getTargetBVN())
+                    .build();
+
+
+}

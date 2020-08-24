@@ -2,6 +2,8 @@ package com.globalaccelerex.nipmiddleware.config;
 
 import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlHttpClient;
 import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlRestTemplate;
+import com.globalaccelerex.nipmiddleware.service.rest.BankHttpClient;
+import com.globalaccelerex.nipmiddleware.service.rest.BankRestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +34,15 @@ public class BeanConfig {
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    public BankHttpClient getBankHttpClient(){
+       log.trace(" setting HTTP client for Bank rest service");
+       return new BankHttpClient.HTTPClientBuilder()
+               .restTemplate(new BankRestTemplate().getClient())
+               .createClient();
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
 }

@@ -82,6 +82,8 @@ public class FundsTransferEntity {
 
     private String responseCode;
 
+    private String responseDescription;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
     private PaymentStatusEnum paymentStatusEnum;

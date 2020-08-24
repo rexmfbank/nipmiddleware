@@ -15,6 +15,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class SystemSettingEntity {
 
     @Id

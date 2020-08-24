@@ -1,59 +1,43 @@
 package com.globalaccelerex.nipmiddleware.util;
 
-import com.globalaccelerex.nipmiddleware.config.NipConfig;
+import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
+import com.globalaccelerex.nipmiddleware.institution.BankConfig;
+import com.globalaccelerex.nipmiddleware.institution.ConfigUtil;
+import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+import lombok.val;
+import nfp.ssm.core.SSMLib;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import nfp.ssm.core.SSMLib;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.ORIGINATING_BANK_CODE_NOT_FOUND_MSG;
 
 @Slf4j
 @Component
 public class SSMUtil {
 
-    private SSMLib ssmLib;
-
-    private final NipConfig nipConfig;
-
     @Autowired
-    public SSMUtil(NipConfig nipConfig) {
-        this.nipConfig = nipConfig;
-    }
+    private ConfigUtil configUtil;
 
-    private String resolvePath(String path){
-        try {
-            if (new File(path).exists()) {
-                return path;
-            }
-
-            InputStream is = getClass().getClassLoader().getResourceAsStream(path);
-            if (is == null) {
-                throw new FileNotFoundException("Could not load the SSM keys");
-            }
-            File oFile = File.createTempFile(StringUtils.replacePattern(path, "[^a-zA-Z0-9]+", "_"), ".tmp");
-            oFile.deleteOnExit();
-
-            IOUtils.copy(is, new FileOutputStream(oFile));
-            //log.info("Output Path for file: " + oFile.getAbsolutePath());
-            return oFile.getAbsolutePath();
-        } catch (Exception ex) {
-            log.debug("error resolving path ", ex);
-        }
-        return path;
-    }
-
-    public String encryptRequest(String dataToEncrypt){
-        SSMLib ssmLib = new SSMLib(resolvePath(nipConfig.getSsmPublicKeyPath()),resolvePath(nipConfig.getSsmPrivateKeyPath()));
+    public String encryptRequest(String dataToEncrypt, String originatingInstitutionCode, IMarker marker){
+        val bankConfig = retrieveBankConfig(originatingInstitutionCode,marker);
+        SSMLib ssmLib = new SSMLib(bankConfig.getPublicKeyPath(),bankConfig.getPrivateKeyPath());
         return ssmLib.encryptMessage(dataToEncrypt);
     }
 
-    public String decryptResponse(String dataToDecrypt){
-        SSMLib ssmLib = new SSMLib(resolvePath(nipConfig.getSsmPublicKeyPath()),resolvePath(nipConfig.getSsmPrivateKeyPath()));
-        return ssmLib.decryptFile(dataToDecrypt, nipConfig.getSsmPasswordKey());
+    public String decryptResponse(String dataToDecrypt,String originatingInstitutionCode, IMarker marker){
+        val bankConfig = retrieveBankConfig(originatingInstitutionCode,marker);
+        SSMLib ssmLib = new SSMLib(bankConfig.getPublicKeyPath(),bankConfig.getPrivateKeyPath());
+        return ssmLib.decryptFile(dataToDecrypt, bankConfig.getPasswordKey());
+    }
+
+    private BankConfig retrieveBankConfig(String originatingInstitutionCode,IMarker marker){
+        val bankConfig = configUtil.getBankConfig(originatingInstitutionCode);
+        if(bankConfig == null){
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(ORIGINATING_BANK_CODE_NOT_FOUND_MSG,marker);
+            throw nipMiddleWareAPIException;
+        }
+        return bankConfig;
     }
 }

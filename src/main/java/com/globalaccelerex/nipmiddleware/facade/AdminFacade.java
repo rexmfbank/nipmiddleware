@@ -2,9 +2,17 @@ package com.globalaccelerex.nipmiddleware.facade;
 
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
+import com.globalaccelerex.nipmiddleware.facade.outward.FtFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.mapper.ClientMapper;
-import com.globalaccelerex.nipmiddleware.payload.client.*;
+import com.globalaccelerex.nipmiddleware.payload.client.createClient.CreateClientRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.createClient.CreateClientResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.getclients.ClientDetail;
+import com.globalaccelerex.nipmiddleware.payload.client.getclients.GetClientsRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.getclients.GetClientsResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.resetpassword.ResetPasswordRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.resetpassword.ResetPasswordResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.updateclient.UpdateClientRequest;
 import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -17,30 +25,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_00;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.*;
 
 @Slf4j
 @Service
 public class AdminFacade {
 
-    private final ClientDbService clientDbService;
+    private  ClientDbService clientDbService;
 
-    private final JwtTokenUtil jwtTokenUtil;
+    private  JwtTokenUtil jwtTokenUtil;
 
-    private final ClientMapper clientMapper;
+    private  ClientMapper clientMapper;
 
-    private final NIPOutwardFacade nipOutwardFacade;
+    private  FtFacade ftFacade;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bcryptPasswordEncoder;
 
-    @Autowired
-    public AdminFacade(ClientDbService clientDbService, JwtTokenUtil jwtTokenUtil, ClientMapper clientMapper, NIPOutwardFacade nipOutwardFacade) {
-        this.clientDbService = clientDbService;
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.clientMapper = clientMapper;
-        this.nipOutwardFacade = nipOutwardFacade;
-    }
 
     public CreateClientResponse createClient(CreateClientRequest createClientRequest){
         final val iMarker = createClientRequest.getMarker();
@@ -48,11 +49,14 @@ public class AdminFacade {
         final val clientId = createClientRequest.getClientId();
 
         if(clientDbService.isClientPresent(clientId).isPresent()){
-            throw new NIPMiddleWareAPIException(NIP_114,iMarker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_DETAILS_EXIST_IN_DB_MSG,iMarker);
+            throw nipMiddleWareAPIException;
         }
         val neSingleRequest = clientMapper.mapNESingleRequest.apply(createClientRequest);
         neSingleRequest.setMarker(createClientRequest.getMarker());
-        val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+        val neSingleResponse = ftFacade.doNameEnquiry(neSingleRequest);
+
 
         if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
             final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
@@ -69,7 +73,10 @@ public class AdminFacade {
             createClientResponse.setSecretKey(jwtTokenStr);
             return createClientResponse;
         }else{
-            throw new NIPMiddleWareAPIException(NIP_105,iMarker);
+            final val responseCodeEnum = NIPResponseCodeEnum.getResponseCodeEnum(neSingleResponse.getResponseCode());
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(responseCodeEnum.getDescription(),responseCodeEnum.getCode(), iMarker);
+            throw nipMiddleWareAPIException;
         }
     }
 
@@ -82,7 +89,9 @@ public class AdminFacade {
             marker.info("done processing get client request ");
             return clientDetail;
         }else{
-            throw new NIPMiddleWareAPIException(NIP_124,marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_NOT_FOUND_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
     }
 
@@ -91,14 +100,18 @@ public class AdminFacade {
         marker.info("processing update client  request ");
         val clientEntityOpt = clientDbService.isClientPresent(updateClientRequest.getClientId());
         if(!clientEntityOpt.isPresent()){
-            throw new NIPMiddleWareAPIException(NIP_124,marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_NOT_FOUND_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
 
         val clientEntity = clientEntityOpt.get();
         //check if name already exists
         val clientEntityOpt_ = clientDbService.isClientNamePresent(updateClientRequest.getClientName());
         if(clientEntityOpt_ .isPresent() && !StringUtils.equalsIgnoreCase(clientEntityOpt_.get().getClientId() ,updateClientRequest.getClientId())){
-            throw new NIPMiddleWareAPIException(NIP_114 , marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_DETAILS_EXIST_IN_DB_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
         val accountNo = updateClientRequest.getAccountNo();
         val bankCode = updateClientRequest.getBankCode();
@@ -110,7 +123,7 @@ public class AdminFacade {
             // Do NameEnquiry
             val neSingleRequest = clientMapper.mapNESingleRequest_1.apply(updateClientRequest);
             neSingleRequest.setMarker(updateClientRequest.getMarker());
-            val neSingleResponse = nipOutwardFacade.doNameEnquiry(neSingleRequest);
+            val neSingleResponse = ftFacade.doNameEnquiry(neSingleRequest);
 
             if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
                 updatedClientEntity.setAccountName(neSingleResponse.getAccountName());
@@ -120,7 +133,9 @@ public class AdminFacade {
                 updatedClientEntity.setKycLevel(neSingleResponse.getKycLevel());
                 updatedClientEntity.setBvn(neSingleResponse.getBankVerificationNo());
             }else{
-                throw new NIPMiddleWareAPIException(NIP_105,marker);
+                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+                nipMiddleWareAPIException.buildFailureStatusException(NAME_ENQUIRY_FAILED_MSG,marker);
+                throw nipMiddleWareAPIException;
             }
         }
         clientDbService.updateClientEntity(updatedClientEntity);
@@ -161,18 +176,45 @@ public class AdminFacade {
         marker.info("processing reset password  request ");
         val clientEntityOpt = clientDbService.isClientPresent(resetPasswordRequest.getClientId());
         if(!clientEntityOpt.isPresent()){
-            throw new NIPMiddleWareAPIException(NIP_124,marker);
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_NOT_FOUND_MSG,marker);
+            throw nipMiddleWareAPIException;
         }
 
         val clientEntity = clientEntityOpt.get();
 
         val newPassword = RandomStringUtils.randomAlphanumeric(5).toUpperCase();
-        clientEntity.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        clientEntity.setPassword(bcryptPasswordEncoder.encode(newPassword));
         clientDbService.updateClientEntity(clientEntity);
         val resetPasswordResponse = new ResetPasswordResponse(NIP_00);
         resetPasswordResponse.setPassword(newPassword);
         resetPasswordResponse.setClientId(resetPasswordRequest.getClientId());
         marker.info("done resetting password  request ");
         return resetPasswordResponse;
+    }
+
+    @Autowired
+    public void setClientDbService(ClientDbService clientDbService) {
+        this.clientDbService = clientDbService;
+    }
+
+    @Autowired
+    public void setJwtTokenUtil(JwtTokenUtil jwtTokenUtil) {
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
+
+    @Autowired
+    public void setClientMapper(ClientMapper clientMapper) {
+        this.clientMapper = clientMapper;
+    }
+
+    @Autowired
+    public void setFtFacade(FtFacade ftFacade) {
+        this.ftFacade = ftFacade;
+    }
+
+    @Autowired
+    public void setBcryptPasswordEncoder(BCryptPasswordEncoder bcryptPasswordEncoder) {
+        this.bcryptPasswordEncoder = bcryptPasswordEncoder;
     }
 }

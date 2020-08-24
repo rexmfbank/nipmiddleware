@@ -2,13 +2,13 @@ package com.globalaccelerex.nipmiddleware.api;
 
 public interface BankAPI {
 
-    String CBA_API ="/api/nipmiddleware/v1/cba";
+    String MOCK_CBA_API ="/api/nipmiddleware/v1/cba";
 
     String NAME_ENQUIRY_API = "/nameEnquiry";
 
-    String FI_LIST_API ="/fI";
+    String FI_LIST_API ="/fiList";
 
-    String TSQ_API= "/tsq";
+    String TSQ_API= "/tsq/{sessionId}";
 
     String BALANCE_ENQUIRY_API ="/balanceEnquiry";
 
@@ -22,11 +22,11 @@ public interface BankAPI {
 
     String AMOUNT_UNBLOCK_API = "/amountUnblock";
 
-    String FT_DIRECT_CREDIT_API = "/ftDirectCredit";
+    String FT_DIRECT_CREDIT_API = "/ft/dc";
 
-    String FT_DIRECT_DEBIT_API = "/ftDirectDebit";
+    String FT_DIRECT_DEBIT_API = "/ft/dd";
 
-    String FT_ADVICE_DIRECT_CREDIT_API = "/ftAdviceDirectCredit";
+    String FT_ADVICE_DIRECT_CREDIT_API = "/ftAdvice/dc";
 
-    String FT_ADVICE_DIRECT_DEBIT_API = "/ftAdviceDirectDebit";
+    String FT_ADVICE_DIRECT_DEBIT_API = "/ftAdvice/dd";
 }

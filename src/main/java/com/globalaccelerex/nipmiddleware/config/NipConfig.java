@@ -20,21 +20,11 @@ public class NipConfig {
     @NotNull
     private String webServiceUrl;
 
-
     @NotNull
     private String tsqUrl;
 
     @NotNull
     private String soapActionUrl;
-
-    @NotNull
-    private String ssmPrivateKeyPath;
-
-    @NotNull
-    private String ssmPublicKeyPath;
-
-    @NotNull
-    private String ssmPasswordKey;
 
     private boolean ignoreEncryption;
 

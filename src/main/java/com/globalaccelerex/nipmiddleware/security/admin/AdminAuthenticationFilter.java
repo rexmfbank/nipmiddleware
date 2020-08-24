@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.TimeZone;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_109;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.UNAUTHORIZED_ACCESS_MSG;
+
 
 @Slf4j
 public class AdminAuthenticationFilter extends GenericFilterBean {
@@ -52,7 +54,7 @@ public class AdminAuthenticationFilter extends GenericFilterBean {
             log.error("Internal authentication service exception => " +authenticationException.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-            if (AccessControlException.class.isInstance(authenticationException)) {
+            if (authenticationException instanceof AccessControlException) {
                 AccessControlException ex = (AccessControlException) authenticationException;
                 response.addHeader("Content-Type", "application/json");
 
@@ -67,8 +69,8 @@ public class AdminAuthenticationFilter extends GenericFilterBean {
             response.addHeader("Content-Type", "application/json");
 
             final val errorResponse = new ErrorResponse();
-            errorResponse.setResponseCode(NIP_109.getCode());
-            errorResponse.setResponseMessage(NIP_109.getDescription());
+            errorResponse.setResponseCode(NIP_201.getCode());
+            errorResponse.setResponseMessage(UNAUTHORIZED_ACCESS_MSG);
             response.getWriter().print(OBJECT_MAPPER.writeValueAsString(errorResponse));
         }
     }

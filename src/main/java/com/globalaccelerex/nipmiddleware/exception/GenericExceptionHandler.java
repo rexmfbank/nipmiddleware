@@ -18,8 +18,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_100;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_96;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.EMPTY_FIELD_MSG;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.INVALID_FORMAT_MSG;
 
 
 @ControllerAdvice
@@ -51,7 +53,7 @@ public class GenericExceptionHandler {
             }
         }
         marker.done();
-        return new ErrorResponse(NIP_100);
+        return new ErrorResponse(NIP_201.getCode(),EMPTY_FIELD_MSG);
     }
 
     @ExceptionHandler(HttpMessageConversionException.class)
@@ -69,9 +71,9 @@ public class GenericExceptionHandler {
             if (invalidFormatException.getPath() != null && invalidFormatException.getPath().get(0) != null){
                 fieldName = invalidFormatException.getPath().get(0).getFieldName();
             }
-            return new ErrorResponse(NIP_100, "Unexpected value "+invalidFormatException.getValue().toString() + " sent for field "+fieldName);
+            return new ErrorResponse(NIP_201.getCode(), "Unexpected value "+invalidFormatException.getValue().toString() + " sent for field "+fieldName);
         }
-        return new ErrorResponse(NIP_100);
+        return new ErrorResponse(NIP_201.getCode(),INVALID_FORMAT_MSG);
     }
 
     @ExceptionHandler(ApplicationException.class)
@@ -99,9 +101,9 @@ public class GenericExceptionHandler {
 
         List<FieldError> error = ex.getBindingResult().getFieldErrors();
         if (error.isEmpty()){
-            return new ErrorResponse(NIP_100, "Request validation failed.");
+            return new ErrorResponse(NIP_201.getCode(), "Request validation failed.");
         }else{
-            return new ErrorResponse(NIP_100,  error.get(0).getDefaultMessage());
+            return new ErrorResponse(NIP_201.getCode(),  error.get(0).getDefaultMessage());
         }
     }
 

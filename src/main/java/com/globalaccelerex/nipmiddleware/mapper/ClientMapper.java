@@ -1,11 +1,11 @@
 package com.globalaccelerex.nipmiddleware.mapper;
 
 import com.globalaccelerex.nipmiddleware.entity.ClientEntity;
-import com.globalaccelerex.nipmiddleware.payload.client.ClientDetail;
-import com.globalaccelerex.nipmiddleware.payload.client.CreateClientRequest;
-import com.globalaccelerex.nipmiddleware.payload.client.CreateClientResponse;
-import com.globalaccelerex.nipmiddleware.payload.client.UpdateClientRequest;
-import com.globalaccelerex.nipmiddleware.payload.outward.nameenquiry.NESingleRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.createClient.CreateClientRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.createClient.CreateClientResponse;
+import com.globalaccelerex.nipmiddleware.payload.client.getclients.ClientDetail;
+import com.globalaccelerex.nipmiddleware.payload.client.nameenquiry.NESingleRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.updateclient.UpdateClientRequest;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;

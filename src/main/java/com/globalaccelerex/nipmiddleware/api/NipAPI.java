@@ -12,9 +12,9 @@ public interface NipAPI {
 
     String PORT_TYPE_NAME = "nipInwardPort";
 
-    String LOCATION_URI = "/api/nipmiddleware/ws";
+    String LOCATION_URI = "/api/nipmiddleware/v1/inward/ws/";
 
-    String URL_MAPPINGS = "/api/nipmiddleware/ws/*";
+    String URL_MAPPINGS = "/api/nipmiddleware/v1/inward/ws/*";
 
     String FI_LIST_REQUEST = "financialinstitutionlist";
 

@@ -1,13 +1,14 @@
 package com.globalaccelerex.nipmiddleware.endpoint;
 
 
-import com.globalaccelerex.nipmiddleware.facade.FTInwardFacade;
-import com.globalaccelerex.nipmiddleware.facade.LienInwardFacade;
-import com.globalaccelerex.nipmiddleware.facade.NIPInwardFacade;
+import com.globalaccelerex.nipmiddleware.facade.inward.FTInwardFacade;
+import com.globalaccelerex.nipmiddleware.facade.inward.LienInwardFacade;
+import com.globalaccelerex.nipmiddleware.facade.inward.NIPInwardFacade;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
 import com.globalaccelerex.nipmiddleware.payload.nip.ws.*;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -40,12 +41,13 @@ public class NIPInwardEndpoint {
     public @ResponsePayload  JAXBElement<NameenquirysingleitemResponse> handleNE(@RequestPayload JAXBElement<Nameenquirysingleitem> nameEnquirySingleItem) {
         final val iMarker = Marker.fromString();
         iMarker.info("<<< NameEnquiry >>>");
-
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), nameEnquirySingleItem.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , nameEnquirySingleItem.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val nameEnquirySingleItemResponse = nipInwardFacade.handleNameEnquiry(nameEnquirySingleItem.getValue(),iMarker);
+            final val nameEnquirySingleItemResponse = nipInwardFacade.handleNameEnquiry(nameEnquirySingleItem.getValue(),iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(nameEnquirySingleItemResponse.getReturn() , false);
             return objectFactory.createNameenquirysingleitemResponse(nameEnquirySingleItemResponse);
         }finally {
@@ -59,10 +61,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< FIList >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), financialinstitutionlist.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , financialinstitutionlist.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val financialInstitutionListResponse = nipInwardFacade.handleFI(financialinstitutionlist.getValue(), iMarker);
+            final val financialInstitutionListResponse = nipInwardFacade.handleFI(financialinstitutionlist.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(financialInstitutionListResponse.getReturn() , false);
             return objectFactory.createFinancialinstitutionlistResponse(financialInstitutionListResponse);
         }finally {
@@ -77,10 +81,12 @@ public class NIPInwardEndpoint {
 
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), fundtransfersingleitemDd.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , fundtransfersingleitemDd.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val fundtransfersingleitemDdResponse = ftInwardFacade.handleFT_DD(fundtransfersingleitemDd.getValue(), iMarker);
+            final val fundtransfersingleitemDdResponse = ftInwardFacade.handleFTDirectDebit(fundtransfersingleitemDd.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransfersingleitemDdResponse.getReturn() , false);
             return objectFactory.createFundtransfersingleitemDdResponse(fundtransfersingleitemDdResponse);
         }finally {
@@ -95,10 +101,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< FT Single Item Dc >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), fundtransfersingleitemDc.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , fundtransfersingleitemDc.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val fundtransfersingleitemDcResponse = ftInwardFacade.handleFT_DC(fundtransfersingleitemDc.getValue(), iMarker);
+            final val fundtransfersingleitemDcResponse = ftInwardFacade.handleFTDirectCredit(fundtransfersingleitemDc.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransfersingleitemDcResponse.getReturn() , false);
             return objectFactory.createFundtransfersingleitemDcResponse(fundtransfersingleitemDcResponse);
         }finally {
@@ -112,10 +120,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< TSQ >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), txnStatusQuerySingleItem.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , txnStatusQuerySingleItem.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val txnStatusQuerySingleItemResponse = nipInwardFacade.handleTSQ(txnStatusQuerySingleItem.getValue(), iMarker);
+            final val txnStatusQuerySingleItemResponse = nipInwardFacade.handleTSQ(txnStatusQuerySingleItem.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(txnStatusQuerySingleItemResponse.getReturn() , false);
             return objectFactory.createTxnstatusquerysingleitemResponse(txnStatusQuerySingleItemResponse);
         }finally {
@@ -129,10 +139,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< FT Advice DC >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), fundtransferAdviceDC.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , fundtransferAdviceDC.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val fundtransferAdviceDcResponse = ftInwardFacade.handleFTAdvice_DC(fundtransferAdviceDC.getValue(), iMarker);
+            final val fundtransferAdviceDcResponse = ftInwardFacade.handleFTAdviceDirectCredit(fundtransferAdviceDC.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransferAdviceDcResponse.getReturn() , false);
             return objectFactory.createFundtransferAdviceDcResponse(fundtransferAdviceDcResponse);
         }finally {
@@ -148,10 +160,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< FT Advice DD >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), fundtransferAdviceDD.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , fundtransferAdviceDD.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val fundtransferAdviceDdResponse = ftInwardFacade.handleFTAdvice_DD(fundtransferAdviceDD.getValue(), iMarker);
+            final val fundtransferAdviceDdResponse = ftInwardFacade.handleFTAdviceDirectDebit(fundtransferAdviceDD.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransferAdviceDdResponse.getReturn() , false);
             return objectFactory.createFundtransferAdviceDdResponse(fundtransferAdviceDdResponse);
         }finally {
@@ -165,10 +179,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< Mandate Advice >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), mandateAdvice.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , mandateAdvice.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val mandateAdviceResponse = nipInwardFacade.handleMandateAdvice(mandateAdvice.getValue(), iMarker);
+            final val mandateAdviceResponse = nipInwardFacade.handleMandateAdvice(mandateAdvice.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(mandateAdviceResponse.getReturn() , false);
             return objectFactory.createMandateadviceResponse(mandateAdviceResponse);
         }finally {
@@ -182,10 +198,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< Account Block >>>");
 
         try {
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), accountblock.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , accountblock.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val accountBlockResponse = lienInwardFacade.handleAccountBlock(accountblock.getValue(), iMarker);
+            final val accountBlockResponse = lienInwardFacade.handleAccountBlock(accountblock.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(accountBlockResponse.getReturn(), false);
             return objectFactory.createAccountblockResponse(accountBlockResponse);
         } finally {
@@ -200,10 +218,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< Account Unblock >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), accountUnblock.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , accountUnblock.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val accountunblockResponse = lienInwardFacade.handleAccountUnblock(accountUnblock.getValue(), iMarker);
+            final val accountunblockResponse = lienInwardFacade.handleAccountUnblock(accountUnblock.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(accountunblockResponse.getReturn() , false);
             return objectFactory.createAccountunblockResponse(accountunblockResponse);
         }finally {
@@ -217,10 +237,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< AmountBlock >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), amountblock.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , amountblock.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val amountBlockResponse = lienInwardFacade.handleAmountBlock(amountblock.getValue(), iMarker);
+            final val amountBlockResponse = lienInwardFacade.handleAmountBlock(amountblock.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(amountBlockResponse.getReturn() , false);
             return objectFactory.createAmountblockResponse(amountBlockResponse);
         }finally {
@@ -234,10 +256,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< AmountUnBlock >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), amountunblock.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , amountunblock.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val amountUnblockResponse = lienInwardFacade.handleAmountUnblock(amountunblock.getValue(), iMarker);
+            final val amountUnblockResponse = lienInwardFacade.handleAmountUnblock(amountunblock.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(amountUnblockResponse.getReturn() , false);
             return objectFactory.createAmountunblockResponse(amountUnblockResponse);
         }finally {
@@ -252,10 +276,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< Balance Enquiry >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), balanceEnquiry.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , balanceEnquiry.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
         final val objectFactory = new ObjectFactory();
-            final val balanceEnquiryResponse = nipInwardFacade.handleBalanceEnquiry(balanceEnquiry.getValue(), iMarker);
+            final val balanceEnquiryResponse = nipInwardFacade.handleBalanceEnquiry(balanceEnquiry.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(balanceEnquiryResponse.getReturn() , false);
             return objectFactory.createBalanceenquiryResponse(balanceEnquiryResponse);
         }finally {
@@ -269,10 +295,12 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< Ft Acknowledgement Credit >>>");
 
         try{
-            iMarker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
-                    build().toUri().toASCIIString(), ftackcreditrequest.getValue().getRequest(), false);
+            val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
+            iMarker.setMainRequest(requestURI , ftackcreditrequest.getValue().getRequest(), false);
+
+            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
-            final val ftAckCreditRequestResponse = ftInwardFacade.handleFTAckCredit(ftackcreditrequest.getValue(), iMarker);
+            final val ftAckCreditRequestResponse = ftInwardFacade.handleFTAckCredit(ftackcreditrequest.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(ftAckCreditRequestResponse.getReturn() , false);
             return objectFactory.createFtackcreditrequestResponse(ftAckCreditRequestResponse);
         }finally {
