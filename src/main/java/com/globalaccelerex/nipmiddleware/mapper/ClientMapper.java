@@ -67,12 +67,12 @@ public class ClientMapper {
         createClientResponse.setCallbackUrl(createClientRequest.getCallbackUrl());
 
         if(createClientRequest.getLatitude() == null){
-            createClientResponse.setLatitude(StringUtils.EMPTY);
+            createClientResponse.setLatitude("2.2");
         }else{
             createClientResponse.setLatitude(String.valueOf(createClientRequest.getLatitude()));
         }
         if(createClientRequest.getLongitude() == null){
-            createClientResponse.setLongitude(StringUtils.EMPTY);
+            createClientResponse.setLongitude("3.3");
         }else{
             createClientResponse.setLongitude(String.valueOf(createClientRequest.getLongitude()));
         }
@@ -101,14 +101,14 @@ public class ClientMapper {
 
     public Function<CreateClientRequest , NESingleRequest> mapNESingleRequest =  createClientRequest ->
             NESingleRequest.builder()
-            .accountNo(createClientRequest.getAccountNo())
-            .destinationBankCode(createClientRequest.getBankCode())
+            .accountNo(createClientRequest.getAccountDetail().getAccountNo())
+            .destinationBankCode(createClientRequest.getAccountDetail().getBankCode())
             .originatorBankCode(createClientRequest.getOriginatorBankCode())
             .build();
 
     public Function<UpdateClientRequest , NESingleRequest> mapNESingleRequest_1 = updateClientRequest -> NESingleRequest.builder()
-            .accountNo(updateClientRequest.getAccountNo())
-            .destinationBankCode(updateClientRequest.getBankCode())
+            .accountNo(updateClientRequest.getAccountDetail().getAccountNo())
+            .destinationBankCode(updateClientRequest.getAccountDetail().getBankCode())
             .originatorBankCode(updateClientRequest.getOriginatorBankCode())
             .build();
 
