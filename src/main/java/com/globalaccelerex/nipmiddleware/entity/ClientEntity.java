@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.entity;
 
+import com.globalaccelerex.nipmiddleware.enums.ClientStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -65,6 +66,10 @@ public class ClientEntity {
 
     private String longitude;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ClientStatusEnum clientStatus;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name ="created_at")
@@ -74,4 +79,9 @@ public class ClientEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name ="last_updated_at")
     private Date lastUpdatedAt;
+
+    @PrePersist
+    public void prePersist(){
+        clientStatus = ClientStatusEnum.ACTIVE;
+    }
 }

@@ -1,6 +1,7 @@
 package com.globalaccelerex.nipmiddleware.mapper;
 
 import com.globalaccelerex.nipmiddleware.entity.ClientEntity;
+import com.globalaccelerex.nipmiddleware.enums.ClientStatusEnum;
 import com.globalaccelerex.nipmiddleware.payload.client.createClient.CreateClientRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.createClient.CreateClientResponse;
 import com.globalaccelerex.nipmiddleware.payload.client.getclients.ClientDetail;
@@ -44,12 +45,12 @@ public class ClientMapper {
                 .longitude(String.valueOf(createClientRequest.getLongitude()))
                 .build();
         if(createClientRequest.getLatitude() == null){
-            clientEntity.setLatitude(StringUtils.EMPTY);
+            clientEntity.setLatitude("2.2");
         }else{
             clientEntity.setLatitude(String.valueOf(createClientRequest.getLatitude()));
         }
         if(createClientRequest.getLongitude() == null){
-            clientEntity.setLongitude(StringUtils.EMPTY);
+            clientEntity.setLongitude("3.3");
         }else{
             clientEntity.setLongitude(String.valueOf(createClientRequest.getLongitude()));
         }
@@ -76,6 +77,7 @@ public class ClientMapper {
         }else{
             createClientResponse.setLongitude(String.valueOf(createClientRequest.getLongitude()));
         }
+        createClientResponse.setStatus(ClientStatusEnum.ACTIVE);
         return createClientResponse;
     };
 
@@ -96,6 +98,7 @@ public class ClientMapper {
         clientDetail.setBvn(clientEntity.getBvn());
         clientDetail.setKycLevel(clientEntity.getKycLevel());
         clientDetail.setResponse(NIP_00);
+        clientDetail.setStatus(clientEntity.getClientStatus());
         return clientDetail;
     };
 

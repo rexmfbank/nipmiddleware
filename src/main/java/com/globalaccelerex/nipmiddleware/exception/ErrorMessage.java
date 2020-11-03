@@ -51,4 +51,6 @@ public interface ErrorMessage {
     String CLIENT_ID_NOT_MATCHING_MSG = "Authentication Error :  Client Id does not match authenticated value";
 
     String ORIGINATING_BANK_CODE_NOT_FOUND_MSG ="Application  Error :  Originating Bank Code required for Encryption/Decryption Not found";
+
+    String CLIENT_STATUS_IS_NOT_ACTIVE_MSG ="Client status is not active";
 }

@@ -12,7 +12,7 @@ public interface NipAPI {
 
     String PORT_TYPE_NAME = "nipInwardPort";
 
-    String LOCATION_URI = "/api/nipmiddleware/v1/inward/ws/";
+    String INWARD_WS_URI = "/api/nipmiddleware/v1/inward/ws/";
 
     String URL_MAPPINGS = "/api/nipmiddleware/v1/inward/ws/*";
 

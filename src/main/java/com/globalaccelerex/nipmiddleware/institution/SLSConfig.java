@@ -32,6 +32,7 @@ public class SLSConfig implements BankConfig{
     @NotBlank
     private String institutionCode;
 
+    @NotBlank
     private String baseUrl;
 
     @NotBlank

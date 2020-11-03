@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.payload.client.tsq;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.globalaccelerex.nipmiddleware.payload.client.BaseResponse;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 @Builder
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TsqResponse extends BaseResponse {
 
     private String sessionId;
