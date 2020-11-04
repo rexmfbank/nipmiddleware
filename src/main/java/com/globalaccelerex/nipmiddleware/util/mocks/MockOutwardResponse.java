@@ -14,7 +14,7 @@ public class MockOutwardResponse {
                 .accountName("Ayodeji Ilori")
                 .accountNo(neSingleRequest.getAccountNo())
                 .bankVerificationNo("2136748372615")
-                .destinationInstitutionCode(neSingleRequest.getDestinationBankCode())
+                .destinationBankCode(neSingleRequest.getDestinationBankCode())
                 .kycLevel("1")
                 .nameEnquiryReference(String.valueOf(System.currentTimeMillis()))
                 .build();

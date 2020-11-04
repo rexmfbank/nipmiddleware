@@ -72,11 +72,13 @@ public class FtFacade {
 
     public NESingleResponse doNameEnquiry(NESingleRequest neSingleRequest){
         val iMarker = neSingleRequest.getMarker();
-        NESingleRequestVO neSingleRequestVO = nipOutwardMapper.mapNESingleRequestVO.apply(neSingleRequest);
+        val clientId = neSingleRequest.getClientId();
+        val clientEntity = clientDbService.findClientByClientId(clientId).get();
+        val originatorBankCode = clientEntity.getOriginatorBankCode();
+        neSingleRequest.setOriginatorBankCode(originatorBankCode);
 
+        NESingleRequestVO neSingleRequestVO = nipOutwardMapper.mapNESingleRequestVO.apply(neSingleRequest);
         final val sessionId = neSingleRequestVO.getSessionId();
-        final val clientId = neSingleRequest.getClientId();
-        val originatorBankCode = neSingleRequest.getOriginatorBankCode();
 
         String neSingleRequestXmlString = xmlUtil.marshal(NESingleRequestVO.class, neSingleRequestVO);
 
@@ -86,7 +88,6 @@ public class FtFacade {
         val neSingleItem = new Nameenquirysingleitem();
         neSingleItem.setRequest(encryptedXmlString);
         iMarker.info(" Sending Request to NIPOutwardWS for NameEnquiry");
-
 
         val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
         if(StringUtils.isBlank(nameEnquirySingleItemResponse.getReturn())){

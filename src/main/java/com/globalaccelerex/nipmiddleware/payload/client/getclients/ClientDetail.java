@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.payload.client.getclients;
 
+import com.globalaccelerex.nipmiddleware.enums.ClientStatusEnum;
 import com.globalaccelerex.nipmiddleware.payload.client.BaseResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,4 +39,6 @@ public class ClientDetail extends BaseResponse {
     private String latitude ;
 
     private String longitude ;
+
+    private ClientStatusEnum status;
 }

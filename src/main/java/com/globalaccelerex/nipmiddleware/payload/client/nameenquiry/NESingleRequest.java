@@ -1,12 +1,12 @@
 package com.globalaccelerex.nipmiddleware.payload.client.nameenquiry;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.globalaccelerex.nipmiddleware.payload.client.BaseRequest;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
@@ -24,8 +24,7 @@ public class NESingleRequest extends BaseRequest {
     @NotEmpty(message = "Account No is required")
     private String accountNo;
 
-    @NotBlank(message = "Originator Bank Code is required")
-    @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
+    @JsonIgnore
     private String originatorBankCode;
 
 
