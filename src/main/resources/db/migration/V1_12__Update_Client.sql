@@ -1,0 +1,1 @@
+update  client_entity set client_status ="ACTIVE";
