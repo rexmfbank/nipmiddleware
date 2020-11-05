@@ -30,17 +30,15 @@ public class BankMapper {
         return neSingleRequestDTO;
     };
 
-    public Function<NESingleResponseDTO , NESingleResponseVO> mapNESingleResponseVO = neSingleResponseDTO -> {
-        final val neSingleResponseVO = new NESingleResponseVO();
-        neSingleResponseDTO.setAccountName(neSingleResponseDTO.getAccountName());
-        neSingleResponseDTO.setAccountNo(neSingleResponseVO.getAccountNo());
-        neSingleResponseDTO.setBvn(neSingleResponseVO.getBvn());
-        neSingleResponseDTO.setDestinationInstitutionCode(neSingleResponseVO.getDestinationInstitutionCode());
-        neSingleResponseDTO.setKycLevel(neSingleResponseVO.getKycLevel());
-        neSingleResponseDTO.setResponseCode(neSingleResponseVO.getResponseCode());
-        neSingleResponseDTO.setSessionId(neSingleResponseVO.getSessionId());
-        return neSingleResponseVO;
-    };
+    public Function<NESingleResponseDTO , NESingleResponseVO> mapNESingleResponseVO = neSingleResponseDTO -> NESingleResponseVO.builder()
+            .accountName(neSingleResponseDTO.getAccountName())
+            .accountNo(neSingleResponseDTO.getAccountNo())
+            .bvn(neSingleResponseDTO.getBvn())
+            .destinationInstitutionCode(neSingleResponseDTO.getDestinationInstitutionCode())
+            .kycLevel(neSingleResponseDTO.getKycLevel())
+            .responseCode(neSingleResponseDTO.getResponseCode())
+            .sessionId(neSingleResponseDTO.getSessionId())
+            .build();
 
     public Function<MandateAdviceRequestVO, MandateAdviceRequestDTO> mapMandateAdviceRequestDTO = mandateAdviceRequestVO -> {
         final val mandateAdviceRequestDTO = new MandateAdviceRequestDTO();

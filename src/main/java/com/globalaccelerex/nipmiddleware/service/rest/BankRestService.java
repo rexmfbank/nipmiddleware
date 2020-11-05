@@ -27,6 +27,7 @@ import com.globalaccelerex.nipmiddleware.payload.bank.mandateadvice.MandateAdvic
 import com.globalaccelerex.nipmiddleware.payload.bank.nameenquiry.NESingleRequestDTO;
 import com.globalaccelerex.nipmiddleware.payload.bank.nameenquiry.NESingleResponseDTO;
 import com.globalaccelerex.nipmiddleware.payload.bank.tsq.TsqSingleResponseDTO;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Service;
 import static com.globalaccelerex.nipmiddleware.api.BankAPI.*;
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
 
+@Slf4j
 @Service
 public class BankRestService {
 

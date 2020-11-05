@@ -23,10 +23,12 @@ import com.globalaccelerex.nipmiddleware.payload.nip.inward.nameenquiry.NESingle
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleRequestVO;
 import com.globalaccelerex.nipmiddleware.payload.nip.inward.tsq.TSQuerySingleResponseVO;
 import com.globalaccelerex.nipmiddleware.service.rest.BankRestService;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class NIPInwardService {
 
@@ -47,6 +49,7 @@ public class NIPInwardService {
         val neSingleRequestDTO = bankMapper.mapNESingleRequestDTO.apply(neSingleRequestVO);
         val neSingleResponseDTO = bankRestService.doNameEnquiry(neSingleRequestDTO, originatingInstitutionCode,marker);
         val neSingleResponseVO = bankMapper.mapNESingleResponseVO.apply(neSingleResponseDTO);
+        neSingleResponseVO.setChannelCode(neSingleRequestVO.getChannelCode());
         return neSingleResponseVO;
     }
 
