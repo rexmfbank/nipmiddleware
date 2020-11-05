@@ -6,7 +6,7 @@ import lombok.Data;
 public class BalanceEnquiryRequestDTO {
 
 
-    private String sessionID;
+    private String sessionId;
 
     private String destinationInstitutionCode;
 

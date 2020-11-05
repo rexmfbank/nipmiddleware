@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.globalaccelerex.nipmiddleware.api.BankAPI.*;
-import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_96;
 
 @Slf4j
 @Service
@@ -53,9 +53,12 @@ public class BankRestService {
             marker.setRequest("request Body ", neSingleRequestDTO.toString());
             neSingleResponseDTO =  bankHttpClient.postRequest(baseUrl,NAME_ENQUIRY_API, neSingleRequestDTO, NESingleResponseDTO.class , null,null);
         }catch (Exception exception){
-            neSingleResponseDTO = new NESingleResponseDTO();
-            neSingleResponseDTO.setResponseCode(NIP_201.getCode());
-            neSingleResponseDTO.setSessionId(neSingleRequestDTO.getSessionId());
+            neSingleResponseDTO = NESingleResponseDTO.builder()
+                    .accountNo(neSingleRequestDTO.getAccountNo())
+                    .destinationInstitutionCode(neSingleRequestDTO.getDestinationInstitutionCode())
+                    .sessionId(neSingleRequestDTO.getSessionId())
+                    .responseCode(NIP_96.getCode())
+                    .build();
             logException(marker,exception);
         }
         marker.setResponse(" NameEnquiry response :::: " + neSingleResponseDTO.toString());
@@ -72,7 +75,7 @@ public class BankRestService {
             financialInstitutionListResponseDTO = bankHttpClient.postRequest(baseUrl, FI_LIST_API, financialInstitutionListRequestDTO, FinancialInstitutionListResponseDTO.class, null, null);
         }catch (Exception exception){
             financialInstitutionListResponseDTO = new FinancialInstitutionListResponseDTO();
-            financialInstitutionListResponseDTO.setResponseCode(NIP_201.getCode());
+            financialInstitutionListResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("FIList Response ::: " + financialInstitutionListResponseDTO.toString());
@@ -89,7 +92,7 @@ public class BankRestService {
             ftDirectDebitResponseDTO = bankHttpClient.postRequest(baseUrl, FT_DIRECT_DEBIT_API, ftDirectDebitRequestDTO, FTDirectDebitResponseDTO.class, null, null);
         }catch (Exception exception){
             ftDirectDebitResponseDTO = new FTDirectDebitResponseDTO();
-            ftDirectDebitResponseDTO.setResponseCode(NIP_201.getCode());
+            ftDirectDebitResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("FTDirectDebit Response  ::: " + ftDirectDebitResponseDTO.toString());
@@ -106,7 +109,7 @@ public class BankRestService {
             ftDirectCreditResponseDTO = bankHttpClient.postRequest(baseUrl, FT_DIRECT_CREDIT_API, ftDirectCreditRequestDTO, FTDirectCreditResponseDTO.class, null, null);
         }catch (Exception exception){
             ftDirectCreditResponseDTO = new FTDirectCreditResponseDTO();
-            ftDirectCreditResponseDTO.setResponseCode(NIP_201.getCode());
+            ftDirectCreditResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("FTDirectCredit Response  ::: " + ftDirectCreditResponseDTO.toString());
@@ -124,7 +127,7 @@ public class BankRestService {
             tsqSingleResponseDTO =  bankHttpClient.getRequest(baseUrl,tsqUrl,null ,TsqSingleResponseDTO.class ,null, null);
         }catch (Exception exception){
             tsqSingleResponseDTO = new TsqSingleResponseDTO();
-            tsqSingleResponseDTO.setResponseCode(NIP_201.getCode());
+            tsqSingleResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("Tsq Response  ::: " + tsqSingleResponseDTO.toString());
@@ -141,7 +144,7 @@ public class BankRestService {
             ftAdviceDirectCreditResponseDTO = bankHttpClient.postRequest(baseUrl, FT_ADVICE_DIRECT_CREDIT_API, ftAdviceDirectCreditRequestDTO, FTAdviceDirectCreditResponseDTO.class, null, null);
         }catch (Exception exception){
             ftAdviceDirectCreditResponseDTO = new FTAdviceDirectCreditResponseDTO();
-            ftAdviceDirectCreditResponseDTO.setResponseCode(NIP_201.getCode());
+            ftAdviceDirectCreditResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("FTAdvice Direct Credit Response  ::: " + ftAdviceDirectCreditResponseDTO.toString());
@@ -158,7 +161,7 @@ public class BankRestService {
             ftAdviceDirectDebitResponseDTO = bankHttpClient.postRequest(baseUrl, FT_ADVICE_DIRECT_DEBIT_API, ftAdviceDirectDebitRequestDTO, FTAdviceDirectDebitResponseDTO.class, null, null);
         }catch (Exception exception){
             ftAdviceDirectDebitResponseDTO = new FTAdviceDirectDebitResponseDTO();
-            ftAdviceDirectDebitResponseDTO.setResponseCode(NIP_201.getCode());
+            ftAdviceDirectDebitResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("FTAdvice Direct Debit Response  ::: " + ftAdviceDirectDebitResponseDTO.toString());
@@ -175,7 +178,7 @@ public class BankRestService {
             mandateAdviceResponseDTO = bankHttpClient.postRequest(baseUrl, MANDATE_ADVICE_API, mandateAdviceRequestDTO, MandateAdviceResponseDTO.class, null, null);
         }catch (Exception exception){
             mandateAdviceResponseDTO = new MandateAdviceResponseDTO();
-            mandateAdviceResponseDTO.setResponseCode(NIP_201.getCode());
+            mandateAdviceResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("Mandate Advice Response  ::: " + mandateAdviceResponseDTO.toString());
@@ -192,7 +195,7 @@ public class BankRestService {
             accountBlockResponseDTO = bankHttpClient.postRequest(baseUrl, ACCOUNT_BLOCK_API, accountBlockRequestDTO, AccountBlockResponseDTO.class, null, null);
         }catch (Exception exception){
             accountBlockResponseDTO = new AccountBlockResponseDTO();
-            accountBlockResponseDTO.setResponseCode(NIP_201.getCode());
+            accountBlockResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("Account Block Response  ::: " + accountBlockResponseDTO.toString());
@@ -209,7 +212,7 @@ public class BankRestService {
             accountUnblockResponseDTO = bankHttpClient.postRequest(baseUrl, ACCOUNT_UNBLOCK_API, accountUnblockRequestDTO, AccountUnblockResponseDTO.class, null, null);
         }catch (Exception exception){
             accountUnblockResponseDTO = new AccountUnblockResponseDTO();
-            accountUnblockResponseDTO.setResponseCode(NIP_201.getCode());
+            accountUnblockResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("Account UnBlock Response  ::: " + accountUnblockResponseDTO.toString());
@@ -226,7 +229,7 @@ public class BankRestService {
             amountBlockResponseDTO = bankHttpClient.postRequest(baseUrl, AMOUNT_BLOCK_API, amountBlockRequestDTO, AmountBlockResponseDTO.class, null, null);
         }catch (Exception exception){
             amountBlockResponseDTO = new AmountBlockResponseDTO();
-            amountBlockResponseDTO.setResponseCode(NIP_201.getCode());
+            amountBlockResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("Amount Block Response  ::: " + amountBlockResponseDTO.toString());
@@ -244,7 +247,7 @@ public class BankRestService {
             amountUnblockResponseDTO = bankHttpClient.postRequest(baseUrl, AMOUNT_UNBLOCK_API, amountUnblockRequestDTO, AmountUnblockResponseDTO.class, null, null);
         }catch (Exception exception){
             amountUnblockResponseDTO = new AmountUnblockResponseDTO();
-            amountUnblockResponseDTO.setResponseCode(NIP_201.getCode());
+            amountUnblockResponseDTO.setResponseCode(NIP_96.getCode());
             logException(marker,exception);
         }
         marker.setResponse("Amount UnBlock Response  ::: " + amountUnblockResponseDTO.toString());
@@ -261,8 +264,15 @@ public class BankRestService {
             marker.setRequest("request Body ", balanceEnquiryRequestDTO.toString());
             balanceEnquiryResponseDTO = bankHttpClient.postRequest(baseUrl, BALANCE_ENQUIRY_API, balanceEnquiryRequestDTO, BalanceEnquiryResponseDTO.class, null, null);
         }catch (Exception exception){
-            balanceEnquiryResponseDTO = new BalanceEnquiryResponseDTO();
-            balanceEnquiryResponseDTO.setResponseCode(NIP_201.getCode());
+            balanceEnquiryResponseDTO = BalanceEnquiryResponseDTO.builder()
+            .responseCode(NIP_96.getCode())
+            .accountName(balanceEnquiryRequestDTO.getAccountName())
+            .accountNo(balanceEnquiryRequestDTO.getAccountNo())
+            .authorizationCode(balanceEnquiryRequestDTO.getAuthorizationCode())
+            .bvn(balanceEnquiryRequestDTO.getBvn())
+            .destinationInstitutionCode(balanceEnquiryRequestDTO.getDestinationInstitutionCode())
+            .sessionId(balanceEnquiryRequestDTO.getSessionId())
+            .build();
             logException(marker,exception);
         }
         marker.setResponse("Balance Enquiry Response  ::: " + balanceEnquiryResponseDTO.toString());

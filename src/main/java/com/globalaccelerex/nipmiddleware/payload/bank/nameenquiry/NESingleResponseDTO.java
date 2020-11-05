@@ -1,11 +1,11 @@
 package com.globalaccelerex.nipmiddleware.payload.bank.nameenquiry;
 
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
+import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
+@Builder
 public class NESingleResponseDTO {
 
     private String sessionId;

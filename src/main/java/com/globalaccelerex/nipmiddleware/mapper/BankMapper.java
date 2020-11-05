@@ -76,12 +76,12 @@ public class BankMapper {
 
     public Function<BalanceEnquiryRequestVO, BalanceEnquiryRequestDTO> mapBalanceEnquiryRequestDTO = balanceEnquiryRequestVO -> {
         final val balanceEnquiryRequestDTO = new BalanceEnquiryRequestDTO();
-        balanceEnquiryRequestDTO.setAccountName(balanceEnquiryRequestDTO.getAccountName());
+        balanceEnquiryRequestDTO.setAccountName(balanceEnquiryRequestVO.getTargetAccountName());
         balanceEnquiryRequestDTO.setAccountNo(balanceEnquiryRequestVO.getTargetAccountNo());
         balanceEnquiryRequestDTO.setAuthorizationCode(balanceEnquiryRequestVO.getAuthorizationCode());
         balanceEnquiryRequestDTO.setBvn(balanceEnquiryRequestVO.getTargetBankVerificationNo());
         balanceEnquiryRequestDTO.setDestinationInstitutionCode(balanceEnquiryRequestVO.getDestinationInstitutionCode());
-        balanceEnquiryRequestDTO.setSessionID(balanceEnquiryRequestVO.getSessionID());
+        balanceEnquiryRequestDTO.setSessionId(balanceEnquiryRequestVO.getSessionID());
         return balanceEnquiryRequestDTO;
     };
 
@@ -92,9 +92,9 @@ public class BankMapper {
         balanceEnquiryResponseVO.setAuthorizationCode(balanceEnquiryResponseDTO.getAuthorizationCode());
         balanceEnquiryResponseVO.setTargetBankVerificationNo(balanceEnquiryResponseDTO.getBvn());
         balanceEnquiryResponseVO.setDestinationInstitutionCode(balanceEnquiryResponseDTO.getDestinationInstitutionCode());
-        balanceEnquiryResponseVO.setSessionID(balanceEnquiryResponseDTO.getSessionID());
+        balanceEnquiryResponseVO.setSessionID(balanceEnquiryResponseDTO.getSessionId());
         balanceEnquiryResponseVO.setAvailableBalance(balanceEnquiryResponseDTO.getAvailableBalance());
-        balanceEnquiryResponseVO.setChannelCode(balanceEnquiryResponseVO.getChannelCode());
+        balanceEnquiryResponseVO.setResponseCode(balanceEnquiryResponseDTO.getResponseCode());
         return balanceEnquiryResponseVO;
     };
 
