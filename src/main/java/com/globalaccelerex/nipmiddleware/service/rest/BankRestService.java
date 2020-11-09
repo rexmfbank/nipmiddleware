@@ -74,8 +74,13 @@ public class BankRestService {
             marker.setRequest("request Body ", financialInstitutionListRequestDTO.toString());
             financialInstitutionListResponseDTO = bankHttpClient.postRequest(baseUrl, FI_LIST_API, financialInstitutionListRequestDTO, FinancialInstitutionListResponseDTO.class, null, null);
         }catch (Exception exception){
-            financialInstitutionListResponseDTO = new FinancialInstitutionListResponseDTO();
-            financialInstitutionListResponseDTO.setResponseCode(NIP_96.getCode());
+            financialInstitutionListResponseDTO = FinancialInstitutionListResponseDTO.builder()
+            .destinationInstitutionCode(originatingInstitutionCode)
+            .responseCode(NIP_96.getCode())
+            .batchNumber(financialInstitutionListRequestDTO.getHeader().getBatchNumber())
+            .channelCode(financialInstitutionListRequestDTO.getHeader().getChannelCode())
+            .numberOfRecords(financialInstitutionListRequestDTO.getHeader().getNumberOfRecords())
+            .build();
             logException(marker,exception);
         }
         marker.setResponse("FIList Response ::: " + financialInstitutionListResponseDTO.toString());
@@ -194,8 +199,17 @@ public class BankRestService {
             marker.setRequest("request Body ", accountBlockRequestDTO.toString());
             accountBlockResponseDTO = bankHttpClient.postRequest(baseUrl, ACCOUNT_BLOCK_API, accountBlockRequestDTO, AccountBlockResponseDTO.class, null, null);
         }catch (Exception exception){
-            accountBlockResponseDTO = new AccountBlockResponseDTO();
-            accountBlockResponseDTO.setResponseCode(NIP_96.getCode());
+            accountBlockResponseDTO = AccountBlockResponseDTO.builder()
+            .destinationAccountName(accountBlockRequestDTO.getDestinationAccountName())
+            .destinationAccountNo(accountBlockRequestDTO.getDestinationAccountNo())
+            .responseCode(NIP_96.getCode())
+            .destinationBVN(accountBlockRequestDTO.getDestinationBVN())
+            .destinationInstitutionCode(accountBlockRequestDTO.getDestinationInstitutionCode())
+            .narration(accountBlockRequestDTO.getNarration())
+            .reasonCode(accountBlockRequestDTO.getReasonCode())
+            .referenceCode(accountBlockRequestDTO.getReferenceCode())
+            .sessionId(accountBlockRequestDTO.getSessionId())
+            .build();
             logException(marker,exception);
         }
         marker.setResponse("Account Block Response  ::: " + accountBlockResponseDTO.toString());
