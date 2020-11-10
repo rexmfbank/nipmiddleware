@@ -16,11 +16,11 @@ public interface BankAPI {
 
     String ACCOUNT_BLOCK_API = "/accountBlock";
 
-    String ACCOUNT_UNBLOCK_API = "/accountUnblock";
+    String ACCOUNT_UNBLOCK_API = "/accountUnBlock";
 
     String AMOUNT_BLOCK_API = "/amountBlock";
 
-    String AMOUNT_UNBLOCK_API = "/amountUnblock";
+    String AMOUNT_UNBLOCK_API = "/amountUnBlock";
 
     String FT_DIRECT_CREDIT_API = "/ft/dc";
 

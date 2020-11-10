@@ -30,17 +30,15 @@ public class BankMapper {
         return neSingleRequestDTO;
     };
 
-    public Function<NESingleResponseDTO , NESingleResponseVO> mapNESingleResponseVO = neSingleResponseDTO -> {
-        final val neSingleResponseVO = new NESingleResponseVO();
-        neSingleResponseDTO.setAccountName(neSingleResponseDTO.getAccountName());
-        neSingleResponseDTO.setAccountNo(neSingleResponseVO.getAccountNo());
-        neSingleResponseDTO.setBvn(neSingleResponseVO.getBvn());
-        neSingleResponseDTO.setDestinationInstitutionCode(neSingleResponseVO.getDestinationInstitutionCode());
-        neSingleResponseDTO.setKycLevel(neSingleResponseVO.getKycLevel());
-        neSingleResponseDTO.setResponseCode(neSingleResponseVO.getResponseCode());
-        neSingleResponseDTO.setSessionId(neSingleResponseVO.getSessionId());
-        return neSingleResponseVO;
-    };
+    public Function<NESingleResponseDTO , NESingleResponseVO> mapNESingleResponseVO = neSingleResponseDTO -> NESingleResponseVO.builder()
+            .accountName(neSingleResponseDTO.getAccountName())
+            .accountNo(neSingleResponseDTO.getAccountNo())
+            .bvn(neSingleResponseDTO.getBvn())
+            .destinationInstitutionCode(neSingleResponseDTO.getDestinationInstitutionCode())
+            .kycLevel(neSingleResponseDTO.getKycLevel())
+            .responseCode(neSingleResponseDTO.getResponseCode())
+            .sessionId(neSingleResponseDTO.getSessionId())
+            .build();
 
     public Function<MandateAdviceRequestVO, MandateAdviceRequestDTO> mapMandateAdviceRequestDTO = mandateAdviceRequestVO -> {
         final val mandateAdviceRequestDTO = new MandateAdviceRequestDTO();
@@ -78,12 +76,12 @@ public class BankMapper {
 
     public Function<BalanceEnquiryRequestVO, BalanceEnquiryRequestDTO> mapBalanceEnquiryRequestDTO = balanceEnquiryRequestVO -> {
         final val balanceEnquiryRequestDTO = new BalanceEnquiryRequestDTO();
-        balanceEnquiryRequestDTO.setAccountName(balanceEnquiryRequestDTO.getAccountName());
+        balanceEnquiryRequestDTO.setAccountName(balanceEnquiryRequestVO.getTargetAccountName());
         balanceEnquiryRequestDTO.setAccountNo(balanceEnquiryRequestVO.getTargetAccountNo());
         balanceEnquiryRequestDTO.setAuthorizationCode(balanceEnquiryRequestVO.getAuthorizationCode());
         balanceEnquiryRequestDTO.setBvn(balanceEnquiryRequestVO.getTargetBankVerificationNo());
         balanceEnquiryRequestDTO.setDestinationInstitutionCode(balanceEnquiryRequestVO.getDestinationInstitutionCode());
-        balanceEnquiryRequestDTO.setSessionID(balanceEnquiryRequestVO.getSessionID());
+        balanceEnquiryRequestDTO.setSessionId(balanceEnquiryRequestVO.getSessionID());
         return balanceEnquiryRequestDTO;
     };
 
@@ -94,9 +92,9 @@ public class BankMapper {
         balanceEnquiryResponseVO.setAuthorizationCode(balanceEnquiryResponseDTO.getAuthorizationCode());
         balanceEnquiryResponseVO.setTargetBankVerificationNo(balanceEnquiryResponseDTO.getBvn());
         balanceEnquiryResponseVO.setDestinationInstitutionCode(balanceEnquiryResponseDTO.getDestinationInstitutionCode());
-        balanceEnquiryResponseVO.setSessionID(balanceEnquiryResponseDTO.getSessionID());
+        balanceEnquiryResponseVO.setSessionID(balanceEnquiryResponseDTO.getSessionId());
         balanceEnquiryResponseVO.setAvailableBalance(balanceEnquiryResponseDTO.getAvailableBalance());
-        balanceEnquiryResponseVO.setChannelCode(balanceEnquiryResponseVO.getChannelCode());
+        balanceEnquiryResponseVO.setResponseCode(balanceEnquiryResponseDTO.getResponseCode());
         return balanceEnquiryResponseVO;
     };
 
