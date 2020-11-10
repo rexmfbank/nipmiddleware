@@ -29,6 +29,7 @@ public class AmountMapper {
         amountBlockRequestDTO.setReasonCode(amountBlockRequestVO.getReasonCode());
         amountBlockRequestDTO.setReferenceCode(amountBlockRequestVO.getReferenceCode());
         amountBlockRequestDTO.setSessionId(amountBlockRequestVO.getSessionId());
+        amountBlockRequestDTO.setAmount(amountBlockRequestVO.getAmount());
         return amountBlockRequestDTO;
     };
 
@@ -36,6 +37,7 @@ public class AmountMapper {
         final val amountBlockResponseVO = new AmountBlockResponseVO();
         amountBlockResponseVO.setTargetAccountName(amountBlockResponseDTO.getDestinationAccountName());
         amountBlockResponseVO.setTargetAccountNo(amountBlockResponseDTO.getDestinationAccountNo());
+        amountBlockResponseVO.setAmount(amountBlockResponseDTO.getAmount());
         amountBlockResponseVO.setTargetBVN(amountBlockResponseDTO.getDestinationBVN());
         amountBlockResponseVO.setDestinationInstitutionCode(amountBlockResponseDTO.getDestinationInstitutionCode());
         amountBlockResponseVO.setNarration(amountBlockResponseDTO.getNarration());
@@ -48,6 +50,7 @@ public class AmountMapper {
 
     public Function<AmountUnblockRequestVO, AmountUnblockRequestDTO> mapAmountUnblockRequestDTO = amountUnblockRequestVO -> {
         final val amountUnblockRequestDTO = new AmountUnblockRequestDTO();
+        amountUnblockRequestDTO.setAmount(amountUnblockRequestVO.getAmount());
         amountUnblockRequestDTO.setDestinationAccountName(amountUnblockRequestVO.getTargetAccountName());
         amountUnblockRequestDTO.setDestinationAccountNo(amountUnblockRequestVO.getTargetAccountNo());
         amountUnblockRequestDTO.setDestinationBVN(amountUnblockRequestVO.getTargetBVN());
@@ -70,6 +73,7 @@ public class AmountMapper {
         amountUnblockResponseVO.setReferenceCode(amountUnblockResponseDTO.getReferenceCode());
         amountUnblockResponseVO.setSessionId(amountUnblockResponseDTO.getSessionId());
         amountUnblockResponseVO.setResponseCode(amountUnblockResponseDTO.getResponseCode());
+        amountUnblockResponseVO.setAmount(amountUnblockResponseDTO.getAmount());
         return amountUnblockResponseVO;
     };
 }

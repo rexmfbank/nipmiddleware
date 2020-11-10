@@ -96,8 +96,26 @@ public class BankRestService {
             marker.setRequest("request Body ", ftDirectDebitRequestDTO.toString());
             ftDirectDebitResponseDTO = bankHttpClient.postRequest(baseUrl, FT_DIRECT_DEBIT_API, ftDirectDebitRequestDTO, FTDirectDebitResponseDTO.class, null, null);
         }catch (Exception exception){
-            ftDirectDebitResponseDTO = new FTDirectDebitResponseDTO();
-            ftDirectDebitResponseDTO.setResponseCode(NIP_96.getCode());
+            ftDirectDebitResponseDTO = FTDirectDebitResponseDTO.builder()
+            .debitAccountName(ftDirectDebitRequestDTO.getDebitAccountName())
+            .debitBVN(ftDirectDebitRequestDTO.getDebitBVN())
+            .debitAccountNo(ftDirectDebitRequestDTO.getDebitAccountNo())
+            .debitKYCLevel(ftDirectDebitRequestDTO.getDebitKYCLevel())
+            .responseCode(NIP_96.getCode())
+            .amount(ftDirectDebitRequestDTO.getAmount())
+            .beneficiaryAccountName(ftDirectDebitRequestDTO.getBeneficiaryAccountName())
+            .beneficiaryAccountNo(ftDirectDebitRequestDTO.getBeneficiaryAccountNo())
+            .beneficiaryBVN(ftDirectDebitRequestDTO.getBeneficiaryBVN())
+            .beneficiaryKYCLevel(ftDirectDebitRequestDTO.getBeneficiaryKYCLevel())
+            .destinationInstitutionCode(ftDirectDebitRequestDTO.getDestinationInstitutionCode())
+            .mandateReferenceNo(ftDirectDebitRequestDTO.getMandateReferenceNo())
+            .nameEnquiryRef(ftDirectDebitRequestDTO.getNameEnquiryRef())
+            .narration(ftDirectDebitRequestDTO.getNarration())
+            .paymentReference(ftDirectDebitRequestDTO.getPaymentReference())
+            .sessionId(ftDirectDebitRequestDTO.getSessionId())
+            .transactionFee(ftDirectDebitRequestDTO.getTransactionFee())
+            .transactionLocation(ftDirectDebitRequestDTO.getTransactionLocation())
+            .build();
             logException(marker,exception);
         }
         marker.setResponse("FTDirectDebit Response  ::: " + ftDirectDebitResponseDTO.toString());
@@ -113,8 +131,24 @@ public class BankRestService {
             marker.setRequest("request Body ", ftDirectCreditRequestDTO.toString());
             ftDirectCreditResponseDTO = bankHttpClient.postRequest(baseUrl, FT_DIRECT_CREDIT_API, ftDirectCreditRequestDTO, FTDirectCreditResponseDTO.class, null, null);
         }catch (Exception exception){
-            ftDirectCreditResponseDTO = new FTDirectCreditResponseDTO();
-            ftDirectCreditResponseDTO.setResponseCode(NIP_96.getCode());
+            ftDirectCreditResponseDTO = FTDirectCreditResponseDTO.builder()
+            .amount(ftDirectCreditRequestDTO.getAmount())
+            .beneficiaryAccountName(ftDirectCreditRequestDTO.getBeneficiaryAccountName())
+            .beneficiaryAccountNo(ftDirectCreditRequestDTO.getBeneficiaryAccountNo())
+            .beneficiaryBVN(ftDirectCreditRequestDTO.getBeneficiaryBVN())
+            .beneficiaryKYCLevel(ftDirectCreditRequestDTO.getBeneficiaryKYCLevel())
+            .destinationInstitutionCode(ftDirectCreditRequestDTO.getDestinationInstitutionCode())
+            .nameEnquiryRef(ftDirectCreditRequestDTO.getNameEnquiryRef())
+            .narration(ftDirectCreditRequestDTO.getNarration())
+            .originatorAccountName(ftDirectCreditRequestDTO.getOriginatorAccountName())
+            .originatorAccountNo(ftDirectCreditRequestDTO.getOriginatorAccountNo())
+            .originatorBVN(ftDirectCreditRequestDTO.getOriginatorBVN())
+            .originatorKYCLevel(ftDirectCreditRequestDTO.getOriginatorKYCLevel())
+            .paymentReference(ftDirectCreditRequestDTO.getPaymentReference())
+            .responseCode(NIP_96.getCode())
+            .sessionId(ftDirectCreditRequestDTO.getSessionId())
+            .transactionLocation(ftDirectCreditRequestDTO.getTransactionLocation())
+            .build();
             logException(marker,exception);
         }
         marker.setResponse("FTDirectCredit Response  ::: " + ftDirectCreditResponseDTO.toString());
@@ -148,8 +182,24 @@ public class BankRestService {
             marker.setRequest("request Body ", ftAdviceDirectCreditRequestDTO.toString());
             ftAdviceDirectCreditResponseDTO = bankHttpClient.postRequest(baseUrl, FT_ADVICE_DIRECT_CREDIT_API, ftAdviceDirectCreditRequestDTO, FTAdviceDirectCreditResponseDTO.class, null, null);
         }catch (Exception exception){
-            ftAdviceDirectCreditResponseDTO = new FTAdviceDirectCreditResponseDTO();
-            ftAdviceDirectCreditResponseDTO.setResponseCode(NIP_96.getCode());
+            ftAdviceDirectCreditResponseDTO = FTAdviceDirectCreditResponseDTO.builder()
+            .amount(ftAdviceDirectCreditRequestDTO.getAmount())
+            .beneficiaryAccountName(ftAdviceDirectCreditRequestDTO.getBeneficiaryAccountName())
+            .beneficiaryAccountNo(ftAdviceDirectCreditRequestDTO.getBeneficiaryAccountNo())
+            .beneficiaryBVN(ftAdviceDirectCreditRequestDTO.getBeneficiaryBVN())
+            .beneficiaryKYCLevel(ftAdviceDirectCreditRequestDTO.getBeneficiaryKYCLevel())
+            .destinationInstitutionCode(ftAdviceDirectCreditRequestDTO.getDestinationInstitutionCode())
+            .nameEnquiryRef(ftAdviceDirectCreditRequestDTO.getNameEnquiryRef())
+            .narration(ftAdviceDirectCreditRequestDTO.getNarration())
+            .originatorAccountName(ftAdviceDirectCreditRequestDTO.getOriginatorAccountName())
+            .originatorAccountNo(ftAdviceDirectCreditRequestDTO.getOriginatorAccountNo())
+            .originatorBVN(ftAdviceDirectCreditRequestDTO.getOriginatorBVN())
+            .originatorKYCLevel(ftAdviceDirectCreditRequestDTO.getOriginatorKYCLevel())
+            .paymentReference(ftAdviceDirectCreditRequestDTO.getPaymentReference())
+            .responseCode(NIP_96.getCode())
+            .sessionId(ftAdviceDirectCreditRequestDTO.getSessionId())
+            .transactionLocation(ftAdviceDirectCreditRequestDTO.getTransactionLocation())
+            .build();
             logException(marker,exception);
         }
         marker.setResponse("FTAdvice Direct Credit Response  ::: " + ftAdviceDirectCreditResponseDTO.toString());
@@ -165,8 +215,26 @@ public class BankRestService {
             marker.setRequest("request Body ", ftAdviceDirectDebitRequestDTO.toString());
             ftAdviceDirectDebitResponseDTO = bankHttpClient.postRequest(baseUrl, FT_ADVICE_DIRECT_DEBIT_API, ftAdviceDirectDebitRequestDTO, FTAdviceDirectDebitResponseDTO.class, null, null);
         }catch (Exception exception){
-            ftAdviceDirectDebitResponseDTO = new FTAdviceDirectDebitResponseDTO();
-            ftAdviceDirectDebitResponseDTO.setResponseCode(NIP_96.getCode());
+            ftAdviceDirectDebitResponseDTO = FTAdviceDirectDebitResponseDTO.builder()
+            .amount(ftAdviceDirectDebitRequestDTO.getAmount())
+            .beneficiaryAccountName(ftAdviceDirectDebitRequestDTO.getBeneficiaryAccountName())
+            .beneficiaryAccountNo(ftAdviceDirectDebitRequestDTO.getBeneficiaryAccountNo())
+            .beneficiaryBVN(ftAdviceDirectDebitResponseDTO.getBeneficiaryBVN())
+            .beneficiaryKYCLevel(ftAdviceDirectDebitRequestDTO.getBeneficiaryKYCLevel())
+            .debitAccountName(ftAdviceDirectDebitRequestDTO.getDebitAccountName())
+            .debitAccountNo(ftAdviceDirectDebitRequestDTO.getDebitAccountNo())
+            .debitBVN(ftAdviceDirectDebitRequestDTO.getDebitBVN())
+            .debitKYCLevel(ftAdviceDirectDebitRequestDTO.getDebitKYCLevel())
+            .destinationInstitutionCode(ftAdviceDirectDebitRequestDTO.getDestinationInstitutionCode())
+            .mandateReferenceNo(ftAdviceDirectDebitRequestDTO.getMandateReferenceNo())
+            .nameEnquiryRef(ftAdviceDirectDebitRequestDTO.getNameEnquiryRef())
+            .narration(ftAdviceDirectDebitRequestDTO.getNarration())
+            .paymentReference(ftAdviceDirectDebitRequestDTO.getPaymentReference())
+            .responseCode(NIP_96.getCode())
+            .sessionId(ftAdviceDirectDebitRequestDTO.getSessionId())
+            .transactionFee(ftAdviceDirectDebitRequestDTO.getTransactionFee())
+            .transactionLocation(ftAdviceDirectDebitRequestDTO.getTransactionLocation())
+            .build();
             logException(marker,exception);
         }
         marker.setResponse("FTAdvice Direct Debit Response  ::: " + ftAdviceDirectDebitResponseDTO.toString());
@@ -182,8 +250,21 @@ public class BankRestService {
             marker.setRequest("request Body ", mandateAdviceRequestDTO.toString());
             mandateAdviceResponseDTO = bankHttpClient.postRequest(baseUrl, MANDATE_ADVICE_API, mandateAdviceRequestDTO, MandateAdviceResponseDTO.class, null, null);
         }catch (Exception exception){
-            mandateAdviceResponseDTO = new MandateAdviceResponseDTO();
-            mandateAdviceResponseDTO.setResponseCode(NIP_96.getCode());
+            mandateAdviceResponseDTO = MandateAdviceResponseDTO.builder()
+            .amount(mandateAdviceRequestDTO.getAmount())
+            .beneficiaryAccountName(mandateAdviceRequestDTO.getBeneficiaryAccountName())
+            .beneficiaryAccountNo(mandateAdviceRequestDTO.getBeneficiaryAccountNo())
+            .beneficiaryBVN(mandateAdviceRequestDTO.getBeneficiaryBVN())
+            .beneficiaryKYCLevel(mandateAdviceRequestDTO.getBeneficiaryKYCLevel())
+            .debitAccountName(mandateAdviceRequestDTO.getDebitAccountName())
+            .debitAccountNo(mandateAdviceRequestDTO.getDebitAccountNo())
+            .debitBVN(mandateAdviceRequestDTO.getDebitBVN())
+            .debitKYCLevel(mandateAdviceRequestDTO.getDebitKYCLevel())
+            .destinationCode(mandateAdviceRequestDTO.getDestinationCode())
+            .mandateReferenceNo(mandateAdviceRequestDTO.getMandateReferenceNo())
+            .responseCode(NIP_96.getCode())
+            .sessionId(mandateAdviceRequestDTO.getSessionId())
+            .build();
             logException(marker,exception);
         }
         marker.setResponse("Mandate Advice Response  ::: " + mandateAdviceResponseDTO.toString());
@@ -225,8 +306,17 @@ public class BankRestService {
             marker.setRequest("request Body ", accountUnblockRequestDTO.toString());
             accountUnblockResponseDTO = bankHttpClient.postRequest(baseUrl, ACCOUNT_UNBLOCK_API, accountUnblockRequestDTO, AccountUnblockResponseDTO.class, null, null);
         }catch (Exception exception){
-            accountUnblockResponseDTO = new AccountUnblockResponseDTO();
-            accountUnblockResponseDTO.setResponseCode(NIP_96.getCode());
+            accountUnblockResponseDTO = AccountUnblockResponseDTO.builder()
+            .destinationAccountName(accountUnblockRequestDTO.getDestinationAccountName())
+            .destinationAccountNo(accountUnblockRequestDTO.getDestinationAccountNo())
+            .destinationBVN(accountUnblockRequestDTO.getDestinationBVN())
+            .destinationInstitutionCode(accountUnblockRequestDTO.getDestinationInstitutionCode())
+            .narration(accountUnblockRequestDTO.getNarration())
+            .reasonCode(accountUnblockRequestDTO.getReasonCode())
+            .referenceCode(accountUnblockRequestDTO.getReferenceCode())
+            .responseCode(NIP_96.getCode())
+            .sessionId(accountUnblockRequestDTO.getSessionId())
+            .build();
             logException(marker,exception);
         }
         marker.setResponse("Account UnBlock Response  ::: " + accountUnblockResponseDTO.toString());
@@ -242,8 +332,18 @@ public class BankRestService {
             marker.setRequest("request Body ", amountBlockRequestDTO.toString());
             amountBlockResponseDTO = bankHttpClient.postRequest(baseUrl, AMOUNT_BLOCK_API, amountBlockRequestDTO, AmountBlockResponseDTO.class, null, null);
         }catch (Exception exception){
-            amountBlockResponseDTO = new AmountBlockResponseDTO();
-            amountBlockResponseDTO.setResponseCode(NIP_96.getCode());
+            amountBlockResponseDTO = AmountBlockResponseDTO.builder()
+            .amount(amountBlockRequestDTO.getAmount())
+            .destinationAccountName(amountBlockRequestDTO.getDestinationAccountName())
+            .destinationAccountNo(amountBlockRequestDTO.getDestinationAccountNo())
+            .destinationBVN(amountBlockRequestDTO.getDestinationBVN())
+            .destinationInstitutionCode(amountBlockRequestDTO.getDestinationInstitutionCode())
+            .narration(amountBlockRequestDTO.getNarration())
+            .reasonCode(amountBlockRequestDTO.getReasonCode())
+            .referenceCode(amountBlockRequestDTO.getReferenceCode())
+            .responseCode(NIP_96.getCode())
+            .sessionId(amountBlockRequestDTO.getSessionId())
+                    .build();
             logException(marker,exception);
         }
         marker.setResponse("Amount Block Response  ::: " + amountBlockResponseDTO.toString());
@@ -260,8 +360,18 @@ public class BankRestService {
             marker.setRequest("request Body ", amountUnblockRequestDTO.toString());
             amountUnblockResponseDTO = bankHttpClient.postRequest(baseUrl, AMOUNT_UNBLOCK_API, amountUnblockRequestDTO, AmountUnblockResponseDTO.class, null, null);
         }catch (Exception exception){
-            amountUnblockResponseDTO = new AmountUnblockResponseDTO();
-            amountUnblockResponseDTO.setResponseCode(NIP_96.getCode());
+            amountUnblockResponseDTO = AmountUnblockResponseDTO.builder()
+            .amount(amountUnblockRequestDTO.getAmount())
+            .destinationAccountName(amountUnblockRequestDTO.getDestinationAccountName())
+            .destinationAccountNo(amountUnblockRequestDTO.getDestinationAccountNo())
+            .destinationBVN(amountUnblockRequestDTO.getDestinationBVN())
+            .destinationInstitutionCode(amountUnblockRequestDTO.getDestinationInstitutionCode())
+            .narration(amountUnblockRequestDTO.getNarration())
+            .reasonCode(amountUnblockRequestDTO.getReasonCode())
+            .referenceCode(amountUnblockRequestDTO.getReferenceCode())
+            .responseCode(NIP_96.getCode())
+            .sessionId(amountUnblockRequestDTO.getSessionId())
+            .build();
             logException(marker,exception);
         }
         marker.setResponse("Amount UnBlock Response  ::: " + amountUnblockResponseDTO.toString());

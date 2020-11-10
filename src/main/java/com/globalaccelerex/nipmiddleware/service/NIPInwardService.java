@@ -60,7 +60,7 @@ public class NIPInwardService {
         final val financialInstitutionListResponseDTO = bankRestService.doFIList(financialInstitutionListRequestDTO, originatingInstitutionCode, marker);
         final val financialInstitutionListResponseVO = new FinancialInstitutionListResponseVO();
         financialInstitutionListResponseVO.setBatchNumber(financialInstitutionListResponseDTO.getBatchNumber());
-        financialInstitutionListResponseVO.setChannelCode(financialInstitutionListResponseDTO.getChannelCode());
+        financialInstitutionListResponseVO.setChannelCode(financialInstitutionListRequestDTO.getHeader().getChannelCode());
         financialInstitutionListResponseVO.setDestinationInstitutionCode(financialInstitutionListResponseDTO.getDestinationInstitutionCode());
         financialInstitutionListResponseVO.setNumberOfRecords(financialInstitutionListResponseDTO.getNumberOfRecords());
         financialInstitutionListResponseVO.setResponseCode(financialInstitutionListResponseDTO.getResponseCode());

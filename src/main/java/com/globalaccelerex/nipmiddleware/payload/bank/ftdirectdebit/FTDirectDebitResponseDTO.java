@@ -1,8 +1,10 @@
 package com.globalaccelerex.nipmiddleware.payload.bank.ftdirectdebit;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class FTDirectDebitResponseDTO {
 
     private String sessionId;

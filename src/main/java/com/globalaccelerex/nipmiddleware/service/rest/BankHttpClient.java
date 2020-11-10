@@ -43,6 +43,8 @@ public class BankHttpClient {
         HttpEntity<Object> entity = new HttpEntity(request, headers);
         String response = null;
         try {
+            final val requestString = OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(request);
+
             val responseEntity = restTemplate.exchange(HTTPHelpers.buildURI(baseUrl, path), HttpMethod.POST, entity, String.class);
             response = responseEntity.getBody();
             if (String.class.equals(responseType)) {
