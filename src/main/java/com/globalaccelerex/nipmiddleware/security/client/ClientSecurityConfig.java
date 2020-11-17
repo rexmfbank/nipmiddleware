@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.servlet.http.HttpServletResponse;
 
-import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
+import static com.globalaccelerex.nipmiddleware.api.ClientAPI.CLIENT_API;
 
 @Slf4j
 @Order(2)
@@ -25,6 +25,7 @@ public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private ClientAuthenticationProvider clientAuthenticationProvider;
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

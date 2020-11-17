@@ -25,9 +25,9 @@ public class DefaultSecurityConfig extends WebSecurityConfigurerAdapter {
     private ClientAuthenticationProvider clientAuthenticationProvider;
 
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.authorizeRequests()
                 .anyRequest()
                 .fullyAuthenticated()

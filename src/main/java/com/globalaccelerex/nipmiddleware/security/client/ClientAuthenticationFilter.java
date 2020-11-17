@@ -74,7 +74,7 @@ public class ClientAuthenticationFilter extends GenericFilterBean {
         }
         catch (Exception ex){
             SecurityContextHolder.clearContext();
-            log.error("Unknown client service exception "+ ex.getMessage());
+            log.error("Client Authentication exception "+ ex.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.addHeader("Content-Type", "application/json");
 
