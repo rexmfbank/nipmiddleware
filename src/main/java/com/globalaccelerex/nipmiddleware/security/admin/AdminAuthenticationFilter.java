@@ -51,7 +51,7 @@ public class AdminAuthenticationFilter extends GenericFilterBean {
             filterChain.doFilter(req, res);
         }catch (AuthenticationException authenticationException) {
             SecurityContextHolder.clearContext();
-            log.error("Internal authentication service exception => " +authenticationException.getMessage());
+            log.error("Admin  authentication service exception => " +authenticationException.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
             if (authenticationException instanceof AccessControlException) {
@@ -64,7 +64,7 @@ public class AdminAuthenticationFilter extends GenericFilterBean {
             }
         }catch (Exception ex){
             SecurityContextHolder.clearContext();
-            log.error("Unknown client service exception "+ ex.getMessage());
+            log.error("Admin authentication exception "+ ex.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.addHeader("Content-Type", "application/json");
 

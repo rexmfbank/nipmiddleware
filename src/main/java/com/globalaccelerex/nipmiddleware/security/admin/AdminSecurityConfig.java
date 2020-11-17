@@ -30,7 +30,6 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.antMatcher(ADMIN_API + "/**").
                 csrf().disable().cors()
                 .and()

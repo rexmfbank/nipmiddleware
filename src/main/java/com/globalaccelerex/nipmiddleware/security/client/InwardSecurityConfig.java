@@ -33,6 +33,7 @@ public class InwardSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/actuator/health");
         web.ignoring().antMatchers("/actuator/info");
+        web.ignoring().antMatchers("/favicon.ico");
         web.ignoring().antMatchers(INWARD_WS_URI+"**");
         web.ignoring().antMatchers(MOCK_CBA_API+"/**");
     }
