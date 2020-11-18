@@ -125,6 +125,7 @@ public class FtFacade {
         try {
             final val neSingleRequest = nipOutwardMapper.mapNESingleRequest.apply(ftSingleCreditRequest);
             neSingleRequest.setMarker(iMarker);
+            neSingleRequest.setClientId(clientId);
             fundsTransferEntity.setSessionId(sessionId);
 
             if(StringUtils.isEmpty(ftSingleCreditRequest.getNameEnquiryReference())){
