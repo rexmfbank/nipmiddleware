@@ -60,9 +60,7 @@ public class ClientDbService {
 
     public Optional<ClientEntity> findClientByClientId(String clientId ){
         try{
-            log.info("Searching for clientId ::::::: {}" , clientId);
             final val clientEntity = clientCache.getUnchecked(clientId);
-            log.info("ClientEntity ::::::::: {}", clientEntity);
             return Optional.of(clientEntity);
         }catch (UncheckedExecutionException exception){
             return Optional.empty();
