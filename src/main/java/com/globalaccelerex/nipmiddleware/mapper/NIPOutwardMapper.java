@@ -124,6 +124,7 @@ public class NIPOutwardMapper {
                 .build();
         tsqResponse.setResponseCode(fundsTransferEntity.getResponseCode());
         tsqResponse.setSessionId(fundsTransferEntity.getSessionId());
+        tsqResponse.setResponseDescription(fundsTransferEntity.getResponseDescription());
         return tsqResponse;
     };
 
