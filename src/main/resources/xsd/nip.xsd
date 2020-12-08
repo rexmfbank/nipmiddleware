@@ -11,9 +11,7 @@
 
     <xs:element name="accountunblockResponse" type="tns:accountunblockResponse"></xs:element>
 
-    <xs:element name="adjustNIPSettings" type="tns:adjustNIPSettings"></xs:element>
 
-    <xs:element name="adjustNIPSettingsResponse" type="tns:adjustNIPSettingsResponse"></xs:element>
 
     <xs:element name="amountblock" type="tns:amountblock"></xs:element>
 
@@ -31,9 +29,7 @@
 
     <xs:element name="financialinstitutionlistResponse" type="tns:financialinstitutionlistResponse"></xs:element>
 
-    <xs:element name="ftackcreditrequest" type="tns:ftackcreditrequest"></xs:element>
 
-    <xs:element name="ftackcreditrequestResponse" type="tns:ftackcreditrequestResponse"></xs:element>
 
     <xs:element name="fundtransferAdvice_dc" type="tns:fundtransferAdvice_dc"></xs:element>
 
@@ -59,9 +55,7 @@
 
     <xs:element name="nameenquirysingleitemResponse" type="tns:nameenquirysingleitemResponse"></xs:element>
 
-    <xs:element name="privateAdjustmentOfSettings" type="tns:privateAdjustmentOfSettings"></xs:element>
 
-    <xs:element name="privateAdjustmentOfSettingsResponse" type="tns:privateAdjustmentOfSettingsResponse"></xs:element>
 
     <xs:element name="txnstatusquerysingleitem" type="tns:txnstatusquerysingleitem"></xs:element>
 
@@ -79,17 +73,9 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="adjustNIPSettings">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
 
-    <xs:complexType name="adjustNIPSettingsResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
+
+
 
     <xs:complexType name="financialinstitutionlist">
         <xs:sequence>
@@ -127,17 +113,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="privateAdjustmentOfSettings">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
 
-    <xs:complexType name="privateAdjustmentOfSettingsResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
 
     <xs:complexType name="nameenquirysingleitem">
         <xs:sequence>
@@ -199,17 +175,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="ftackcreditrequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
 
-    <xs:complexType name="ftackcreditrequestResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
 
     <xs:complexType name="accountunblock">
         <xs:sequence>
