@@ -1,6 +1,8 @@
 package com.globalaccelerex.nipmiddleware.config;
 
+import com.globalaccelerex.nipmiddleware.institution.SLSConfig;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +20,8 @@ import static com.globalaccelerex.nipmiddleware.api.NipAPI.*;
 @Configuration
 public class WebServiceConfig {
 
+    private SLSConfig slsConfig;
+
     @Bean
     public ServletRegistrationBean messageDispatcherServlet(ApplicationContext applicationContext) {
         val servlet = new MessageDispatcherServlet();
@@ -30,7 +34,7 @@ public class WebServiceConfig {
     public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema nipInwardSchema) {
         val wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName(PORT_TYPE_NAME);
-        wsdl11Definition.setLocationUri(INWARD_WS_URI);
+        wsdl11Definition.setLocationUri(INWARD_WS_URI + slsConfig.getInstitutionCode());
         wsdl11Definition.setTargetNamespace(INWARD_TARGET_NAMESPACE);
         wsdl11Definition.setSchema(nipInwardSchema);
         return wsdl11Definition;
@@ -39,5 +43,10 @@ public class WebServiceConfig {
     @Bean
     public XsdSchema nipInwardSchema(){
         return new SimpleXsdSchema(new ClassPathResource("xsd/nip.xsd"));
+    }
+
+    @Autowired
+    public void setSlsConfig(SLSConfig slsConfig) {
+        this.slsConfig = slsConfig;
     }
 }
