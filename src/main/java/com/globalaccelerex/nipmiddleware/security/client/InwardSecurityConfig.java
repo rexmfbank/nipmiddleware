@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.security.client;
 
+import com.globalaccelerex.nipmiddleware.institution.SLSConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,12 +30,14 @@ public class InwardSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private ClientAuthenticationProvider clientAuthenticationProvider;
 
+    private SLSConfig slsConfig;
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/actuator/health");
         web.ignoring().antMatchers("/actuator/info");
         web.ignoring().antMatchers("/favicon.ico");
-        web.ignoring().antMatchers(INWARD_WS_URI+"**");
+        web.ignoring().antMatchers(INWARD_WS_URI + slsConfig.getInstitutionCode()+"/" + "**");
         web.ignoring().antMatchers(MOCK_CBA_API+"/**");
     }
 
@@ -61,5 +64,10 @@ public class InwardSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationEntryPoint unauthorizedEntryPoint() {
         return (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+
+    @Autowired
+    public void setSlsConfig(SLSConfig slsConfig) {
+        this.slsConfig = slsConfig;
     }
 }
