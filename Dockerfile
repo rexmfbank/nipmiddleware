@@ -1,4 +1,4 @@
-FROM java:openjdk-8-jre
+FROM 068278763965.dkr.ecr.eu-west-1.amazonaws.com/open-jdk-8:latest
 VOLUME /tmp
 
 ADD nipmiddleware.jar app.jar
