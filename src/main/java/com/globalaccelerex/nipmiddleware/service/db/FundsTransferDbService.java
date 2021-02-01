@@ -11,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_130;
 
 
@@ -28,9 +30,9 @@ public class FundsTransferDbService {
         this.fundsTransferRepository = fundsTransferRepository;
     }
 
-    public boolean confirmClientAndPaymentReference(String clientId, String paymentReference){
-        final val fundsTransferEntityOpt = fundsTransferRepository.findByClientIdAndPaymentReference(clientId,paymentReference);
-        return fundsTransferEntityOpt.isPresent();
+    public Optional<FundsTransferEntity> confirmClientAndPaymentReference(String clientId, String paymentReference){
+       return fundsTransferRepository.findByClientIdAndPaymentReference(clientId,paymentReference);
+
     }
 
     public FundsTransferEntity findRecordByClientIdAndSessionId(String clientId, String sessionId, IMarker iMarker){

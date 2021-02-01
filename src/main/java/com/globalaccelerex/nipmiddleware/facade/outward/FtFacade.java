@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.facade.outward;
 
+import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
@@ -27,6 +28,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.*;
 import static com.globalaccelerex.nipmiddleware.enums.PaymentStatusEnum.FAILED;
@@ -108,8 +111,8 @@ public class FtFacade {
         return neSingleResponse;
     }
 
-    @Async
-    public void doFundsTransferAsync(FTSingleCreditRequest ftSingleCreditRequest, String sessionId){
+
+    public void doFundsTransfer(FTSingleCreditRequest ftSingleCreditRequest, String sessionId){
 
         val iMarker = ftSingleCreditRequest.getMarker();
         val clientId = ftSingleCreditRequest.getClientId();
@@ -234,11 +237,9 @@ public class FtFacade {
                 .waitDuration(TSQ_WAIT_DURATION_IN_SECONDS)
                 .build();
         sqsService.send(ftQueuePayload, TSQ_WAIT_DURATION_IN_SECONDS);
-
-
     }
 
-    public boolean confirmClientAndPaymentReference(FTSingleCreditRequest ftSingleCreditRequest){
+    public Optional<FundsTransferEntity> confirmClientAndPaymentReference(FTSingleCreditRequest ftSingleCreditRequest){
         return fundsTransferDbService.confirmClientAndPaymentReference(ftSingleCreditRequest.getClientId(), ftSingleCreditRequest.getPaymentReference());
     }
 

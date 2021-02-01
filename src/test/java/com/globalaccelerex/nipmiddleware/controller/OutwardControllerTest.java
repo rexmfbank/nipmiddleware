@@ -37,7 +37,7 @@ public class OutwardControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void sendFTWithExistingPaymentReferenceShouldReturn400ErrorCode(){
+    public void sendFTWithExistingPaymentReferenceShouldReturn200Code(){ //allow for idempotency
         authHeaderUtil = new AuthHeaderUtil();
         val path = OUTWARD_API + FUNDS_TRANSFER;
         val url = createUrlWithPort(path);
@@ -47,7 +47,7 @@ public class OutwardControllerTest extends AbstractControllerTest {
             final val httpHeaders = authHeaderUtil.buildHttpAuthHeader();
             final val requestEntity = new HttpEntity<>(ftSingleCreditRequest, httpHeaders);
             final val responseEntity = testRestTemplate.exchange(url, HttpMethod.POST, requestEntity, FTPendingResponse.class);
-            assertThat(400 ,is(responseEntity.getStatusCodeValue()));
+            assertThat(200 ,is(responseEntity.getStatusCodeValue()));
         } catch (Exception e) {
             e.printStackTrace();
         }

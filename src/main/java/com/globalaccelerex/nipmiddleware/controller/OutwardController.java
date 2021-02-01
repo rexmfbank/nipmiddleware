@@ -26,7 +26,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
-import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.PAYMENT_REFERENCE_EXISTS_MSG;
 
 
 @Slf4j
@@ -84,27 +83,29 @@ public class OutwardController extends APIController{
                     build().toUri().toASCIIString(), ftSingleCreditRequest.toString(), false);
 
 
-            final val result = ftFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
+            final val fundsTransferEntityOpt = ftFacade.confirmClientAndPaymentReference(ftSingleCreditRequest);
 
             final val ftPendingResponse = new FTPendingResponse();
             ftPendingResponse.setClientId(ftSingleCreditRequest.getClientId());
-            if (result){
-                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-                nipMiddleWareAPIException.buildFailureStatusException(PAYMENT_REFERENCE_EXISTS_MSG,marker);
-                throw nipMiddleWareAPIException;
-            }
+            if (fundsTransferEntityOpt.isPresent()){
+                marker.info("<<<<<<<< Duplicate  reference detected >>>>>>>> clientId [ " + ftSingleCreditRequest.getClientId() + " ] " +
+                        "- Reference [ " + ftSingleCreditRequest.getPaymentReference() + " ] ");
+                final val sessionId = fundsTransferEntityOpt.get().getSessionId();
+                ftPendingResponse.setSessionId(sessionId);
+                ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());
+            }else {
+                val responseMsg = ftFacade.validateCompulsoryFields(ftSingleCreditRequest);
+                if(StringUtils.isNotBlank(responseMsg)){
+                    val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+                    nipMiddleWareAPIException.buildFailureStatusException(responseMsg,marker);
+                    throw nipMiddleWareAPIException;
+                }
 
-            val responseMsg = ftFacade.validateCompulsoryFields(ftSingleCreditRequest);
-            if(StringUtils.isNotBlank(responseMsg)){
-                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-                nipMiddleWareAPIException.buildFailureStatusException(responseMsg,marker);
-                throw nipMiddleWareAPIException;
+                final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
+                ftFacade.doFundsTransfer(ftSingleCreditRequest, sessionId);
+                ftPendingResponse.setSessionId(sessionId);
+                ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());
             }
-
-            final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
-            ftFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
-            ftPendingResponse.setSessionId(sessionId);
-            ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());
             marker.setMainResponse(ftPendingResponse.toString(), false);
             return new ResponseEntity(ftPendingResponse, HttpStatus.OK);
         }finally {
