@@ -110,8 +110,8 @@ public class FtFacade {
         return neSingleResponse;
     }
 
-    @Async
-    public void doFundsTransferAsync(FTSingleCreditRequest ftSingleCreditRequest, String sessionId){
+
+    public void doFundsTransfer(FTSingleCreditRequest ftSingleCreditRequest, String sessionId){
 
         val iMarker = ftSingleCreditRequest.getMarker();
         val clientId = ftSingleCreditRequest.getClientId();

@@ -102,7 +102,7 @@ public class OutwardController extends APIController{
                 }
 
                 final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
-                ftFacade.doFundsTransferAsync(ftSingleCreditRequest, sessionId);
+                ftFacade.doFundsTransfer(ftSingleCreditRequest, sessionId);
                 ftPendingResponse.setSessionId(sessionId);
                 ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());
             }
