@@ -111,23 +111,22 @@ public class FtFacade {
     }
 
 
+    @Async
     public void doFundsTransfer(FTSingleCreditRequest ftSingleCreditRequest, String sessionId){
 
         val iMarker = ftSingleCreditRequest.getMarker();
         val clientId = ftSingleCreditRequest.getClientId();
 
-        val clientEntity = clientDbService.findClientByClientId(ftSingleCreditRequest.getClientId()).get();
-        ftSingleCreditRequest.updateCompulsoryFields(clientEntity);
         final val originatorBankCode = ftSingleCreditRequest.getOriginatorBankCode();
         iMarker.info("::::: Handling Async Method for Funds Transfer ::::::: ");
         NESingleResponse neSingleResponse = null;
-        final val fundsTransferEntity = nipOutwardMapper.mapFundsTransferEntity.apply(ftSingleCreditRequest);
+        final val fundsTransferEntity = fundsTransferDbService.findRecordByClientIdAndSessionId(clientId,sessionId,iMarker);
 
-        // do a mapping to entity and save record in db
         try {
+
             final val neSingleRequest = nipOutwardMapper.mapNESingleRequest.apply(ftSingleCreditRequest);
             neSingleRequest.setMarker(iMarker);
-            fundsTransferEntity.setSessionId(sessionId);
+            //fundsTransferEntity.setSessionId(sessionId);
 
             if(StringUtils.isEmpty(ftSingleCreditRequest.getNameEnquiryReference())){
                 //we need to do a nameEnquiry
