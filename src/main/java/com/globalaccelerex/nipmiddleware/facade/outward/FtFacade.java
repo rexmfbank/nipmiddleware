@@ -119,7 +119,7 @@ public class FtFacade {
         val clientEntity = clientDbService.findClientByClientId(ftSingleCreditRequest.getClientId()).get();
         ftSingleCreditRequest.updateCompulsoryFields(clientEntity);
         final val originatorBankCode = ftSingleCreditRequest.getOriginatorBankCode();
-        iMarker.info("::::: Handling Async Method for Funds Transfer ::::::: ");
+        iMarker.info("::::: Handling Method for Funds Transfer ::::::: ");
         NESingleResponse neSingleResponse = null;
         final val fundsTransferEntity = nipOutwardMapper.mapFundsTransferEntity.apply(ftSingleCreditRequest);
 
