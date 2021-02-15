@@ -80,7 +80,7 @@ public class NIPOutwardWS extends WebServiceGatewaySupport {
         }catch (Exception ex) {
             marker.setResponse (ex.getMessage());
             val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-            nipMiddleWareAPIException.buildFailureStatusException(WEB_SERVICE_ERROR_MSG,marker);
+            nipMiddleWareAPIException.buildPendingStatusException(WEB_SERVICE_ERROR_MSG,marker);
             throw nipMiddleWareAPIException;
         }
         marker.info("done with  TSQ");
