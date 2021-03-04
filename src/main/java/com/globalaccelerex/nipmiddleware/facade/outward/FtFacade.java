@@ -111,7 +111,7 @@ public class FtFacade {
     }
 
 
-    @Async
+    
     public void doFundsTransfer(FTSingleCreditRequest ftSingleCreditRequest, String sessionId){
 
         val iMarker = ftSingleCreditRequest.getMarker();
