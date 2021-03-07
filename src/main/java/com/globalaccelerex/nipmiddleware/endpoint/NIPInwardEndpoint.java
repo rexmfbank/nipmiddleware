@@ -16,6 +16,7 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBElement;
 
 import static com.globalaccelerex.nipmiddleware.api.NipAPI.*;
@@ -30,11 +31,14 @@ public class NIPInwardEndpoint {
 
     private final LienInwardFacade lienInwardFacade;
 
+    private final HttpServletRequest httpServletRequest;
+
     @Autowired
-    public NIPInwardEndpoint(NIPInwardFacade nipInwardFacade, FTInwardFacade ftInwardFacade, LienInwardFacade lienInwardFacade){
+    public NIPInwardEndpoint(NIPInwardFacade nipInwardFacade, FTInwardFacade ftInwardFacade, LienInwardFacade lienInwardFacade, HttpServletRequest httpServletRequest){
         this.nipInwardFacade = nipInwardFacade;
         this.ftInwardFacade = ftInwardFacade;
         this.lienInwardFacade = lienInwardFacade;
+        this.httpServletRequest = httpServletRequest;
     }
 
     @PayloadRoot(namespace = INWARD_TARGET_NAMESPACE, localPart = NAME_ENQUIRY_REQUEST)
@@ -43,7 +47,8 @@ public class NIPInwardEndpoint {
         iMarker.info("<<< NameEnquiry >>>");
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , nameEnquirySingleItem.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , nameEnquirySingleItem.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -62,7 +67,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , financialinstitutionlist.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , financialinstitutionlist.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -82,7 +88,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , fundtransfersingleitemDd.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , fundtransfersingleitemDd.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -102,7 +109,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , fundtransfersingleitemDc.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , fundtransfersingleitemDc.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -121,7 +129,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , txnStatusQuerySingleItem.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , txnStatusQuerySingleItem.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -140,7 +149,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , fundtransferAdviceDC.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , fundtransferAdviceDC.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -161,7 +171,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , fundtransferAdviceDD.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , fundtransferAdviceDD.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -180,7 +191,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , mandateAdvice.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , mandateAdvice.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -199,7 +211,8 @@ public class NIPInwardEndpoint {
 
         try {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , accountblock.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , accountblock.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -219,7 +232,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , accountUnblock.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , accountUnblock.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -238,7 +252,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , amountblock.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , amountblock.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -257,7 +272,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , amountunblock.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , amountunblock.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
@@ -277,7 +293,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , balanceEnquiry.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , balanceEnquiry.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
         final val objectFactory = new ObjectFactory();
@@ -296,7 +313,8 @@ public class NIPInwardEndpoint {
 
         try{
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
-            iMarker.setMainRequest(requestURI , ftackcreditrequest.getValue().getRequest(), false);
+            iMarker.setMainRequest(requestURI , ftackcreditrequest.getValue()
+                    .getRequest()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
             val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
             final val objectFactory = new ObjectFactory();
