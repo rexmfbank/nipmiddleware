@@ -27,15 +27,15 @@ public class FTInwardFacade extends AbstractInwardFacade{
         super(ssmUtil,xmlUtil, nipConfig);
     }
 
-    public FundtransfersingleitemDdResponse handleFTDirectDebit(FundtransfersingleitemDd fundtransfersingleitemDd, IMarker marker, String originatingInstitutionCode){
+    public FundtransfersingleitemDdResponse handleFTDirectDebit(String encryptedFTDirectDebitString, IMarker marker, String originatingInstitutionCode){
         final val fundtransfersingleitemDdResponse = new FundtransfersingleitemDdResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                fundtransfersingleitemDdResponse.setReturn(fundtransfersingleitemDd.getRequest());
+                fundtransfersingleitemDdResponse.setReturn(encryptedFTDirectDebitString);
                 marker.setResponse("Sending Encrypted Request as response ");
             }else {
-                final val encryptedFTDirectDebitString = fundtransfersingleitemDd.getRequest();
+
                 final val clearFTDirectDebitString = nipConfig.isIgnoreEncryption() ? encryptedFTDirectDebitString : decryptString(encryptedFTDirectDebitString, originatingInstitutionCode, marker);
 
                 marker.setRequest(" FT_Dd Clear String ", clearFTDirectDebitString);
@@ -67,15 +67,15 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransfersingleitemDdResponse;
     }
 
-    public FundtransfersingleitemDcResponse handleFTDirectCredit(FundtransfersingleitemDc fundtransfersingleitemDc, IMarker marker, String originatingInstitutionCode){
+    public FundtransfersingleitemDcResponse handleFTDirectCredit(String encryptedFTSingleItemDCString, IMarker marker, String originatingInstitutionCode){
         final val fundtransfersingleitemDcResponse = new FundtransfersingleitemDcResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                fundtransfersingleitemDcResponse.setReturn(fundtransfersingleitemDc.getRequest());
+                fundtransfersingleitemDcResponse.setReturn(encryptedFTSingleItemDCString);
                 marker.setResponse("Sending Encrypted Request as response ");
             }else {
-                final val encryptedFTSingleItemDCString = fundtransfersingleitemDc.getRequest();
+
                 final val clearFTSingleItemDCString = nipConfig.isIgnoreEncryption() ? encryptedFTSingleItemDCString : decryptString(encryptedFTSingleItemDCString, originatingInstitutionCode, marker);
 
                 marker.setRequest(" FT_Dc Clear String ", clearFTSingleItemDCString);
@@ -106,15 +106,15 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransfersingleitemDcResponse;
     }
 
-    public FundtransferAdviceDcResponse handleFTAdviceDirectCredit(FundtransferAdviceDc fundtransferAdviceDc, IMarker marker, String originatingInstitutionCode){
+    public FundtransferAdviceDcResponse handleFTAdviceDirectCredit(String encryptedFTAdviceDirectCreditString, IMarker marker, String originatingInstitutionCode){
         final val fundtransferAdviceDcResponse = new FundtransferAdviceDcResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                fundtransferAdviceDcResponse.setReturn(fundtransferAdviceDc.getRequest());
+                fundtransferAdviceDcResponse.setReturn(encryptedFTAdviceDirectCreditString);
                 marker.setResponse("Sending Encrypted Request as response ");
             }else {
-                final val encryptedFTAdviceDirectCreditString = fundtransferAdviceDc.getRequest();
+
                 final val clearFTAdviceDirectCreditString = nipConfig.isIgnoreEncryption() ? encryptedFTAdviceDirectCreditString : decryptString(encryptedFTAdviceDirectCreditString, originatingInstitutionCode, marker);
 
                 marker.setRequest(" FT_Advice Dc Clear String ", clearFTAdviceDirectCreditString);
@@ -145,15 +145,15 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransferAdviceDcResponse;
     }
 
-    public FundtransferAdviceDdResponse handleFTAdviceDirectDebit(FundtransferAdviceDd fundtransferAdviceDd, IMarker marker, String originatingInstitutionCode){
+    public FundtransferAdviceDdResponse handleFTAdviceDirectDebit(String encryptedFTAdviceDirectDebitString, IMarker marker, String originatingInstitutionCode){
         final val fundtransferAdviceDdResponse = new FundtransferAdviceDdResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                fundtransferAdviceDdResponse.setReturn(fundtransferAdviceDd.getRequest());
+                fundtransferAdviceDdResponse.setReturn(encryptedFTAdviceDirectDebitString);
                 marker.setResponse("Sending Encrypted Request as response ");
             }else {
-                final val encryptedFTAdviceDirectDebitString = fundtransferAdviceDd.getRequest();
+
                 final val clearFTAdviceDirectDebitString = nipConfig.isIgnoreEncryption() ? encryptedFTAdviceDirectDebitString : decryptString(encryptedFTAdviceDirectDebitString, originatingInstitutionCode, marker);
 
                 marker.setRequest(" FT_Advice Dd Clear String ", clearFTAdviceDirectDebitString);
@@ -184,17 +184,16 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransferAdviceDdResponse;
     }
 
-    public FtackcreditrequestResponse handleFTAckCredit(Ftackcreditrequest ftackcreditrequest, IMarker marker, String originatingInstitutionCode){
+    public FtackcreditrequestResponse handleFTAckCredit(String encryptedFTAckCreditString, IMarker marker, String originatingInstitutionCode){
         final val ftackcreditrequestResponse = new FtackcreditrequestResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                ftackcreditrequestResponse.setReturn(ftackcreditrequest.getRequest());
+                ftackcreditrequestResponse.setReturn(encryptedFTAckCreditString);
                 marker.setResponse("Sending Encrypted Request as response ");
             }else {
 
 
-                final val encryptedFTAckCreditString = ftackcreditrequest.getRequest();
                 final val clearFTAckCreditString = nipConfig.isIgnoreEncryption() ? encryptedFTAckCreditString : decryptString(encryptedFTAckCreditString, originatingInstitutionCode, marker);
 
                 marker.setRequest(" FT Acknowledge Credit Clear String ", clearFTAckCreditString);

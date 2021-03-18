@@ -3,211 +3,55 @@
 
            targetNamespace="http://core.nip.nibss/">
 
-    <xs:element name="accountblockRequest" type="tns:accountblockRequest"></xs:element>
+    <xs:element name="accountblockRequest" type="xs:string"></xs:element>
 
-    <xs:element name="accountblockResponse" type="tns:accountblockResponse"></xs:element>
+    <xs:element name="accountblockResponse" type="xs:string"></xs:element>
 
-    <xs:element name="accountunblockRequest" type="tns:accountunblockRequest"></xs:element>
+    <xs:element name="accountunblockRequest" type="xs:string"></xs:element>
 
-    <xs:element name="accountunblockResponse" type="tns:accountunblockResponse"></xs:element>
+    <xs:element name="accountunblockResponse" type="xs:string"></xs:element>
 
-    <xs:element name="amountblockRequest" type="tns:amountblockRequest"></xs:element>
+    <xs:element name="amountblockRequest" type="xs:string"></xs:element>
 
-    <xs:element name="amountblockResponse" type="tns:amountblockResponse"></xs:element>
+    <xs:element name="amountblockResponse" type="xs:string"></xs:element>
 
-    <xs:element name="amountunblockRequest" type="tns:amountunblockRequest"></xs:element>
+    <xs:element name="amountunblockRequest" type="xs:string"></xs:element>
 
-    <xs:element name="amountunblockResponse" type="tns:amountunblockResponse"></xs:element>
+    <xs:element name="amountunblockResponse" type="xs:string"></xs:element>
 
-    <xs:element name="balanceenquiryRequest" type="tns:balanceenquiryRequest"></xs:element>
+    <xs:element name="balanceenquiryRequest" type="xs:string"></xs:element>
 
-    <xs:element name="balanceenquiryResponse" type="tns:balanceenquiryResponse"></xs:element>
+    <xs:element name="balanceenquiryResponse" type="xs:string"></xs:element>
 
-    <xs:element name="financialinstitutionlistRequest" type="tns:financialinstitutionlistRequest"></xs:element>
+    <xs:element name="financialinstitutionlistRequest" type="xs:string"></xs:element>
 
-    <xs:element name="financialinstitutionlistResponse" type="tns:financialinstitutionlistResponse"></xs:element>
+    <xs:element name="financialinstitutionlistResponse" type="xs:string"></xs:element>
 
-    <xs:element name="fundtransferAdvice_dcRequest" type="tns:fundtransferAdvice_dcRequest"></xs:element>
+    <xs:element name="fundtransferAdvice_dcRequest" type="xs:string"></xs:element>
 
-    <xs:element name="fundtransferAdvice_dcResponse" type="tns:fundtransferAdvice_dcResponse"></xs:element>
+    <xs:element name="fundtransferAdvice_dcResponse" type="xs:string"></xs:element>
 
-    <xs:element name="fundtransferAdvice_ddRequest" type="tns:fundtransferAdvice_ddRequest"></xs:element>
+    <xs:element name="fundtransferAdvice_ddRequest" type="xs:string"></xs:element>
 
-    <xs:element name="fundtransferAdvice_ddResponse" type="tns:fundtransferAdvice_ddResponse"></xs:element>
+    <xs:element name="fundtransferAdvice_ddResponse" type="xs:string"></xs:element>
 
-    <xs:element name="fundtransfersingleitem_dcRequest" type="tns:fundtransfersingleitem_dcRequest"></xs:element>
+    <xs:element name="fundtransfersingleitem_dcRequest" type="xs:string"></xs:element>
 
-    <xs:element name="fundtransfersingleitem_dcResponse" type="tns:fundtransfersingleitem_dcResponse"></xs:element>
+    <xs:element name="fundtransfersingleitem_dcResponse" type="xs:string"></xs:element>
 
-    <xs:element name="fundtransfersingleitem_ddRequest" type="tns:fundtransfersingleitem_ddRequest"></xs:element>
+    <xs:element name="fundtransfersingleitem_ddRequest" type="xs:string"></xs:element>
 
-    <xs:element name="fundtransfersingleitem_ddResponse" type="tns:fundtransfersingleitem_ddResponse"></xs:element>
+    <xs:element name="fundtransfersingleitem_ddResponse" type="xs:string"></xs:element>
 
-    <xs:element name="mandateadviceRequest" type="tns:mandateadviceRequest"></xs:element>
+    <xs:element name="mandateadviceRequest" type="xs:string"></xs:element>
 
-    <xs:element name="mandateadviceResponse" type="tns:mandateadviceResponse"></xs:element>
+    <xs:element name="mandateadviceResponse" type="xs:string"></xs:element>
 
-    <xs:element name="nameenquirysingleitemRequest" type="tns:nameenquirysingleitemRequest"></xs:element>
+    <xs:element name="nameenquirysingleitemRequest" type="xs:string"></xs:element>
 
-    <xs:element name="nameenquirysingleitemResponse" type="tns:nameenquirysingleitemResponse"></xs:element>
+    <xs:element name="nameenquirysingleitemResponse" type="xs:string"></xs:element>
 
-    <xs:element name="txnstatusquerysingleitemRequest" type="tns:txnstatusquerysingleitemRequest"></xs:element>
+    <xs:element name="txnstatusquerysingleitemRequest" type="xs:string"></xs:element>
 
-    <xs:element name="txnstatusquerysingleitemResponse" type="tns:txnstatusquerysingleitemResponse"></xs:element>
-
-    <xs:complexType name="amountunblockRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="amountunblockResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="financialinstitutionlistRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="financialinstitutionlistResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="txnstatusquerysingleitemRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="txnstatusquerysingleitemResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="amountblockRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="amountblockResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="nameenquirysingleitemRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="nameenquirysingleitemResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="accountblockRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="accountblockResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="fundtransfersingleitem_dcRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="fundtransfersingleitem_dcResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="fundtransfersingleitem_ddRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="fundtransfersingleitem_ddResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="balanceenquiryRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="balanceenquiryResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="accountunblockRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="accountunblockResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="mandateadviceRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="mandateadviceResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="fundtransferAdvice_ddRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="fundtransferAdvice_ddResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="fundtransferAdvice_dcRequest">
-        <xs:sequence>
-            <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="fundtransferAdvice_dcResponse">
-        <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-        </xs:sequence>
-    </xs:complexType>
+    <xs:element name="txnstatusquerysingleitemResponse" type="xs:string"></xs:element>
 </xs:schema>
