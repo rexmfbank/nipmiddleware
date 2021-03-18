@@ -33,15 +33,15 @@ public class LienInwardFacade extends AbstractInwardFacade{
         super(ssmUtil,xmlUtil, nipConfig);
     }
 
-    public AccountblockResponse handleAccountBlock(Accountblock accountblock, IMarker marker, String originatingInstitutionCode){
+    public AccountblockResponse handleAccountBlock(String encryptedAccountBlockString, IMarker marker, String originatingInstitutionCode){
         final val accountBlockResponse = new AccountblockResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                accountBlockResponse.setReturn(accountblock.getRequest());
+                accountBlockResponse.setReturn(encryptedAccountBlockString);
                 marker.setResponse("Sending Encrypted Request back ");
             }else{
-                final val encryptedAccountBlockString = accountblock.getRequest();
+
                 final val clearAccountBlockString = nipConfig.isIgnoreEncryption() ? encryptedAccountBlockString : decryptString(encryptedAccountBlockString,originatingInstitutionCode,marker);
 
                 marker.setRequest(" Account Block Clear String ",clearAccountBlockString);
@@ -73,15 +73,15 @@ public class LienInwardFacade extends AbstractInwardFacade{
         return accountBlockResponse;
     }
 
-    public AccountunblockResponse handleAccountUnblock(Accountunblock accountunblock, IMarker marker, String originatingInstitutionCode){
+    public AccountunblockResponse handleAccountUnblock(String encryptedAccountUnblockString, IMarker marker, String originatingInstitutionCode){
         final val accountUnblockResponse = new AccountunblockResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                accountUnblockResponse.setReturn(accountunblock.getRequest());
+                accountUnblockResponse.setReturn(encryptedAccountUnblockString);
                 marker.setResponse("Sending Encrypted Request back ");
             }else{
-                final val encryptedAccountUnblockString = accountunblock.getRequest();
+
                 final val clearAccountUnblockString = nipConfig.isIgnoreEncryption() ? encryptedAccountUnblockString : decryptString(encryptedAccountUnblockString,originatingInstitutionCode,marker);
 
                 marker.setRequest(" Account Unblock Clear String ",clearAccountUnblockString);
@@ -113,15 +113,15 @@ public class LienInwardFacade extends AbstractInwardFacade{
         return accountUnblockResponse;
     }
 
-    public AmountblockResponse handleAmountBlock(Amountblock amountblock, IMarker marker, String originatingInstitutionCode){
+    public AmountblockResponse handleAmountBlock(String encryptedAmountBlockString, IMarker marker, String originatingInstitutionCode){
         final val amountBlockResponse = new AmountblockResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                amountBlockResponse.setReturn(amountblock.getRequest());
+                amountBlockResponse.setReturn(encryptedAmountBlockString);
                 marker.setResponse("Sending Encrypted Request back ");
             }else{
-                final val encryptedAmountBlockString = amountblock.getRequest();
+
                 final val clearAmountBlockString = nipConfig.isIgnoreEncryption() ? encryptedAmountBlockString : decryptString(encryptedAmountBlockString,originatingInstitutionCode,marker);
 
                 marker.setRequest(" Amount Block Clear String ",clearAmountBlockString);
@@ -151,15 +151,15 @@ public class LienInwardFacade extends AbstractInwardFacade{
         return amountBlockResponse;
     }
 
-    public AmountunblockResponse handleAmountUnblock(Amountunblock amountunblock, IMarker marker, String originatingInstitutionCode){
+    public AmountunblockResponse handleAmountUnblock(String encryptedAmountUnblockString, IMarker marker, String originatingInstitutionCode){
         final val amountunblockResponse = new AmountunblockResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                amountunblockResponse.setReturn(amountunblock.getRequest());
+                amountunblockResponse.setReturn(encryptedAmountUnblockString);
                 marker.setResponse("Sending Encrypted Request back ");
             }else{
-                final val encryptedAmountUnblockString = amountunblock.getRequest();
+
                 final val clearAmountUnblockString = nipConfig.isIgnoreEncryption() ? encryptedAmountUnblockString : decryptString(encryptedAmountUnblockString,originatingInstitutionCode,marker);
 
                 marker.setRequest(" Amount UnBlock Clear String ",clearAmountUnblockString);
