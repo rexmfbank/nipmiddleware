@@ -71,6 +71,7 @@ public class BankMapper {
         mandateAdviceResponseVO.setDestinationCode(mandateAdviceResponseDTO.getDestinationCode());
         mandateAdviceResponseVO.setMandateReferenceNo(mandateAdviceResponseDTO.getMandateReferenceNo());
         mandateAdviceResponseVO.setSessionId(mandateAdviceResponseDTO.getSessionId());
+        mandateAdviceResponseVO.setResponseCode(mandateAdviceResponseDTO.getResponseCode());
         return mandateAdviceResponseVO;
     };
 
