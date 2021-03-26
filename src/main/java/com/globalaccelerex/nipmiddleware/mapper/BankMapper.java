@@ -42,8 +42,8 @@ public class BankMapper {
 
     public Function<MandateAdviceRequestVO, MandateAdviceRequestDTO> mapMandateAdviceRequestDTO = mandateAdviceRequestVO -> {
         final val mandateAdviceRequestDTO = new MandateAdviceRequestDTO();
-        mandateAdviceRequestDTO.setAmount(mandateAdviceRequestDTO.getAmount());
-        mandateAdviceRequestDTO.setBeneficiaryAccountName(mandateAdviceRequestDTO.getBeneficiaryAccountName());
+        mandateAdviceRequestDTO.setAmount(mandateAdviceRequestVO.getAmount());
+        mandateAdviceRequestDTO.setBeneficiaryAccountName(mandateAdviceRequestVO.getBeneficiaryAccountName());
         mandateAdviceRequestDTO.setBeneficiaryAccountNo(mandateAdviceRequestVO.getBeneficiaryAccountNo());
         mandateAdviceRequestDTO.setBeneficiaryBVN(mandateAdviceRequestVO.getBeneficiaryBVN());
         mandateAdviceRequestDTO.setBeneficiaryKYCLevel(mandateAdviceRequestVO.getBeneficiaryKYCLevel());
