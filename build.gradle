@@ -51,52 +51,11 @@ repositories {
 
 
 // commented auto generation of sources
-// tag::wsdl[]
-task genJaxb {
-    ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
-    ext.classesDir = "${buildDir}/classes/jaxb"
-//ext.schema = "http://www.webservicex.com/stockquote.asmx?WSDL"
-    ext.schema = " http://154.113.16.142:8088/AccountOpeningService/AccountOpeningUtilityService.asmx?wsdl"
-    //ext.schema = "schemas/nip.wsdl"
 
-    outputs.dir classesDir
-
-    doLast() {
-        project.ant {
-            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
-                    classpath: configurations.jaxb.asPath
-            mkdir(dir: sourcesDir)
-            mkdir(dir: classesDir)
-
-            xjc(destdir: sourcesDir, schema: schema, package: "com.globalaccelerex.providusmiddleware.providers.providus.model.xjc") {
-                //xjc(destdir: sourcesDir, schema: schema, package: "com.globalaccelerex.nipmiddleware.wsdl") {
-                arg(value: "-wsdl")
-                produces(dir: sourcesDir, includes: "**/*.java")
-            }
-
-            javac(destdir: classesDir, source: 1.8, target: 1.8, debug: true,
-                    debugLevel: "lines,vars,source",
-                    classpath: configurations.jaxb.asPath) {
-                src(path: sourcesDir)
-                include(name: "**/*.java")
-                include(name: "*.java")
-            }
-
-            copy(todir: classesDir) {
-                fileset(dir: sourcesDir, erroronmissingdir: false) {
-                    exclude(name: "**/*.java")
-                }
-            }
-        }
-    }
-}
-// end::wsdl[]
 
 
 bootJar {
     baseName = 'nipmiddleware'
-
-    from genJaxb.classesDir
 }
 
 dependencies {
@@ -118,7 +77,6 @@ dependencies {
 
     // spring ws
     compile group: 'org.springframework.ws', name: 'spring-ws-core', version: '2.4.1.RELEASE'
-    compile(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
 
     compile("mysql:mysql-connector-java")
