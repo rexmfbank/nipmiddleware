@@ -137,6 +137,7 @@ public class FtFacade {
                 if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
                     ftSingleCreditRequest.setBeneficiaryBVN(neSingleResponse.getBankVerificationNo());
                     ftSingleCreditRequest.setBeneficiaryKYCLevel(neSingleResponse.getKycLevel());
+                    ftSingleCreditRequest.setBeneficiaryAccountName(neSingleResponse.getAccountName());
                 }else {
                     //No need to continue with FT
                     //update the db
