@@ -1,4 +1,4 @@
-FROM java:openjdk-8-jre
+FROM public.ecr.aws/w9q2h2q2/open-jdk-8:latest
 VOLUME /tmp
 
 ADD nipmiddleware.jar app.jar
