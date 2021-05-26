@@ -75,13 +75,11 @@ public class FtFacade {
 
     public NESingleResponse doNameEnquiry(NESingleRequest neSingleRequest){
         val iMarker = neSingleRequest.getMarker();
-        val clientId = neSingleRequest.getClientId();
-        val clientEntity = clientDbService.findClientByClientId(clientId).get();
-        val originatorBankCode = clientEntity.getOriginatorBankCode();
-        neSingleRequest.setOriginatorBankCode(originatorBankCode);
-
         NESingleRequestVO neSingleRequestVO = nipOutwardMapper.mapNESingleRequestVO.apply(neSingleRequest);
+
         final val sessionId = neSingleRequestVO.getSessionId();
+        final val clientId = neSingleRequest.getClientId();
+        val originatorBankCode = neSingleRequest.getOriginatorBankCode();
 
         String neSingleRequestXmlString = xmlUtil.marshal(NESingleRequestVO.class, neSingleRequestVO);
 
@@ -91,6 +89,7 @@ public class FtFacade {
         val neSingleItem = new Nameenquirysingleitem();
         neSingleItem.setRequest(encryptedXmlString);
         iMarker.info(" Sending Request to NIPOutwardWS for NameEnquiry");
+
 
         val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
         if(StringUtils.isBlank(nameEnquirySingleItemResponse.getReturn())){
@@ -112,24 +111,22 @@ public class FtFacade {
     }
 
 
+    
     public void doFundsTransfer(FTSingleCreditRequest ftSingleCreditRequest, String sessionId){
 
         val iMarker = ftSingleCreditRequest.getMarker();
         val clientId = ftSingleCreditRequest.getClientId();
 
-        val clientEntity = clientDbService.findClientByClientId(ftSingleCreditRequest.getClientId()).get();
-        ftSingleCreditRequest.updateCompulsoryFields(clientEntity);
         final val originatorBankCode = ftSingleCreditRequest.getOriginatorBankCode();
         iMarker.info("::::: Handling Method for Funds Transfer ::::::: ");
         NESingleResponse neSingleResponse = null;
-        final val fundsTransferEntity = nipOutwardMapper.mapFundsTransferEntity.apply(ftSingleCreditRequest);
+        final val fundsTransferEntity = fundsTransferDbService.findRecordByClientIdAndSessionId(clientId,sessionId,iMarker);
 
-        // do a mapping to entity and save record in db
         try {
+
             final val neSingleRequest = nipOutwardMapper.mapNESingleRequest.apply(ftSingleCreditRequest);
             neSingleRequest.setMarker(iMarker);
-            neSingleRequest.setClientId(clientId);
-            fundsTransferEntity.setSessionId(sessionId);
+            //fundsTransferEntity.setSessionId(sessionId);
 
             if(StringUtils.isEmpty(ftSingleCreditRequest.getNameEnquiryReference())){
                 //we need to do a nameEnquiry
@@ -140,6 +137,7 @@ public class FtFacade {
                 if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
                     ftSingleCreditRequest.setBeneficiaryBVN(neSingleResponse.getBankVerificationNo());
                     ftSingleCreditRequest.setBeneficiaryKYCLevel(neSingleResponse.getKycLevel());
+                    ftSingleCreditRequest.setBeneficiaryAccountName(neSingleResponse.getAccountName());
                 }else {
                     //No need to continue with FT
                     //update the db
