@@ -11,7 +11,7 @@ public enum  BankCodeEnum {
 
     GA("999157","090202"),
 
-    SLS("999186","");
+    SLS("999186","090449");
 
     @Getter
     private final String devEnv;
