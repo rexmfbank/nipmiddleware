@@ -6,6 +6,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class ClientDbService {
 
@@ -58,7 +60,8 @@ public class ClientDbService {
 
     public Optional<ClientEntity> findClientByClientId(String clientId ){
         try{
-            return Optional.of(clientCache.getUnchecked(clientId));
+            final val clientEntity = clientCache.getUnchecked(clientId);
+            return Optional.of(clientEntity);
         }catch (UncheckedExecutionException exception){
             return Optional.empty();
         }

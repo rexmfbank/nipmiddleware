@@ -1,4 +1,4 @@
-INSERT INTO `client_entity` (`id`, `client_id`, `client_name`, `password`, `active`, `business_Desc`, `callback_url`, `contact_email`, `contact_phone`, `created_at`, `last_updated_at`,`account_name`,`bvn`,`kyc_level`,`account_no`,`bank_code`) VALUES (5, 'nip01', 'nip01', '$2a$10$3eGZfStDaj4Jg2A6Ny0FGO0cwRk4WA0TL8oeueJyhwNr5ZnDmvgKy', 1, 'We do nothing ', '', '', NULL, '2020-04-27 22:47:53', '2020-04-27 22:47:53','','','','','');
+INSERT INTO `client_entity` (`id`, `client_id`, `client_name`, `password`, `active`, `business_Desc`, `callback_url`, `contact_email`, `contact_phone`, `created_at`, `last_updated_at`,`account_name`,`bvn`,`kyc_level`,`account_no`,`bank_code`,`client_status`) VALUES (5, 'nip01', 'nip01', '$2a$10$3eGZfStDaj4Jg2A6Ny0FGO0cwRk4WA0TL8oeueJyhwNr5ZnDmvgKy', 1, 'We do nothing ', '', '', NULL, '2020-04-27 22:47:53', '2020-04-27 22:47:53','','','','','','ACTIVE');
 
 
 

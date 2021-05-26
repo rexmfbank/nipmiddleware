@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
@@ -28,7 +29,9 @@ public class BaseResponse {
 
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;
-        this.responseDescription = NIPResponseCodeEnum.getResponseCodeEnum(responseCode).getDescription();
+        if(StringUtils.isBlank(responseDescription)){
+            this.responseDescription = NIPResponseCodeEnum.getResponseCodeEnum(responseCode).getDescription();
+        }
     }
 
     public void setResponse(NIPResponseCodeEnum nipResponseCodeEnum){

@@ -13,6 +13,7 @@ import com.globalaccelerex.nipmiddleware.payload.client.getclients.GetClientsRes
 import com.globalaccelerex.nipmiddleware.payload.client.resetpassword.ResetPasswordRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.resetpassword.ResetPasswordResponse;
 import com.globalaccelerex.nipmiddleware.payload.client.updateclient.UpdateClientRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.updateclient.UpdateClientStatusRequest;
 import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
 import com.globalaccelerex.nipmiddleware.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -53,22 +54,37 @@ public class AdminFacade {
             nipMiddleWareAPIException.buildFailureStatusException(CLIENT_DETAILS_EXIST_IN_DB_MSG,iMarker);
             throw nipMiddleWareAPIException;
         }
+        final val accountDetail = createClientRequest.getAccountDetail();
+        final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
+        final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
+        if(accountDetail.isDetailsAvailable()){
+            // no need to call NIP
+            clientEntity.setAccountName(accountDetail.getAccountName());
+            clientEntity.setAccountNo(accountDetail.getAccountNo());
+            clientEntity.setBankCode(accountDetail.getBankCode());
+            clientEntity.setOriginatorBankCode(createClientRequest.getOriginatorBankCode());
+            clientEntity.setKycLevel(accountDetail.getKycLevel());
+            clientEntity.setBvn(accountDetail.getBvn());
+            clientDbService.saveClientEntity(clientEntity);
+            final val createClientResponse = clientMapper.mapCreateClientResponse.apply(createClientRequest);
+            createClientResponse.setSecretKey(jwtTokenStr);
+            return createClientResponse;
+        }
+
         val neSingleRequest = clientMapper.mapNESingleRequest.apply(createClientRequest);
         neSingleRequest.setMarker(createClientRequest.getMarker());
         val neSingleResponse = ftFacade.doNameEnquiry(neSingleRequest);
-
-
         if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
-            final val clientEntity = clientMapper.mapClientEntity.apply(createClientRequest);
+
             clientEntity.setAccountName(neSingleResponse.getAccountName());
             clientEntity.setAccountNo(neSingleResponse.getAccountNo());
-            clientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
+            clientEntity.setBankCode(neSingleResponse.getDestinationBankCode());
             clientEntity.setOriginatorBankCode(createClientRequest.getOriginatorBankCode());
             clientEntity.setKycLevel(neSingleResponse.getKycLevel());
             clientEntity.setBvn(neSingleResponse.getBankVerificationNo());
             clientDbService.saveClientEntity(clientEntity);
 
-            final val jwtTokenStr = jwtTokenUtil.createJWT(clientId, "NIP", "X_TOKEN", 0);
+
             final val createClientResponse = clientMapper.mapCreateClientResponse.apply(createClientRequest);
             createClientResponse.setSecretKey(jwtTokenStr);
             return createClientResponse;
@@ -113,34 +129,38 @@ public class AdminFacade {
             nipMiddleWareAPIException.buildFailureStatusException(CLIENT_DETAILS_EXIST_IN_DB_MSG,marker);
             throw nipMiddleWareAPIException;
         }
-        val accountNo = updateClientRequest.getAccountNo();
-        val bankCode = updateClientRequest.getBankCode();
-        val originatorBankCode = updateClientRequest.getOriginatorBankCode();
-
+        final val accountDetail = updateClientRequest.getAccountDetail();
         val updatedClientEntity = clientMapper.updateClientEntity(clientEntity, updateClientRequest);
-
-        if(StringUtils.isNoneBlank(accountNo,bankCode,originatorBankCode)){
-            // Do NameEnquiry
-            val neSingleRequest = clientMapper.mapNESingleRequest_1.apply(updateClientRequest);
-            neSingleRequest.setMarker(updateClientRequest.getMarker());
-            val neSingleResponse = ftFacade.doNameEnquiry(neSingleRequest);
-
-            if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
-                updatedClientEntity.setAccountName(neSingleResponse.getAccountName());
-                updatedClientEntity.setAccountNo(neSingleResponse.getAccountNo());
-                updatedClientEntity.setBankCode(neSingleResponse.getDestinationInstitutionCode());
-                updatedClientEntity.setOriginatorBankCode(originatorBankCode);
-                updatedClientEntity.setKycLevel(neSingleResponse.getKycLevel());
-                updatedClientEntity.setBvn(neSingleResponse.getBankVerificationNo());
-            }else{
-                val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
-                nipMiddleWareAPIException.buildFailureStatusException(NAME_ENQUIRY_FAILED_MSG,marker);
-                throw nipMiddleWareAPIException;
-            }
+        val originatorBankCode = updateClientRequest.getOriginatorBankCode();
+        if(accountDetail.isDetailsAvailable()){
+            updatedClientEntity.setAccountName(accountDetail.getAccountName());
+            updatedClientEntity.setAccountNo(accountDetail.getAccountNo());
+            updatedClientEntity.setBankCode(accountDetail.getBankCode());
+            updatedClientEntity.setOriginatorBankCode(originatorBankCode);
+            updatedClientEntity.setKycLevel(accountDetail.getKycLevel());
+            updatedClientEntity.setBvn(accountDetail.getBvn());
+            clientDbService.updateClientEntity(updatedClientEntity);
+            marker.info("done processing update client request ");
+            return;
         }
-        clientDbService.updateClientEntity(updatedClientEntity);
 
-        marker.info("done processing update client request ");
+        // Do NameEnquiry
+        val neSingleRequest = clientMapper.mapNESingleRequest_1.apply(updateClientRequest);
+        neSingleRequest.setMarker(updateClientRequest.getMarker());
+        val neSingleResponse = ftFacade.doNameEnquiry(neSingleRequest);
+
+        if(NIPResponseCodeEnum.isSuccess(neSingleResponse.getResponseCode())){
+            updatedClientEntity.setAccountName(neSingleResponse.getAccountName());
+            updatedClientEntity.setAccountNo(neSingleResponse.getAccountNo());
+            updatedClientEntity.setBankCode(neSingleResponse.getDestinationBankCode());
+            updatedClientEntity.setOriginatorBankCode(originatorBankCode);
+            updatedClientEntity.setKycLevel(neSingleResponse.getKycLevel());
+            updatedClientEntity.setBvn(neSingleResponse.getBankVerificationNo());
+        }else{
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(NAME_ENQUIRY_FAILED_MSG,marker);
+            throw nipMiddleWareAPIException;
+        }
     }
 
     public GetClientsResponse getClients(GetClientsRequest getClientsRequest){
@@ -191,6 +211,21 @@ public class AdminFacade {
         resetPasswordResponse.setClientId(resetPasswordRequest.getClientId());
         marker.info("done resetting password  request ");
         return resetPasswordResponse;
+    }
+
+    public void updateClientStatus(UpdateClientStatusRequest updateClientStatusRequest){
+        IMarker marker = updateClientStatusRequest.getMarker();
+        marker.info("processing Update Client Status request ");
+        val clientEntityOpt = clientDbService.isClientPresent(updateClientStatusRequest.getClientId());
+        if(!clientEntityOpt.isPresent()){
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(CLIENT_NOT_FOUND_MSG,marker);
+            throw nipMiddleWareAPIException;
+        }
+        val clientEntity = clientEntityOpt.get();
+        clientEntity.setClientStatus(updateClientStatusRequest.getStatus());
+        clientDbService.updateClientEntity(clientEntity);
+        marker.info("done Updating Client Status");
     }
 
     @Autowired

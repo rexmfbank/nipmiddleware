@@ -1,8 +1,10 @@
 package com.globalaccelerex.nipmiddleware.payload.bank.amountblock;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class AmountBlockResponseDTO {
 
     private String sessionId;

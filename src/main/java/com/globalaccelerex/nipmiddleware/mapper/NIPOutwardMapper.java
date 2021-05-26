@@ -41,7 +41,7 @@ public class NIPOutwardMapper {
                 .accountNo(neSingleResponseVO.getAccountNo())
                 .bankVerificationNo(neSingleResponseVO.getBvn())
                 .kycLevel(neSingleResponseVO.getKycLevel())
-                .destinationInstitutionCode(neSingleResponseVO.getDestinationInstitutionCode())
+                .destinationBankCode(neSingleResponseVO.getDestinationInstitutionCode())
                 .nameEnquiryReference(neSingleResponseVO.getSessionId())
                 .build();
         neSingleResponse.setResponseCode(neSingleResponseVO.getResponseCode());
@@ -124,6 +124,7 @@ public class NIPOutwardMapper {
                 .build();
         tsqResponse.setResponseCode(fundsTransferEntity.getResponseCode());
         tsqResponse.setSessionId(fundsTransferEntity.getSessionId());
+        tsqResponse.setResponseDescription(fundsTransferEntity.getResponseDescription());
         return tsqResponse;
     };
 

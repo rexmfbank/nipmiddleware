@@ -10,6 +10,7 @@ import com.globalaccelerex.nipmiddleware.util.SSMUtil;
 import com.globalaccelerex.nipmiddleware.util.XmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,27 +27,33 @@ public class FTInwardFacade extends AbstractInwardFacade{
         super(ssmUtil,xmlUtil, nipConfig);
     }
 
-    public FundtransfersingleitemDdResponse handleFTDirectDebit(FundtransfersingleitemDd fundtransfersingleitemDd, IMarker marker, String originatingInstitutionCode){
+    public FundtransfersingleitemDdResponse handleFTDirectDebit(String encryptedFTDirectDebitString, IMarker marker, String originatingInstitutionCode){
         final val fundtransfersingleitemDdResponse = new FundtransfersingleitemDdResponse();
         try{
-            final val encryptedFTDirectDebitString = fundtransfersingleitemDd.getRequest();
-            final val clearFTDirectDebitString = nipConfig.isIgnoreEncryption() ? encryptedFTDirectDebitString: decryptString(encryptedFTDirectDebitString,originatingInstitutionCode,marker);
+            if(StringUtils.isBlank(originatingInstitutionCode)){
+                marker.setRequest(" Originating Institution Code is not available ","");
+                fundtransfersingleitemDdResponse.setReturn(encryptedFTDirectDebitString);
+                marker.setResponse("Sending Encrypted Request as response ");
+            }else {
 
-            marker.setRequest(" FT_Dd Clear String ",clearFTDirectDebitString);
+                final val clearFTDirectDebitString = nipConfig.isIgnoreEncryption() ? encryptedFTDirectDebitString : decryptString(encryptedFTDirectDebitString, originatingInstitutionCode, marker);
 
-            final val ftDirectDebitRequestVO = xmlUtil.unmarshal(clearFTDirectDebitString, FTDirectDebitRequestVO.class);
+                marker.setRequest(" FT_Dd Clear String ", clearFTDirectDebitString);
 
-            // some backend calls
+                final val ftDirectDebitRequestVO = xmlUtil.unmarshal(clearFTDirectDebitString, FTDirectDebitRequestVO.class);
 
-            final val ftDirectDebitResponseVO = nipInwardService.handleFTDirectDebit(ftDirectDebitRequestVO,originatingInstitutionCode,marker);
+                // some backend calls
 
-            marker.setResponse("Response from FT_Dd CBA " + ftDirectDebitResponseVO.toString());
+                final val ftDirectDebitResponseVO = nipInwardService.handleFTDirectDebit(ftDirectDebitRequestVO, originatingInstitutionCode, marker);
 
-            final val ftDirectDebitResponseVOXmlString = xmlUtil.marshal(FTDirectDebitResponseVO.class, ftDirectDebitResponseVO);
+                marker.setResponse("Response from FT_Dd CBA " + ftDirectDebitResponseVO.toString());
 
-            final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? ftDirectDebitResponseVOXmlString : encryptString(ftDirectDebitResponseVOXmlString,originatingInstitutionCode,marker);
+                final val ftDirectDebitResponseVOXmlString = xmlUtil.marshal(FTDirectDebitResponseVO.class, ftDirectDebitResponseVO);
 
-            fundtransfersingleitemDdResponse.setReturn(encryptedXmlString);
+                final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? ftDirectDebitResponseVOXmlString : encryptString(ftDirectDebitResponseVOXmlString, originatingInstitutionCode, marker);
+
+                fundtransfersingleitemDdResponse.setReturn(encryptedXmlString);
+            }
         }catch (Exception exception){
             if(exception instanceof NIPMiddleWareAPIException){
                 val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
@@ -60,26 +67,32 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransfersingleitemDdResponse;
     }
 
-    public FundtransfersingleitemDcResponse handleFTDirectCredit(FundtransfersingleitemDc fundtransfersingleitemDc, IMarker marker, String originatingInstitutionCode){
+    public FundtransfersingleitemDcResponse handleFTDirectCredit(String encryptedFTSingleItemDCString, IMarker marker, String originatingInstitutionCode){
         final val fundtransfersingleitemDcResponse = new FundtransfersingleitemDcResponse();
         try{
-            final val encryptedFTSingleItemDCString = fundtransfersingleitemDc.getRequest();
-            final val clearFTSingleItemDCString = nipConfig.isIgnoreEncryption() ? encryptedFTSingleItemDCString : decryptString(encryptedFTSingleItemDCString,originatingInstitutionCode,marker);
+            if(StringUtils.isBlank(originatingInstitutionCode)){
+                marker.setRequest(" Originating Institution Code is not available ","");
+                fundtransfersingleitemDcResponse.setReturn(encryptedFTSingleItemDCString);
+                marker.setResponse("Sending Encrypted Request as response ");
+            }else {
 
-            marker.setRequest(" FT_Dc Clear String ",clearFTSingleItemDCString);
+                final val clearFTSingleItemDCString = nipConfig.isIgnoreEncryption() ? encryptedFTSingleItemDCString : decryptString(encryptedFTSingleItemDCString, originatingInstitutionCode, marker);
 
-            final val ftDirectCreditRequestVO = xmlUtil.unmarshal(clearFTSingleItemDCString, FTDirectCreditRequestVO.class);
+                marker.setRequest(" FT_Dc Clear String ", clearFTSingleItemDCString);
 
-            // some backend calls
+                final val ftDirectCreditRequestVO = xmlUtil.unmarshal(clearFTSingleItemDCString, FTDirectCreditRequestVO.class);
 
-            final val ftDirectCreditResponseVO = nipInwardService.handleFTDirectCredit(ftDirectCreditRequestVO,originatingInstitutionCode,marker);
-            marker.setResponse("Response from FT_Dc CBA " + ftDirectCreditResponseVO.toString());
+                // some backend calls
 
-            final val ftDirectCreditResponseVOXmlString = xmlUtil.marshal(FTDirectCreditResponseVO.class, ftDirectCreditResponseVO);
+                final val ftDirectCreditResponseVO = nipInwardService.handleFTDirectCredit(ftDirectCreditRequestVO, originatingInstitutionCode, marker);
+                marker.setResponse("Response from FT_Dc CBA " + ftDirectCreditResponseVO.toString());
 
-            final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? ftDirectCreditResponseVOXmlString : encryptString(ftDirectCreditResponseVOXmlString,originatingInstitutionCode,marker);
+                final val ftDirectCreditResponseVOXmlString = xmlUtil.marshal(FTDirectCreditResponseVO.class, ftDirectCreditResponseVO);
 
-            fundtransfersingleitemDcResponse.setReturn(encryptedXmlString);
+                final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? ftDirectCreditResponseVOXmlString : encryptString(ftDirectCreditResponseVOXmlString, originatingInstitutionCode, marker);
+
+                fundtransfersingleitemDcResponse.setReturn(encryptedXmlString);
+            }
         }catch (Exception exception){
             if(exception instanceof NIPMiddleWareAPIException){
                 val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
@@ -93,26 +106,32 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransfersingleitemDcResponse;
     }
 
-    public FundtransferAdviceDcResponse handleFTAdviceDirectCredit(FundtransferAdviceDc fundtransferAdviceDc, IMarker marker, String originatingInstitutionCode){
+    public FundtransferAdviceDcResponse handleFTAdviceDirectCredit(String encryptedFTAdviceDirectCreditString, IMarker marker, String originatingInstitutionCode){
         final val fundtransferAdviceDcResponse = new FundtransferAdviceDcResponse();
         try{
-            final val encryptedFTAdviceDirectCreditString = fundtransferAdviceDc.getRequest();
-            final val clearFTAdviceDirectCreditString = nipConfig.isIgnoreEncryption() ? encryptedFTAdviceDirectCreditString : decryptString(encryptedFTAdviceDirectCreditString,originatingInstitutionCode,marker);
+            if(StringUtils.isBlank(originatingInstitutionCode)){
+                marker.setRequest(" Originating Institution Code is not available ","");
+                fundtransferAdviceDcResponse.setReturn(encryptedFTAdviceDirectCreditString);
+                marker.setResponse("Sending Encrypted Request as response ");
+            }else {
 
-            marker.setRequest(" FT_Advice Dc Clear String ",clearFTAdviceDirectCreditString);
+                final val clearFTAdviceDirectCreditString = nipConfig.isIgnoreEncryption() ? encryptedFTAdviceDirectCreditString : decryptString(encryptedFTAdviceDirectCreditString, originatingInstitutionCode, marker);
 
-            final val ftAdviceDirectCreditRequestVO = xmlUtil.unmarshal(clearFTAdviceDirectCreditString, FTAdviceDirectCreditRequestVO.class);
+                marker.setRequest(" FT_Advice Dc Clear String ", clearFTAdviceDirectCreditString);
 
-            //some backend calls
+                final val ftAdviceDirectCreditRequestVO = xmlUtil.unmarshal(clearFTAdviceDirectCreditString, FTAdviceDirectCreditRequestVO.class);
 
-            final val ftAdviceDirectCreditResponseVO = nipInwardService.handleFTAdviceDirectCredit(ftAdviceDirectCreditRequestVO,originatingInstitutionCode,marker);
-            marker.setResponse("Response from FT_Advice_DC CBA " + ftAdviceDirectCreditResponseVO.toString());
+                //some backend calls
 
-            final val ftAdviseDirectCreditResponseVOXmlString = xmlUtil.marshal(FTAdviceDirectCreditResponseVO.class, ftAdviceDirectCreditResponseVO);
+                final val ftAdviceDirectCreditResponseVO = nipInwardService.handleFTAdviceDirectCredit(ftAdviceDirectCreditRequestVO, originatingInstitutionCode, marker);
+                marker.setResponse("Response from FT_Advice_DC CBA " + ftAdviceDirectCreditResponseVO.toString());
 
-            final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? ftAdviseDirectCreditResponseVOXmlString : encryptString(ftAdviseDirectCreditResponseVOXmlString,originatingInstitutionCode,marker);
+                final val ftAdviseDirectCreditResponseVOXmlString = xmlUtil.marshal(FTAdviceDirectCreditResponseVO.class, ftAdviceDirectCreditResponseVO);
 
-            fundtransferAdviceDcResponse.setReturn(encryptedXmlString);
+                final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? ftAdviseDirectCreditResponseVOXmlString : encryptString(ftAdviseDirectCreditResponseVOXmlString, originatingInstitutionCode, marker);
+
+                fundtransferAdviceDcResponse.setReturn(encryptedXmlString);
+            }
         }catch (Exception exception){
             if(exception instanceof NIPMiddleWareAPIException){
                 val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
@@ -126,26 +145,32 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransferAdviceDcResponse;
     }
 
-    public FundtransferAdviceDdResponse handleFTAdviceDirectDebit(FundtransferAdviceDd fundtransferAdviceDd, IMarker marker, String originatingInstitutionCode){
+    public FundtransferAdviceDdResponse handleFTAdviceDirectDebit(String encryptedFTAdviceDirectDebitString, IMarker marker, String originatingInstitutionCode){
         final val fundtransferAdviceDdResponse = new FundtransferAdviceDdResponse();
         try{
-            final val encryptedFTAdviceDirectDebitString = fundtransferAdviceDd.getRequest();
-            final val clearFTAdviceDirectDebitString = nipConfig.isIgnoreEncryption() ? encryptedFTAdviceDirectDebitString : decryptString(encryptedFTAdviceDirectDebitString,originatingInstitutionCode,marker);
+            if(StringUtils.isBlank(originatingInstitutionCode)){
+                marker.setRequest(" Originating Institution Code is not available ","");
+                fundtransferAdviceDdResponse.setReturn(encryptedFTAdviceDirectDebitString);
+                marker.setResponse("Sending Encrypted Request as response ");
+            }else {
 
-            marker.setRequest(" FT_Advice Dd Clear String ",clearFTAdviceDirectDebitString);
+                final val clearFTAdviceDirectDebitString = nipConfig.isIgnoreEncryption() ? encryptedFTAdviceDirectDebitString : decryptString(encryptedFTAdviceDirectDebitString, originatingInstitutionCode, marker);
 
-            final val ftAdviceDirectDebitRequestVO = xmlUtil.unmarshal(clearFTAdviceDirectDebitString, FTAdviceDirectDebitRequestVO.class);
+                marker.setRequest(" FT_Advice Dd Clear String ", clearFTAdviceDirectDebitString);
 
-            //some backend calls
+                final val ftAdviceDirectDebitRequestVO = xmlUtil.unmarshal(clearFTAdviceDirectDebitString, FTAdviceDirectDebitRequestVO.class);
 
-            final val ftAdviceDirectDebitResponseVO = nipInwardService.handleFTAdviceDirectDebit(ftAdviceDirectDebitRequestVO,originatingInstitutionCode,marker);
-            marker.setResponse("Response from FT_Advice_DC CBA " + ftAdviceDirectDebitResponseVO.toString());
+                //some backend calls
 
-            final val ftAdviseDirectDebitResponseVOXmlString = xmlUtil.marshal(FTAdviceDirectDebitResponseVO.class, ftAdviceDirectDebitResponseVO);
+                final val ftAdviceDirectDebitResponseVO = nipInwardService.handleFTAdviceDirectDebit(ftAdviceDirectDebitRequestVO, originatingInstitutionCode, marker);
+                marker.setResponse("Response from FT_Advice_DC CBA " + ftAdviceDirectDebitResponseVO.toString());
 
-            final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? ftAdviseDirectDebitResponseVOXmlString : encryptString(ftAdviseDirectDebitResponseVOXmlString,originatingInstitutionCode,marker);
+                final val ftAdviseDirectDebitResponseVOXmlString = xmlUtil.marshal(FTAdviceDirectDebitResponseVO.class, ftAdviceDirectDebitResponseVO);
 
-            fundtransferAdviceDdResponse.setReturn(encryptedXmlString);
+                final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? ftAdviseDirectDebitResponseVOXmlString : encryptString(ftAdviseDirectDebitResponseVOXmlString, originatingInstitutionCode, marker);
+
+                fundtransferAdviceDdResponse.setReturn(encryptedXmlString);
+            }
         }catch (Exception exception){
             if(exception instanceof NIPMiddleWareAPIException){
                 val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;
@@ -159,18 +184,25 @@ public class FTInwardFacade extends AbstractInwardFacade{
         return fundtransferAdviceDdResponse;
     }
 
-    public FtackcreditrequestResponse handleFTAckCredit(Ftackcreditrequest ftackcreditrequest, IMarker marker, String originatingInstitutionCode){
+    public FtackcreditrequestResponse handleFTAckCredit(String encryptedFTAckCreditString, IMarker marker, String originatingInstitutionCode){
         final val ftackcreditrequestResponse = new FtackcreditrequestResponse();
         try{
-            final val encryptedFTAckCreditString = ftackcreditrequest.getRequest();
-            final val clearFTAckCreditString = nipConfig.isIgnoreEncryption() ? encryptedFTAckCreditString : decryptString(encryptedFTAckCreditString,originatingInstitutionCode,marker);
+            if(StringUtils.isBlank(originatingInstitutionCode)){
+                marker.setRequest(" Originating Institution Code is not available ","");
+                ftackcreditrequestResponse.setReturn(encryptedFTAckCreditString);
+                marker.setResponse("Sending Encrypted Request as response ");
+            }else {
 
-            marker.setRequest(" FT Acknowledge Credit Clear String ",clearFTAckCreditString);
 
-            final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? clearFTAckCreditString : encryptString(clearFTAckCreditString,originatingInstitutionCode,marker);
-            marker.setResponse("Response from FT Acknowledge Credit  CBA " + encryptedXmlString);
+                final val clearFTAckCreditString = nipConfig.isIgnoreEncryption() ? encryptedFTAckCreditString : decryptString(encryptedFTAckCreditString, originatingInstitutionCode, marker);
 
-            ftackcreditrequestResponse.setReturn(encryptedXmlString);
+                marker.setRequest(" FT Acknowledge Credit Clear String ", clearFTAckCreditString);
+
+                final val encryptedXmlString = nipConfig.isIgnoreEncryption() ? clearFTAckCreditString : encryptString(clearFTAckCreditString, originatingInstitutionCode, marker);
+                marker.setResponse("Response from FT Acknowledge Credit  CBA " + encryptedXmlString);
+
+                ftackcreditrequestResponse.setReturn(encryptedXmlString);
+            }
         }catch (Exception exception){
             if(exception instanceof NIPMiddleWareAPIException){
                 val nipMiddleWareAPIException =(NIPMiddleWareAPIException) exception;

@@ -35,15 +35,15 @@ public class NIPInwardFacade extends AbstractInwardFacade{
         super(ssmUtil, xmlUtil, nipConfig);
     }
 
-    public NameenquirysingleitemResponse handleNameEnquiry(Nameenquirysingleitem nameenquirysingleitem, IMarker marker, String originatingInstitutionCode){
+    public NameenquirysingleitemResponse handleNameEnquiry(String encryptedNEString, IMarker marker, String originatingInstitutionCode){
         final val nameEnquirySingleItemResponse = new NameenquirysingleitemResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                nameEnquirySingleItemResponse.setReturn(nameenquirysingleitem.getRequest());
+                nameEnquirySingleItemResponse.setReturn(encryptedNEString);
                 marker.setResponse("Sending Encrypted Request back ");
             }else{
-                final val encryptedNEString = nameenquirysingleitem.getRequest();
+
                 final val clearNEString = nipConfig.isIgnoreEncryption() ? encryptedNEString : decryptString(encryptedNEString,originatingInstitutionCode,marker);
 
                 marker.setRequest(" NameEnquiry Clear String ",clearNEString);
@@ -73,15 +73,15 @@ public class NIPInwardFacade extends AbstractInwardFacade{
         return nameEnquirySingleItemResponse;
     }
 
-    public FinancialinstitutionlistResponse handleFI (Financialinstitutionlist financialinstitutionlist, IMarker marker, String originatingInstitutionCode){
+    public FinancialinstitutionlistResponse handleFI (String encryptedFIListString, IMarker marker, String originatingInstitutionCode){
         val financialinstitutionlistResponse = new FinancialinstitutionlistResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                financialinstitutionlistResponse.setReturn(financialinstitutionlist.getRequest());
+                financialinstitutionlistResponse.setReturn(encryptedFIListString);
                 marker.setResponse("Sending Encrypted Request back ");
             }else {
-                final val encryptedFIListString = financialinstitutionlist.getRequest();
+
                 final val clearFIListString = nipConfig.isIgnoreEncryption() ? encryptedFIListString : decryptString(encryptedFIListString,originatingInstitutionCode,marker);
 
                 marker.setRequest(" FI List Clear String ",clearFIListString);
@@ -112,16 +112,16 @@ public class NIPInwardFacade extends AbstractInwardFacade{
         return financialinstitutionlistResponse;
     }
 
-    public TxnstatusquerysingleitemResponse handleTSQ(Txnstatusquerysingleitem txnstatusquerysingleitem, IMarker marker, String originatingInstitutionCode){
+    public TxnstatusquerysingleitemResponse handleTSQ(String encryptedTsqString, IMarker marker, String originatingInstitutionCode){
 
         final val txnstatusquerysingleitemResponse = new TxnstatusquerysingleitemResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                txnstatusquerysingleitemResponse.setReturn(txnstatusquerysingleitem.getRequest());
+                txnstatusquerysingleitemResponse.setReturn(encryptedTsqString);
                 marker.setResponse("Sending Encrypted Request back ");
             }else {
-                final val encryptedTsqString = txnstatusquerysingleitem.getRequest();
+
                 final val clearTsqString = nipConfig.isIgnoreEncryption() ? encryptedTsqString :
                         decryptString(encryptedTsqString,originatingInstitutionCode,marker);
 
@@ -155,15 +155,15 @@ public class NIPInwardFacade extends AbstractInwardFacade{
 
     }
 
-    public MandateadviceResponse handleMandateAdvice(Mandateadvice mandateadvice, IMarker marker, String originatingInstitutionCode){
+    public MandateadviceResponse handleMandateAdvice(String encryptedMandateAdviceString, IMarker marker, String originatingInstitutionCode){
         final val mandateAdviceResponse = new MandateadviceResponse();
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                mandateAdviceResponse.setReturn(mandateadvice.getRequest());
+                mandateAdviceResponse.setReturn(encryptedMandateAdviceString);
                 marker.setResponse("Sending Encrypted Request as response ");
             }else {
-                final val encryptedMandateAdviceString = mandateadvice.getRequest();
+
                 final val clearMandateAdviceString = nipConfig.isIgnoreEncryption() ? encryptedMandateAdviceString : decryptString(encryptedMandateAdviceString,originatingInstitutionCode,marker);
 
                 marker.setRequest(" Mandate Advice Clear String ",clearMandateAdviceString);
@@ -195,16 +195,15 @@ public class NIPInwardFacade extends AbstractInwardFacade{
         return mandateAdviceResponse;
     }
 
-    public BalanceenquiryResponse handleBalanceEnquiry(Balanceenquiry balanceenquiry, IMarker marker, String originatingInstitutionCode){
+    public BalanceenquiryResponse handleBalanceEnquiry(String encryptedBalanceEnquiryString, IMarker marker, String originatingInstitutionCode){
         final val balanceEnquiryResponse = new BalanceenquiryResponse();
 
         try{
             if(StringUtils.isBlank(originatingInstitutionCode)){
                 marker.setRequest(" Originating Institution Code is not available ","");
-                balanceEnquiryResponse.setReturn(balanceenquiry.getRequest());
+                balanceEnquiryResponse.setReturn(encryptedBalanceEnquiryString);
                 marker.setResponse("Sending Encrypted Request back ");
             }else {
-                final val encryptedBalanceEnquiryString = balanceenquiry.getRequest();
                 final val clearBalanceEnquiryString = nipConfig.isIgnoreEncryption() ? encryptedBalanceEnquiryString : decryptString(encryptedBalanceEnquiryString,originatingInstitutionCode,marker);
 
                 marker.setRequest(" Balance Enquiry Clear String ",clearBalanceEnquiryString);

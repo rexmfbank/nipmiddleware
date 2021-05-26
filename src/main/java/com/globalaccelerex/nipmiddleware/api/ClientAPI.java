@@ -4,6 +4,8 @@ public interface ClientAPI {
 
     String OUTWARD_API = "/api/nipmiddleware/v1/outward";
 
+    String INWARD_API = "/api/nipmiddleware/v1/inward";
+
     String CLIENT_API = "/api/nipmiddleware/v1/client";
 
     String NAME_ENQUIRY="/nameEnquiry";
@@ -31,6 +33,10 @@ public interface ClientAPI {
     String DOWN = "/status/down";
 
     String UP = "/status/up";
+
+    String UPDATE_STATUS ="/updateStatus";
+
+    String INWARD_TSQ = "/tsq/{clientId}/{sessionId}";
 
 
 }

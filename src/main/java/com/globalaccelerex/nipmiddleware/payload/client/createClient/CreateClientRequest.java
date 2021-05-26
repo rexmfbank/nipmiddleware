@@ -1,12 +1,13 @@
 package com.globalaccelerex.nipmiddleware.payload.client.createClient;
 
-import com.globalaccelerex.nipmiddleware.annotation.Nuban;
 import com.globalaccelerex.nipmiddleware.payload.client.BaseRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.accountdetail.AccountDetail;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.validator.constraints.URL;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 @Data
@@ -30,16 +31,11 @@ public class CreateClientRequest extends BaseRequest {
 
     private String contactPhone;
 
-    @NotBlank(message = "NIP Bank Code is required")
-    @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
-    private String bankCode;
-
-    @Nuban(ignoreIfEmpty = false)
-    @NotBlank(message = "Account No is required")
-    private String accountNo;
+    @Valid
+    private AccountDetail accountDetail;
 
     @NotBlank(message = "Originator Bank Code is required")
-    @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed ")
+    @Pattern(regexp = "^[0-9]*$" , message = "Only digits are allowed for originatorBankCode")
     private String originatorBankCode;
 
     @DecimalMin(value = "-90", inclusive = true ,message = "Latitude can not be less than -90")

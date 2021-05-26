@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.security.client;
 
+import com.globalaccelerex.nipmiddleware.institution.SLSConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,21 +17,34 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.servlet.http.HttpServletResponse;
 
-import static com.globalaccelerex.nipmiddleware.api.ClientAPI.CLIENT_API;
+import static com.globalaccelerex.nipmiddleware.api.BankAPI.MOCK_CBA_API;
+import static com.globalaccelerex.nipmiddleware.api.ClientAPI.INWARD_API;
+import static com.globalaccelerex.nipmiddleware.api.NipAPI.INWARD_WS_URI;
 
 @Slf4j
-@Order(2)
+@Order(3)
 @Configuration
 @EnableWebSecurity
-public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
+public class InwardSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private ClientAuthenticationProvider clientAuthenticationProvider;
 
+    private SLSConfig slsConfig;
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/actuator/health");
+        web.ignoring().antMatchers("/actuator/info");
+        web.ignoring().antMatchers("/favicon.ico");
+        web.ignoring().antMatchers(INWARD_WS_URI + slsConfig.getInstitutionCode()+"/" + "**");
+        web.ignoring().antMatchers(MOCK_CBA_API+"/**");
+    }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.antMatcher(CLIENT_API + "/**").
+        http.antMatcher(INWARD_API + "/**").
                 csrf().disable().cors()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -49,5 +64,10 @@ public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationEntryPoint unauthorizedEntryPoint() {
         return (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+
+    @Autowired
+    public void setSlsConfig(SLSConfig slsConfig) {
+        this.slsConfig = slsConfig;
     }
 }

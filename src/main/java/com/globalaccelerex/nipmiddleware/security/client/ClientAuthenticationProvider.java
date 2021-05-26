@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.security.client;
 
+import com.globalaccelerex.nipmiddleware.enums.ClientStatusEnum;
 import com.globalaccelerex.nipmiddleware.exception.ErrorResponse;
 import com.globalaccelerex.nipmiddleware.security.accesscontrol.AccessControlException;
 import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
@@ -15,8 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
-import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.CLIENT_NOT_FOUND_MSG;
-import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.INVALID_CLIENT_SECRET_KEY_MSG;
+import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.*;
 
 
 @Slf4j
@@ -60,6 +60,9 @@ public class ClientAuthenticationProvider implements AuthenticationProvider {
             throw new AccessControlException(new ErrorResponse(INVALID_CLIENT_SECRET_KEY_MSG,NIP_201.getCode()));
         }
 
+        if(!clientEntity.getClientStatus().equals(ClientStatusEnum.ACTIVE)){
+            throw new AccessControlException(new ErrorResponse(CLIENT_STATUS_IS_NOT_ACTIVE_MSG,NIP_201.getCode()));
+        }
 
         // save client in session
         data.setClient(clientEntity);

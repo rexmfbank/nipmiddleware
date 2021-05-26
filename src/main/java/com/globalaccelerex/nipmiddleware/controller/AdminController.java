@@ -11,6 +11,7 @@ import com.globalaccelerex.nipmiddleware.payload.client.getclients.GetClientsReq
 import com.globalaccelerex.nipmiddleware.payload.client.getclients.GetClientsResponse;
 import com.globalaccelerex.nipmiddleware.payload.client.resetpassword.ResetPasswordRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.updateclient.UpdateClientRequest;
+import com.globalaccelerex.nipmiddleware.payload.client.updateclient.UpdateClientStatusRequest;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,4 +118,19 @@ public class AdminController {
         }
     }
 
+    @PostMapping(UPDATE_STATUS)
+    public ResponseEntity<?> updateStatus(@Valid @RequestBody UpdateClientStatusRequest updateClientStatusRequest) {
+        IMarker marker = Marker.fromString();
+        marker.info("<<<<<<<< Update Status  >>>>>>>>");
+        updateClientStatusRequest.setMarker(marker);
+        marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
+                build().toUri().toASCIIString(), updateClientStatusRequest.toString(), false);
+        try {
+            adminFacade.updateClientStatus(updateClientStatusRequest);
+            marker.setMainResponse("", false);
+            return new ResponseEntity(HttpStatus.OK);
+        } finally {
+            marker.done();
+        }
+    }
 }
