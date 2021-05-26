@@ -6,10 +6,13 @@ import com.globalaccelerex.nipmiddleware.facade.outward.FtFacade;
 import com.globalaccelerex.nipmiddleware.facade.outward.TsqFacade;
 import com.globalaccelerex.nipmiddleware.logging.api.IMarker;
 import com.globalaccelerex.nipmiddleware.logging.impl.Marker;
+import com.globalaccelerex.nipmiddleware.mapper.NIPOutwardMapper;
 import com.globalaccelerex.nipmiddleware.payload.client.fundstransfer.FTPendingResponse;
 import com.globalaccelerex.nipmiddleware.payload.client.fundstransfer.FTSingleCreditRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.nameenquiry.NESingleRequest;
 import com.globalaccelerex.nipmiddleware.payload.client.tsq.TsqRequest;
+import com.globalaccelerex.nipmiddleware.service.db.ClientDbService;
+import com.globalaccelerex.nipmiddleware.service.db.FundsTransferDbService;
 import com.globalaccelerex.nipmiddleware.util.SessionIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -26,6 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 
 import static com.globalaccelerex.nipmiddleware.api.ClientAPI.*;
+import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_09;
 
 
 @Slf4j
@@ -38,6 +42,12 @@ public class OutwardController extends APIController{
     private final SessionIdUtil sessionIdUtil;
 
     private final TsqFacade tsqFacade;
+
+    private  ClientDbService clientDbService;
+
+    private FundsTransferDbService fundsTransferDbService;
+
+    private  NIPOutwardMapper nipOutwardMapper;
 
     @Autowired
     public OutwardController(FtFacade ftFacade, SessionIdUtil sessionIdUtil, TsqFacade tsqFacade) {
@@ -102,6 +112,16 @@ public class OutwardController extends APIController{
                 }
 
                 final val sessionId = sessionIdUtil.generateSessionId(ftSingleCreditRequest.getOriginatorBankCode());
+
+                val clientEntity = clientDbService.findClientByClientId(ftSingleCreditRequest.getClientId()).get();
+                ftSingleCreditRequest.updateCompulsoryFields(clientEntity);
+                final val fundsTransferEntity = nipOutwardMapper.mapFundsTransferEntity.apply(ftSingleCreditRequest);
+                fundsTransferEntity.setSessionId(sessionId);
+                fundsTransferEntity.setPaymentStatusEnum(NIP_09.getPaymentStatusEnum());
+                fundsTransferEntity.setResponseCode(NIP_09.getCode());
+                fundsTransferEntity.setResponseDescription(NIP_09.getDescription());
+                fundsTransferDbService.saveFundsTransferEntity(fundsTransferEntity);
+
                 ftFacade.doFundsTransfer(ftSingleCreditRequest, sessionId);
                 ftPendingResponse.setSessionId(sessionId);
                 ftPendingResponse.setPaymentReference(ftSingleCreditRequest.getPaymentReference());
@@ -135,5 +155,18 @@ public class OutwardController extends APIController{
         }
     }
 
+    @Autowired
+    public void setClientDbService(ClientDbService clientDbService) {
+        this.clientDbService = clientDbService;
+    }
 
+    @Autowired
+    public void setNipOutwardMapper(NIPOutwardMapper nipOutwardMapper) {
+        this.nipOutwardMapper = nipOutwardMapper;
+    }
+
+    @Autowired
+    public void setFundsTransferDbService(FundsTransferDbService fundsTransferDbService) {
+        this.fundsTransferDbService = fundsTransferDbService;
+    }
 }

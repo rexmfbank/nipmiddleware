@@ -1,4 +1,4 @@
-FROM 068278763965.dkr.ecr.eu-west-1.amazonaws.com/open-jdk-8:latest
+FROM public.ecr.aws/w9q2h2q2/open-jdk-8:latest
 VOLUME /tmp
 
 ADD nipmiddleware.jar app.jar
