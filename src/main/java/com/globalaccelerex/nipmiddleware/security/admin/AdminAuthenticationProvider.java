@@ -52,6 +52,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         val authenticationData = (AdminAuthenticationData) authenticationToken.getPrincipal();
         validateAccessToken(authenticationData);
         validateSignature(authenticationData);
+        log.info("access token is validated");
     }
 
     private void validateSignature(AdminAuthenticationData data) {
@@ -59,6 +60,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
             val errorResponse = new ErrorResponse(INVALID_SIGNATURE_MSG ,NIP_201.getCode());
             throw new AccessControlException(errorResponse);
         }
+        log.info("access token signature is valid ");
     }
     private void validateAccessToken(AdminAuthenticationData authenticationData) {
         try{
@@ -66,14 +68,16 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
                 final val errorResponse = new ErrorResponse(ACCESS_TOKEN_NOT_SENT_MSG,NIP_201.getCode());
                 throw new AccessControlException(errorResponse);
             }
-
+            log.info("access token is not blank");
             final val accessControlResponse = cache.getUnchecked(authenticationData.getAccessToken());
             if(StringUtils.isNotBlank(accessControlResponse.getAllowedServices()) && !accessControlResponse.getAllowedServices().contains(ALLOWED_SERVICE)){
                 throw new AccessControlException(new ErrorResponse(USER_ACCESS_FORBIDDEN_MSG,NIP_201.getCode()));
             }
+            log.info("access token is part of allowed services ");
             if (StringUtils.isNotBlank(accessControlResponse.getAccessSecret())) {
                 authenticationData.setAccessSecret(accessControlResponse.getAccessSecret());
             }
+            log.info("access token secret found ");
         }catch (UncheckedExecutionException exception) {
             if (exception.getCause() instanceof AccessControlException) {
                 throw (AccessControlException) exception.getCause();

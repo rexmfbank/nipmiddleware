@@ -47,6 +47,7 @@ public class AdminAuthenticationFilter extends GenericFilterBean {
         HttpServletResponse response = (HttpServletResponse) res;
 
         try{
+            log.info("verifying admin authentication ");
             attemptAuthentication(request, response);
             filterChain.doFilter(req, res);
         }catch (AuthenticationException authenticationException) {
@@ -99,6 +100,7 @@ public class AdminAuthenticationFilter extends GenericFilterBean {
                 .encodedURL(encodedURL)
                 .build();
         val authenticationToken = new AdminAuthenticationToken(authenticationData);
+        log.info("verifying authentication for "+authenticationData.getAccessToken());
         authenticationManager.authenticate(authenticationToken);
     }
 }
