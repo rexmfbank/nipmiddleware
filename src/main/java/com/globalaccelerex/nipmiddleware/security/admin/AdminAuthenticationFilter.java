@@ -100,7 +100,6 @@ public class AdminAuthenticationFilter extends GenericFilterBean {
                 .encodedURL(encodedURL)
                 .build();
         val authenticationToken = new AdminAuthenticationToken(authenticationData);
-        log.info("verifying authentication for "+authenticationData.getAccessToken());
         authenticationManager.authenticate(authenticationToken);
     }
 }

@@ -52,7 +52,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         val authenticationData = (AdminAuthenticationData) authenticationToken.getPrincipal();
         validateAccessToken(authenticationData);
         validateSignature(authenticationData);
-        log.info("access token is validated");
+
     }
 
     private void validateSignature(AdminAuthenticationData data) {
@@ -60,7 +60,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
             val errorResponse = new ErrorResponse(INVALID_SIGNATURE_MSG ,NIP_201.getCode());
             throw new AccessControlException(errorResponse);
         }
-        log.info("access token signature is valid ");
+
     }
     private void validateAccessToken(AdminAuthenticationData authenticationData) {
         try{
@@ -77,7 +77,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
             if (StringUtils.isNotBlank(accessControlResponse.getAccessSecret())) {
                 authenticationData.setAccessSecret(accessControlResponse.getAccessSecret());
             }
-            log.info("access token secret found ");
+
         }catch (UncheckedExecutionException exception) {
             if (exception.getCause() instanceof AccessControlException) {
                 throw (AccessControlException) exception.getCause();
