@@ -32,7 +32,7 @@ public class CreateClientRequest extends BaseRequest {
     private String contactPhone;
 
     @Valid
-    @NotNull
+    @NotNull(message = " Account details cannot be null ")
     private AccountDetail accountDetail;
 
     @NotBlank(message = "Originator Bank Code is required")
