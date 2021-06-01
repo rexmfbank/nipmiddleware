@@ -47,6 +47,7 @@ public class AdminAuthenticationFilter extends GenericFilterBean {
         HttpServletResponse response = (HttpServletResponse) res;
 
         try{
+            log.info("verifying admin authentication ");
             attemptAuthentication(request, response);
             filterChain.doFilter(req, res);
         }catch (AuthenticationException authenticationException) {

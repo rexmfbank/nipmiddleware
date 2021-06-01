@@ -50,7 +50,8 @@ public class AdminController {
             final val createClientResponse = adminFacade.createClient(createClientRequest);
             marker.setMainResponse(createClientResponse.toString(), true);
             return new ResponseEntity(createClientResponse, HttpStatus.OK);
-        }finally {
+        }
+        finally {
             marker.done();
         }
     }
