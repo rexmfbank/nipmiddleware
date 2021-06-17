@@ -1,5 +1,6 @@
 package com.globalaccelerex.nipmiddleware.facade.outward;
 
+import com.globalaccelerex.nipmiddleware.entity.ClientEntity;
 import com.globalaccelerex.nipmiddleware.entity.FundsTransferEntity;
 import com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum;
 import com.globalaccelerex.nipmiddleware.exception.NIPMiddleWareAPIException;
@@ -80,6 +81,45 @@ public class FtFacade {
         final val sessionId = neSingleRequestVO.getSessionId();
         final val clientId = neSingleRequest.getClientId();
         val originatorBankCode = neSingleRequest.getOriginatorBankCode();
+
+        String neSingleRequestXmlString = xmlUtil.marshal(NESingleRequestVO.class, neSingleRequestVO);
+
+        iMarker.setRequest(" Clear NESingleRequestXmlString  ====> ",  neSingleRequestXmlString);
+        final val encryptedXmlString = encryptString(neSingleRequestXmlString,originatorBankCode,iMarker);
+
+        val neSingleItem = new Nameenquirysingleitem();
+        neSingleItem.setRequest(encryptedXmlString);
+        iMarker.info(" Sending Request to NIPOutwardWS for NameEnquiry");
+
+
+        val nameEnquirySingleItemResponse = nipOutwardWS.nameEnquiry(iMarker, neSingleItem);
+        if(StringUtils.isBlank(nameEnquirySingleItemResponse.getReturn())){
+            iMarker.info(" Empty  Response from NIPOutwardWS ");
+            val nipMiddleWareAPIException = new NIPMiddleWareAPIException();
+            nipMiddleWareAPIException.buildFailureStatusException(NO_RESPONSE_FROM_NIBSS_MSG,iMarker);
+            throw nipMiddleWareAPIException;
+        }
+        iMarker.info(" Received  Response from NIPOutwardWS for NameEnquiry");
+        final val neSingleResponseXmlString = decryptString(nameEnquirySingleItemResponse.getReturn(),originatorBankCode,iMarker);
+        iMarker.setResponse("Clear Name Enquiry response  from NIBSS " +neSingleResponseXmlString);
+
+        final val neSingleResponseVO = xmlUtil.unmarshal(neSingleResponseXmlString, NESingleResponseVO.class);
+        iMarker.info("Name Enquiry response  from NIBSS " +neSingleResponseVO.toString());
+        final val neSingleResponse = nipOutwardMapper.mapNESingleResponseVO.apply(neSingleResponseVO);
+        neSingleResponse.setNameEnquiryReference(sessionId);
+        neSingleResponse.setClientId(clientId);
+        return neSingleResponse;
+    }
+
+    public NESingleResponse doNameEnquiryV2(NESingleRequest neSingleRequest){
+        val iMarker = neSingleRequest.getMarker();
+        NESingleRequestVO neSingleRequestVO = nipOutwardMapper.mapNESingleRequestVO.apply(neSingleRequest);
+
+        val clientEntity = clientDbService.findClientByClientId(neSingleRequest.getClientId()).get();
+
+        final val sessionId = neSingleRequestVO.getSessionId();
+        final val clientId = neSingleRequest.getClientId();
+        val originatorBankCode = clientEntity.getOriginatorBankCode();
 
         String neSingleRequestXmlString = xmlUtil.marshal(NESingleRequestVO.class, neSingleRequestVO);
 
