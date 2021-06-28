@@ -71,7 +71,7 @@ public class OutwardController extends APIController{
             marker.setMainRequest(ServletUriComponentsBuilder.fromCurrentRequestUri().
                     build().toUri().toASCIIString(), neSingleRequest.toString(), false);
 
-            final val neSingleResponse = ftFacade.doNameEnquiryV2(neSingleRequest);
+            final val neSingleResponse = ftFacade.doClientNameEnquiry(neSingleRequest);
             marker.setMainResponse(neSingleResponse.toString(), false);
             return new ResponseEntity(neSingleResponse, HttpStatus.OK);
         } finally {
