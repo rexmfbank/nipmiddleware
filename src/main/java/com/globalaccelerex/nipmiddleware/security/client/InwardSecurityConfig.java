@@ -53,7 +53,9 @@ public class InwardSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .anonymous().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint());
-        http.addFilterBefore(new ClientAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
+        http.addFilterBefore(new ClientAuthenticationFilter(authenticationManager(),
+                java.util.Collections.singletonList(INWARD_WS_URI + slsConfig.getInstitutionCode() + "/**")),
+                BasicAuthenticationFilter.class);
     }
 
     @Override

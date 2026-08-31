@@ -9,6 +9,7 @@ import lombok.val;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -18,7 +19,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.TimeZone;
 
 import static com.globalaccelerex.nipmiddleware.enums.NIPResponseCodeEnum.NIP_201;
@@ -30,6 +33,8 @@ import static com.globalaccelerex.nipmiddleware.exception.ErrorMessage.UNAUTHORI
 public class ClientAuthenticationFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
+    private final List<String> exemptPathPatterns;
+    private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
     private static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("Africa/Lagos");
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -39,13 +44,23 @@ public class ClientAuthenticationFilter extends GenericFilterBean {
 
 
     public ClientAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this(authenticationManager, Collections.emptyList());
+    }
+
+    public ClientAuthenticationFilter(AuthenticationManager authenticationManager, List<String> exemptPathPatterns) {
         this.authenticationManager = authenticationManager;
+        this.exemptPathPatterns = exemptPathPatterns;
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
+
+        if (exemptPathPatterns.stream().anyMatch(pattern -> PATH_MATCHER.match(pattern, request.getRequestURI()))) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         logRequestDetails(request);
 
