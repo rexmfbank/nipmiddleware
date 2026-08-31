@@ -1,71 +1,55 @@
-# installing java to base docker from amazon 
-#https://github.com/aws/aws-codebuild-docker-images/blob/master/ubuntu/java/openjdk-8/Dockerfile
-#https://github.com/aws/aws-codebuild-docker-images/blob/master/ubuntu/docker/1.12.1/Dockerfile
 version: 0.2
+
+# Builds the nipmiddleware Spring Boot app into a Docker image, pushes it to ECR,
+# and emits imagedefinitions.json for the CodePipeline ECS deploy stage.
+#
+# Toolchain is pinned to Gradle 4.10.3 + JDK 8 on purpose: this project uses the
+# Spring Boot 2.0.5 Gradle plugin and the se.transmode gradle-docker 1.2 plugin,
+# both of which break on Gradle 5+. The committed 6.8 wrapper is NOT used here.
+#
+# Account + region are resolved dynamically (no hardcoded account id), and ECR
+# login uses the modern get-login-password (aws ecr get-login was removed in CLI v2).
 
 env:
   variables:
-      JAVA_VERSION: "8"
-      JAVA_HOME: "/usr/lib/jvm/java-8-openjdk-amd64"
-      JDK_HOME: "/usr/lib/jvm/java-8-openjdk-amd64"
-      JRE_HOME: "/usr/lib/jvm/java-8-openjdk-amd64/jre"
-      GRADLE_VERSION: "4.3"
-      JAVA_HOME: "/usr/lib/jvm/java-8-openjdk-amd64"
-      AWS_ACCOUNT_ID : "068278763965"
-      IMAGE_REPO_NAME : "nipmiddleware"
-      IMAGE_TAG : "latest"
-  #parameter-store:
-     # key: "value"
-     # key: "value"
+    IMAGE_REPO_NAME: "nipmiddleware"
+    IMAGE_TAG: "latest"
+    GRADLE_VERSION: "4.10.3"
 
 phases:
   install:
     runtime-versions:
-      docker: 18
+      java: corretto8
     commands:
-      #- apt-get update
-      #- apt-get install -y software-properties-common
-      #- add-apt-repository ppa:openjdk-r/ppa
-      #- apt-get update
-      #- apt-get -y install python-setuptools
-      #- apt-get -y install openjdk-$JAVA_VERSION-jdk
-      #- apt-get clean
-      #- update-ca-certificates -f
-      #- mkdir -p /usr/src/gradle
-      #- wget "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip" -O /usr/src/gradle/gradle-$GRADLE_VERSION-bin.zip
-      #- unzip /usr/src/gradle/gradle-$GRADLE_VERSION-bin.zip -d /usr/local
-      #- ln -s /usr/local/gradle-$GRADLE_VERSION/bin/gradle /usr/bin/gradle
-      #- rm -rf /usr/src/gradle
-      #- rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
-      # - command
+      - echo "Installing Gradle $GRADLE_VERSION"
+      - wget -q https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip -O /tmp/gradle.zip
+      - unzip -q /tmp/gradle.zip -d /opt
+      - export PATH=/opt/gradle-$GRADLE_VERSION/bin:$PATH
+      - java -version
+      - gradle --version
   pre_build:
     commands:
-        - echo Logging in to Amazon ECR...
-        - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
-      # - command
-      # - command
+      - echo Logging in to Amazon ECR...
+      - export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - export REPO_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
   build:
     commands:
-        - echo Build started on `date`
-        - printenv
-        - docker --version
-        - gradle --version
-        - gradle buildDocker
-        - docker images -a 
-        - echo Building the Docker image...                  
-        - docker tag $IMAGE_REPO_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG        
-        - docker images -a
-      
-      # - command
+      - echo Build started on `date`
+      - export PATH=/opt/gradle-$GRADLE_VERSION/bin:$PATH
+      - docker --version
+      - gradle buildDocker
+      - docker images -a
+      - docker tag $IMAGE_REPO_NAME:latest $REPO_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG  
+      - echo Pushing the Docker image to ECR...
+      - docker push $REPO_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      - printf '[{"name":"nipmiddleware","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"nipmiddleware","imageUri":"%s"}]' $REPO_URI:$IMAGE_TAG > imagedefinitions.json
+      - cat imagedefinitions.json
 artifacts:
   files:
+    - imagedefinitions.json
     - build/libs/nipmiddleware.jar
-    - imagedefinitions.json  
-
