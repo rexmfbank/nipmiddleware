@@ -49,7 +49,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , nameEnquirySingleItem.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val nameEnquirySingleItemResponse = nipInwardFacade.handleNameEnquiry(nameEnquirySingleItem.getValue(),iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(nameEnquirySingleItemResponse.getReturn() , false);
 
@@ -69,7 +69,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , financialinstitutionlist.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val financialInstitutionListResponse = nipInwardFacade.handleFI(financialinstitutionlist.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(financialInstitutionListResponse.getReturn() , false);
             return new JAXBElement<>(new QName(FI_LIST_REQUEST),String.class, financialInstitutionListResponse.getReturn());
@@ -88,7 +88,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , fundtransfersingleitemDd.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val fundtransfersingleitemDdResponse = ftInwardFacade.handleFTDirectDebit(fundtransfersingleitemDd.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransfersingleitemDdResponse.getReturn() , false);
             return new JAXBElement<>(new QName(FT_DIRECT_DEBIT_REQUEST),String.class, fundtransfersingleitemDdResponse.getReturn());
@@ -107,7 +107,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , fundtransfersingleitemDc.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val fundtransfersingleitemDcResponse = ftInwardFacade.handleFTDirectCredit(fundtransfersingleitemDc.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransfersingleitemDcResponse.getReturn() , false);
             return new JAXBElement<>(new QName(FT_DIRECT_CREDIT_REQUEST),String.class, fundtransfersingleitemDcResponse.getReturn());
@@ -125,7 +125,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , txnStatusQuerySingleItem.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val txnStatusQuerySingleItemResponse = nipInwardFacade.handleTSQ(txnStatusQuerySingleItem.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(txnStatusQuerySingleItemResponse.getReturn() , false);
             return new JAXBElement<>(new QName(TSQ_REQUEST),String.class, txnStatusQuerySingleItemResponse.getReturn());
@@ -143,7 +143,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , fundtransferAdviceDC.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val fundtransferAdviceDcResponse = ftInwardFacade.handleFTAdviceDirectCredit(fundtransferAdviceDC.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransferAdviceDcResponse.getReturn() , false);
             return new JAXBElement<>(new QName(FT_ADVICE_DIRECT_CREDIT_REQUEST),String.class, fundtransferAdviceDcResponse.getReturn());
@@ -163,7 +163,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , fundtransferAdviceDD.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val fundtransferAdviceDdResponse = ftInwardFacade.handleFTAdviceDirectDebit(fundtransferAdviceDD.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(fundtransferAdviceDdResponse.getReturn() , false);
             return new JAXBElement<>(new QName(FT_ADVICE_DIRECT_DEBIT_REQUEST),String.class, fundtransferAdviceDdResponse.getReturn());
@@ -181,7 +181,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , mandateAdvice.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val mandateAdviceResponse = nipInwardFacade.handleMandateAdvice(mandateAdvice.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(mandateAdviceResponse.getReturn() , false);
             return new JAXBElement<>(new QName(MANDATE_ADVICE_REQUEST),String.class, mandateAdviceResponse.getReturn());
@@ -199,7 +199,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , accountblock.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val accountBlockResponse = lienInwardFacade.handleAccountBlock(accountblock.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(accountBlockResponse.getReturn(), false);
             return new JAXBElement<>(new QName(ACCOUNT_BLOCK_REQUEST),String.class, accountBlockResponse.getReturn());
@@ -218,7 +218,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , accountUnblock.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val accountunblockResponse = lienInwardFacade.handleAccountUnblock(accountUnblock.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(accountunblockResponse.getReturn() , false);
             return new JAXBElement<>(new QName(ACCOUNT_UNBLOCK_REQUEST),String.class, accountunblockResponse.getReturn());
@@ -236,7 +236,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , amountblock.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val amountBlockResponse = lienInwardFacade.handleAmountBlock(amountblock.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(amountBlockResponse.getReturn() , false);
             return new JAXBElement<>(new QName(AMOUNT_BLOCK_REQUEST),String.class, amountBlockResponse.getReturn());
@@ -254,7 +254,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , amountunblock.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val amountUnblockResponse = lienInwardFacade.handleAmountUnblock(amountunblock.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(amountUnblockResponse.getReturn() , false);
             return new JAXBElement<>(new QName(AMOUNT_UNBLOCK_REQUEST),String.class, amountUnblockResponse.getReturn());
@@ -273,7 +273,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , balanceEnquiry.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
 
             final val balanceEnquiryResponse = nipInwardFacade.handleBalanceEnquiry(balanceEnquiry.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(balanceEnquiryResponse.getReturn() , false);
@@ -292,7 +292,7 @@ public class NIPInwardEndpoint {
             val requestURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri().toASCIIString();
             iMarker.setMainRequest(requestURI , ftackcreditrequest.getValue()+String.format( " from %s",httpServletRequest.getRemoteAddr()), false);
 
-            val originatingInstitutionCode = StringUtils.substringAfter(requestURI,"ws/");
+            val originatingInstitutionCode = StringUtils.substringBefore(StringUtils.substringAfter(requestURI,"ws/"), "/");
             final val ftAckCreditRequestResponse = ftInwardFacade.handleFTAckCredit(ftackcreditrequest.getValue(), iMarker,originatingInstitutionCode);
             iMarker.setMainResponse(ftAckCreditRequestResponse.getReturn() , false);
             return new JAXBElement<>(new QName(FT_CREDIT_ACKNOWLEDGEMENT_REQUEST),String.class, ftAckCreditRequestResponse.getReturn());

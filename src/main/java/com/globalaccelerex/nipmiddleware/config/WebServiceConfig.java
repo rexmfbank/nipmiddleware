@@ -34,7 +34,7 @@ public class WebServiceConfig {
     public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema nipInwardSchema) {
         val wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName(PORT_TYPE_NAME);
-        wsdl11Definition.setLocationUri(INWARD_WS_URI + slsConfig.getInstitutionCode());
+        wsdl11Definition.setLocationUri(INWARD_WS_URI + slsConfig.getInstitutionCode() + "/nipInward.wsdl");
         wsdl11Definition.setTargetNamespace(INWARD_TARGET_NAMESPACE);
         wsdl11Definition.setSchema(nipInwardSchema);
         return wsdl11Definition;
