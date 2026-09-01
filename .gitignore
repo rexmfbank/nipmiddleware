@@ -3,6 +3,7 @@
 /.idea/
 /build/
 /out/
+/bin/
 PGS.iml
 /out/
 pgp1.keystore
